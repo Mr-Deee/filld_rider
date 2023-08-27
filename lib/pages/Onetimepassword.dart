@@ -1,5 +1,5 @@
 
-import 'package:filld_rider/pages/sigin.dart';
+import 'package:filld_rider/pages/Authpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

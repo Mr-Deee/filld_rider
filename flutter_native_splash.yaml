@@ -1,0 +1,11 @@
+flutter_native_splash:
+  image: assets/images/delivery-with-white-background-1.png
+  color: 42a5f5
+    image_background_color: ffffff
+    android: true
+    ios: true
+    android_gravity: center
+    ios_content_mode: center
+    ios_gravity: center
+    android_disable_fullscreen: true
+    android_splash_scale: centerCrop

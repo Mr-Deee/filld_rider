@@ -424,7 +424,13 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         ElevatedButton(
           onPressed: () {
-
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) =>
+            //         OtpVerificationScreen(verificationId: verificationId),
+            //   ),
+            // );
             registerNewUser(context);
             // _verifyPhoneNumber();
 
@@ -442,82 +448,82 @@ class _SignUpFormState extends State<SignUpForm> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Future<void> registerNewUser(BuildContext context) async {
-    try {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return Dialog(
-              backgroundColor: Colors.transparent,
-              child: Container(
-                  margin: EdgeInsets.all(15.0),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0)
-                  ),
-                  child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            SizedBox(width: 6.0,),
-                            CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
-                            SizedBox(width: 26.0,),
-                            Text("Verifying Your Number...")
-
-                          ],
-                        ),
-                      ))));
-        });
-
-
-    // Start phone number verification
-    await _firebaseAuth.verifyPhoneNumber(
-      phoneNumber: phonecontroller.text.trim(), // The user's phone number
-      timeout: const Duration(seconds: 60), // Timeout duration
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // Auto-retrieval of the verification code succeeded.
-        // This callback will be called when the code is automatically
-        // retrieved from the SMS (if auto-retrieval is enabled).
-        // You can proceed with registration here if needed.
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        // Verification failed due to an error.
-        // Handle the error, e.g., display an error message to the user.
-        Navigator.pop(context); // Close the loading dialog
-        displayToast("Verification failed: ${e.message}", context);
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        // Verification code has been successfully sent to the user's phone.
-        // Store the verification ID and show a screen to enter the code.
-        // You can navigate to a new screen to allow the user to enter the code
-        // and complete the registration process.
-        Navigator.pop(context); // Close the loading dialog
-        // Navigate to the code verification screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                OtpVerificationScreen(verificationId: verificationId),
-          ),
-        );
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        // Auto-retrieval of the verification code timed out.
-        // Handle the timeout, e.g., ask the user to manually enter the code.
-        Navigator.pop(context); // Close the loading dialog
-        displayToast("Verification code expired. Please try again.", context);
-      },
-
-    );
-  } catch (e) {
-  // Handle any other exceptions that may occur during phone number verification.
-  Navigator.pop(context); // Close the loading dialog
-  displayToast("Error: $e", context);
-  }
-
+    //try {
+      //   showDialog(
+      //       context: context,
+      //       barrierDismissible: false,
+      //       builder: (BuildContext context) {
+      //         return Dialog(
+      //             backgroundColor: Colors.transparent,
+      //             child: Container(
+      //                 margin: EdgeInsets.all(15.0),
+      //                 width: double.infinity,
+      //                 decoration: BoxDecoration(
+      //                     color: Colors.white,
+      //                     borderRadius: BorderRadius.circular(20.0)
+      //                 ),
+      //                 child: Padding(
+      //                     padding: EdgeInsets.all(15.0),
+      //                     child: SingleChildScrollView(
+      //                       scrollDirection: Axis.horizontal,
+      //                       child: Row(
+      //                         children: [
+      //                           SizedBox(width: 6.0,),
+      //                           CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
+      //                           SizedBox(width: 26.0,),
+      //                           Text("Verifying Your Number...")
+      //
+      //                         ],
+      //                       ),
+      //                     ))));
+      //       });
+      //
+      //
+      //   // Start phone number verification
+      //   await _firebaseAuth.verifyPhoneNumber(
+      //     phoneNumber: phonecontroller.text.trim(), // The user's phone number
+      //     timeout: const Duration(seconds: 60), // Timeout duration
+      //     verificationCompleted: (PhoneAuthCredential credential) async {
+      //       // Auto-retrieval of the verification code succeeded.
+      //       // This callback will be called when the code is automatically
+      //       // retrieved from the SMS (if auto-retrieval is enabled).
+      //       // You can proceed with registration here if needed.
+      //     },
+      //     verificationFailed: (FirebaseAuthException e) {
+      //       // Verification failed due to an error.
+      //       // Handle the error, e.g., display an error message to the user.
+      //       Navigator.pop(context); // Close the loading dialog
+      //       displayToast("Verification failed: ${e.message}", context);
+      //     },
+      //     codeSent: (String verificationId, int? resendToken) {
+      //       // Verification code has been successfully sent to the user's phone.
+      //       // Store the verification ID and show a screen to enter the code.
+      //       // You can navigate to a new screen to allow the user to enter the code
+      //       // and complete the registration process.
+      //       Navigator.pop(context); // Close the loading dialog
+      //       // Navigate to the code verification screen
+      //       Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) =>
+      //               OtpVerificationScreen(verificationId: verificationId),
+      //         ),
+      //       );
+      //     },
+      //     codeAutoRetrievalTimeout: (String verificationId) {
+      //       // Auto-retrieval of the verification code timed out.
+      //       // Handle the timeout, e.g., ask the user to manually enter the code.
+      //       Navigator.pop(context); // Close the loading dialog
+      //       displayToast("Verification code expired. Please try again.", context);
+      //     },
+      //
+      //   );
+      // } catch (e) {
+      // // Handle any other exceptions that may occur during phone number verification.
+      // Navigator.pop(context); // Close the loading dialog
+      // displayToast("Error: $e", context);
+      // }
+   // }
     firebaseUser = (await _firebaseAuth
         .createUserWithEmailAndPassword(
         email: emailController.text, password: passwordController.text)
@@ -553,12 +559,12 @@ class _SignUpFormState extends State<SignUpForm> {
 
 
     } else {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) {
-      //     return login();
-      //   }),
-      // );      // Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) {
+          return OtpVerificationScreen(verificationId: verificationId);
+        }),
+      );      // Navigator.pop(context);
       // error occured - display error
       displayToast("user has not been created", context);
     }

@@ -64,6 +64,7 @@ dev_dependencies:
   hexcolor: ^3.0.1
   email_validator: ^2.1.17
   fluttertoast:
+  country_code_picker: ^3.0.0
 
 
   # The "flutter_lints" package below contains a set of recommended lints to

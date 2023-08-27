@@ -1,5 +1,6 @@
 
 import 'package:filld_rider/pages/Authpage.dart';
+import 'package:filld_rider/pages/riderdetails.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -31,7 +32,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       // Sign in with the credential
       await _firebaseAuth.signInWithCredential(credential);
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => homepage()),
+          MaterialPageRoute(builder: (context) => Riderdetails()),
               (Route<dynamic> route) => false);
       // // Now you can continue with user registration
       // Ne the code entry screen

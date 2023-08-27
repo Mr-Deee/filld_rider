@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
         initialRoute: FirebaseAuth.instance.currentUser == null
         ? '/onboarding'
-            : '/Homepage',
+            : '/Riderdetails',
         routes: {
           // "/splash":(context) => SplashScreen(),
           "/onboarding": (context) => OnBoardingPage(),

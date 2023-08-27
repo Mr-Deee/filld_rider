@@ -24,16 +24,18 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     String pin = _pinController1.text +
         _pinController2.text +
         _pinController3.text +
-        _pinController4.text;
+        _pinController4.text+
+        _pinController5.text+
+        _pinController6.text;
     try {
       // Create a PhoneAuthCredential with the verification code
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: pin.trim(),
-      );
-
-      // Sign in with the credential
-      await _firebaseAuth.signInWithCredential(credential);
+      // PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      //   verificationId: verificationId,
+      //   smsCode: pin,
+      // );
+      //
+      // // Sign in with the credential
+      // await _firebaseAuth.signInWithCredential(credential);
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => Riderdetails()),
               (Route<dynamic> route) => false);
@@ -50,21 +52,23 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   TextEditingController _pinController2 = TextEditingController();
   TextEditingController _pinController3 = TextEditingController();
   TextEditingController _pinController4 = TextEditingController();
+  TextEditingController _pinController5 = TextEditingController();
+  TextEditingController _pinController6= TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Phone Verification")),
+      appBar: AppBar(title: Text("Fill'd OTP")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextFormField(
-              controller: codeController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: "Enter Verification Code"),
-            ),
+            // TextFormField(
+            //   controller: codeController,
+            //   keyboardType: TextInputType.number,
+            //   decoration: InputDecoration(labelText: "Enter Verification Code"),
+            // ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +80,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 buildPinTextField(_pinController3),
                 SizedBox(width: 16.0),
                 buildPinTextField(_pinController4),
+                SizedBox(width: 16.0),
+                buildPinTextField(_pinController5),
+                SizedBox(width: 16.0),
+                buildPinTextField(_pinController6),
               ],
             ),
             ElevatedButton(

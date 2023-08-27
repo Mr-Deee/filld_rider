@@ -53,38 +53,23 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       key: introKey,
       pages: [
         PageViewModel(
-          title: "Choose your cylinder size",
+          title: "Work when you want",
           body:
-          'Pick a maximum of two cylinders and decide \nhow much you want to buy.',
+          'Accept delivery requests when available and \nearn on your own term.',
 
-          image: Image(image: AssetImage('assets/images/onboarding-1-1.png'),),
+          image: Image(image: AssetImage('assets/images/work-when-you-want-1-1.png'),),
           decoration: pageDecoration,
         ),
 
         PageViewModel(
-          title: "Select LPG Station",
+          title: "Receive daily payments.",
           body:
-          "Select from our database your nearest \n"
-          "LPG station.",
-          image: Image(image: AssetImage('assets/images/nearest-lpg-station-1.png',),),
+          "Get paid each day directly into your mobile \n"
+          "money .",
+          image: Image(image: AssetImage('assets/images/payment-1-1.png',),),
           decoration: pageDecoration,
         ),
-        PageViewModel(
-          title: "Secure in-app payments",
-          body:
-          "Pay via mobile money or credit card after\ndelivery guy arrives "
-              "",
-          image: Image(image: AssetImage('assets/images/pay-in-app-1-1.png'),),
-          decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "Delivered to your doorstep.",
-          body:
-          "Conveniently delivered right to you."
-              "",
-          image: Image(image: AssetImage('assets/images/right-to-your-doorstep-2-1.png'),),
-          decoration: pageDecoration,
-        ),
+
       ],
 
      // child: Container(),

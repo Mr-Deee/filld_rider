@@ -327,7 +327,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String selectedCountryCode = '+1'; // Default country code
 
-  String phoneNumber = '';
+
   String verificationId = '';
 
 
@@ -472,7 +472,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Future<void> registerNewUser(BuildContext context) async {
-    String fullPhoneNumber = '$selectedCountryCode$phoneNumber';
+    String fullPhoneNumber = '$selectedCountryCode${phonecontroller.text.trim().toString()}';
     try {
 
       showDialog(
@@ -507,7 +507,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
     // Start phone number verification
     await _firebaseAuth.verifyPhoneNumber(
-      phoneNumber: fullPhoneNumber.trim(), // The user's phone number
+      phoneNumber: fullPhoneNumber, // The user's phone number
       timeout: const Duration(seconds: 60), // Timeout duration
       verificationCompleted: (PhoneAuthCredential credential) async {
         // Auto-retrieval of the verification code succeeded.

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:filld_rider/pages/Authpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -60,7 +61,12 @@ class _RiderdetailsState extends State<Riderdetails> {
 
     // Profile updated successfully
     // You can navigate to a different screen or show a success message
-  }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+        builder: (context) =>AuthPage()
+    ),
+    );}
 
   Future<String> _uploadImageToStorage(File? imageFile) async {
     if (imageFile == null) {
@@ -93,30 +99,8 @@ class _RiderdetailsState extends State<Riderdetails> {
                 });
               },
             ),
-            _buildImagePicker(
-              title: 'Driver\'s License',
-              setImage: (File image) {
-                setState(() {
-                  _licenseImage = image;
-                });
-              },
-            ),
-            _buildImagePicker(
-              title: 'Insurance',
-              setImage: (File image) {
-                setState(() {
-                  _insuranceImage = image;
-                });
-              },
-            ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Number Plate'),
-              onChanged: (value) {
-                setState(() {
-                  _numberPlate = value;
-                });
-              },
-            ),
+
+
             TextFormField(
               decoration: InputDecoration(labelText: 'Motor Type'),
               onChanged: (value) {
@@ -149,12 +133,12 @@ class _RiderdetailsState extends State<Riderdetails> {
         Text(title),
         SizedBox(height: 8),
         _buildImagePreview(setImage),
-        ElevatedButton(
-          onPressed: () {
-            _pickImage(ImageSource.gallery, setImage);
-          },
-          child: Text('Pick from Gallery'),
-        ),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     _pickImage(ImageSource.gallery, setImage);
+        //   },
+        //   child: Text('Pick from Gallery'),
+        // ),
         ElevatedButton(
           onPressed: () {
             _pickImage(ImageSource.camera, setImage);
@@ -170,7 +154,7 @@ class _RiderdetailsState extends State<Riderdetails> {
     }
     return _riderImage != null
         ? Image.file(_riderImage!)
-        : Placeholder(); // Display a placeholder or nothing if no image is set
+        :  Image.asset("assets/images/profile-image.png"); // Display a placeholder or nothing if no image is set
   }
 }
 

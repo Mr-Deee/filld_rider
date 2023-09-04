@@ -189,47 +189,60 @@ class AuthOptionButton extends StatelessWidget {
   }
 }
 
-class SignInForm extends StatelessWidget {
+class SignInForm extends StatefulWidget {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  @override
+  State<SignInForm> createState() => _SignInFormState();
+}
+class _SignInFormState extends State<SignInForm> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0,left: 35,right: 35,bottom: 30),
-      child: Column(
-        children: [
-          SizedBox(height: 30.0),
-          TextField(
-            controller: _emailController,
-            decoration: InputDecoration(labelText: 'E-mail'),
-          ),
-          SizedBox(height: 40.0),
-          TextField(
-          controller:   _passwordController,
-            decoration: InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-          SizedBox(height: 10.0),
-          Row(
-            children: [
-              Text('Forgot password?',style: TextStyle(color: Colors.blueAccent),),
-            ],
-          ),
 
-          SizedBox(height: 40.0),
-
-
-          ElevatedButton(
-            onPressed: () {
-              loginAndAuthenticateUser(context);
-
-            },
-            child: Text('Sign In'),
-          ),
-        ],
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10.0, left: 35, right: 35, bottom: 30),
+        child: Column(
+          children: [
+            SizedBox(height: 30.0),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'E-mail'),
+            ),
+            SizedBox(height: 40.0),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            SizedBox(height: 10.0),
+            Row(
+              children: [
+                Text(
+                  'Forgot password?',
+                  style: TextStyle(color: Colors.blueAccent),
+                ),
+              ],
+            ),
+            SizedBox(height: 40.0),
+            ElevatedButton(
+              onPressed: () {
+                loginAndAuthenticateUser(context);
+              },
+              child: Text('Sign In'),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   void loginAndAuthenticateUser(BuildContext context) async {

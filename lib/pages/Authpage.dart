@@ -590,7 +590,7 @@ class _SignUpFormState extends State<SignUpForm> {
         "Password": passwordController.text.trim().toString(),
 
       };
-      clientdb.child(firebaseUser!.uid).set(userDataMap);
+      Ridersdb.child(firebaseUser!.uid).set(userDataMap);
       // Admin.child(firebaseUser!.uid).set(userDataMap);
 
       currentfirebaseUser = firebaseUser;

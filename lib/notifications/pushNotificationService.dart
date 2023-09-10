@@ -5,7 +5,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:io' show Platform;
+import '../Models/Users.dart';
+import '../Models/clientDetails.dart';
 import '../main.dart';
+import 'notificationDialog.dart';
 
 class PushNotificationService {
 
@@ -54,7 +57,7 @@ class PushNotificationService {
     String? token = await messaging.getToken();
     print("This is token :: ");
     print(token);
-    artisansRef.child(currentfirebaseUser!.uid).child("token").set(token);
+    RiderRequestRef.child(currentfirebaseUser!.uid).child("token").set(token);
     print("JUST GOT IT");
     messaging.subscribeToTopic("alldrivers");
     messaging.subscribeToTopic("allusers");

@@ -1,5 +1,17 @@
+import 'package:filld_rider/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart' as geolocator;
+import '../Models/Ride_r.dart';
+import '../Models/Users.dart';
+import '../Models/otherUserModel.dart';
+import '../configMaps.dart';
+import '../notifications/pushNotificationService.dart';
+import 'Authpage.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 
 class homepage extends StatefulWidget {
   const homepage({Key? key}) : super(key: key);
@@ -17,8 +29,15 @@ class _homepageState extends State<homepage> {
   final _passwordController = TextEditingController();
 
 
+  Position? _currentPosition;
+  String? _currentAddress;
+  String ArtisanStatusText = "Go Online ";
+
+  Color ArtisanStatusColor = Colors.white70;
+  bool isArtisanAvailable = false;
+  bool isArtisanActivated = false;
   getartisanType() {
-    artisansRef
+    RiderRequestRef
         .child(currentfirebaseUser!.uid)
         .child("service_type")
         .once()
@@ -31,67 +50,14 @@ class _homepageState extends State<homepage> {
       }
     });
   }
-  //
-  // getRatings() {
-  //   //update ratings
-  //
-  //   artisansRef
-  //       .child(currentfirebaseUser!.uid)
-  //       .child("ratings")
-  //       .once()
-  //       .then((value) {
-  //     var dataSnapshot = value.snapshot;
-  //     final map = dataSnapshot.value;
-  //
-  //     if (dataSnapshot != null) {
-  //       double ratings = double.parse(map.toString());
-  //       setState(() {
-  //         starCounter = ratings;
-  //       });
-  //
-  //       if (starCounter <= 1.5) {
-  //         setState(() {
-  //           title = "Very Bad";
-  //         });
-  //         return;
-  //       }
-  //       if (starCounter <= 2.5) {
-  //         setState(() {
-  //           title = "Bad";
-  //         });
-  //
-  //         return;
-  //       }
-  //       if (starCounter <= 3.5) {
-  //         setState(() {
-  //           title = "Good";
-  //         });
-  //
-  //         return;
-  //       }
-  //       if (starCounter <= 4.5) {
-  //         setState(() {
-  //           title = "Very Good";
-  //         });
-  //         return;
-  //       }
-  //       if (starCounter <= 5.0) {
-  //         setState(() {
-  //           title = "Excellent";
-  //         });
-  //
-  //         return;
-  //       }
-  //     }
-  //   });
-  // }
+
 
   getCurrentArtisanInfo() async {
     currentfirebaseUser = await FirebaseAuth.instance.currentUser;
-    artisans.child(currentfirebaseUser!.uid).once().then((event) {
+    Ridersdb.child(currentfirebaseUser!.uid).once().then((event) {
       print("value");
       if (event.snapshot.value != null) {
-        artisanInformation = Arti_san.fromSnapshot(event.snapshot);
+        riderinformation = Ride_r.fromSnapshot(event.snapshot);
       }
 
       PushNotificationService pushNotificationService = PushNotificationService();
@@ -108,13 +74,7 @@ class _homepageState extends State<homepage> {
     getartisanType();
   }
 
-  Position? _currentPosition;
-  String? _currentAddress;
-  String ArtisanStatusText = "Go Online ";
-
-  Color ArtisanStatusColor = Colors.white70;
-  bool isArtisanAvailable = false;
-  bool isArtisanActivated = false;
+  bool isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -199,4 +159,70 @@ class _homepageState extends State<homepage> {
       // bottomNavigationBar: (),
     );
   }
+  void makeArtisanOnlineNow() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+
+
+    Map<String, dynamic> artisanMap = {
+      "Profilepicture": Provider.of<Users>(context, listen:false).userInfo!.profilepicture!,
+      "client_name" :  Provider.of<Users>(context, listen:false).userInfo!.firstname!  +   Provider.of<Users>(context, listen:false).userInfo!.lastname!,
+      "FirstName":Provider.of<Users>(context, listen:false).userInfo!.firstname!,
+      "LastName":Provider.of<Users>(context, listen:false).userInfo!.lastname!,
+      "service_type" :Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Service!,
+      "client_phone"  :Provider.of<Users>(context,listen:false).userInfo!.phone!,
+      "Experience" :Provider.of<otherUsermodel>(context,listen: false).otherinfo!.Experience!,
+      "Institution": Provider.of<otherUsermodel>(context,listen: false).otherinfo!.Institution!,
+      "email":Provider.of<Users>(context,listen:false).userInfo!.email!,
+      "Education":  Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Education!,
+      "Description": Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Description!,
+      "Location":Provider.of<otherUsermodel>(context,listen: false).otherinfo!.location??"",
+
+    };
+    RiderRequestRef.set("searching");
+    Geofire.initialize("availableArtisans");
+    Geofire.setLocation(
+      currentfirebaseUser!.uid,
+      currentPosition!.latitude,
+      currentPosition!.longitude,
+    );
+    await availableRider.update(artisanMap);
+
+    RiderRequestRef.onValue.listen((event) {});
+  }
+
+  void getLocationLiveUpdates() {
+    homeTabPageStreamSubscription =
+        Geolocator.getPositionStream().listen((Position position) {
+          currentPosition = position;
+
+          if (isArtisanAvailable == true) {
+            Geofire.setLocation(
+                currentfirebaseUser!.uid, position.latitude, position.longitude);
+          }
+
+          // LatLng latLng = LatLng(position.latitude, position.longitude);
+          // newGoogleMapController.animateCamera(CameraUpdate.newLatLng(latLng));
+        });
+  }
+
+  Future<void> ArtisanActivated() async {
+    Geofire.removeLocation(currentfirebaseUser!.uid);
+    RiderRequestRef.onDisconnect();
+    RiderRequestRef.remove();
+
+    displayToast("Sorry You are not Activated", context);
+  }
+
+  void makeArtisanOfflineNow() {
+    Geofire.removeLocation(currentfirebaseUser!.uid);
+    RiderRequestRef.onDisconnect();
+    RiderRequestRef.remove();
+    //rideRequestRef= null;
+    //return makeDriverOnlineNow();
+    // _restartApp();
+  }
 }
+
+

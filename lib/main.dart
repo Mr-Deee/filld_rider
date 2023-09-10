@@ -32,7 +32,8 @@ final uid = user?.uid;
 
 DatabaseReference  clientRequestRef = FirebaseDatabase.instance.ref().child("ClientRequest");
 DatabaseReference RiderRequestRef= FirebaseDatabase.instance.reference().child("Riders").child(uid!).child("new Riders");
-DatabaseReference clientdb = FirebaseDatabase.instance.ref().child("Riders");
+DatabaseReference Ridersdb = FirebaseDatabase.instance.ref().child("Riders");
+DatabaseReference availableRider = FirebaseDatabase.instance.reference().child("availableRider").child(uid!);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

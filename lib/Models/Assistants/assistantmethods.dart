@@ -12,9 +12,10 @@ import 'package:provider/provider.dart';
 
 
 import '../../DataHandler/appData.dart';
-import '../Historymodel.dart';
+import '../../configMaps.dart';
 import '../Users.dart';
 import '../otherUserModel.dart';
+// import '../otherUserModel.dart';
 
 class AssistantMethod{
 
@@ -152,8 +153,8 @@ class AssistantMethod{
             final name = event.snapshot;
             if(name!=null)
            {
-              var history = History.fromSnapshot(snapshot);
-              Provider.of<AppData>(context, listen: false).updateTripHistoryData(history);
+              // var history = History.fromSnapshot(snapshot);
+              // Provider.of<AppData>(context, listen: false).updateTripHistoryData(history);
             }
           });
         }

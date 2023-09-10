@@ -23,6 +23,15 @@ void main()async {
   runApp( MyApp());
 }
 
+
+final FirebaseAuth auth = FirebaseAuth.instance;
+final User? user = auth.currentUser;
+final uid = user?.uid;
+
+
+
+DatabaseReference  clientRequestRef = FirebaseDatabase.instance.ref().child("ClientRequest");
+DatabaseReference RiderRequestRef= FirebaseDatabase.instance.reference().child("Riders").child(uid!).child("new Riders");
 DatabaseReference clientdb = FirebaseDatabase.instance.ref().child("Riders");
 
 class MyApp extends StatelessWidget {

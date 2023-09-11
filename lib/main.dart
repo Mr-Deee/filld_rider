@@ -1,3 +1,5 @@
+import 'package:filld_rider/Models/Ride_r.dart';
+import 'package:filld_rider/assistants/helper.dart';
 import 'package:filld_rider/pages/Onetimepassword.dart';
 import 'package:filld_rider/pages/homepage.dart';
 import 'package:filld_rider/pages/Authpage.dart';
@@ -6,9 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'DataHandler/appData.dart';
+import 'Models/Historymodel.dart';
+import 'Models/RequestModel.dart';
+import 'Models/Users.dart';
+import 'Models/otherUserModel.dart';
 import 'firebase_options.dart';
 import 'onboarding.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -20,7 +28,37 @@ void main()async {
   );
   await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
   FlutterNativeSplash.remove();
-  runApp( MyApp());
+  runApp( (MultiProvider( providers: [
+    ChangeNotifierProvider<AppData>(
+      create: (context) => AppData(),
+    ),
+    ChangeNotifierProvider<Users>(
+      create: (context) => Users(),
+    ),
+
+    ChangeNotifierProvider<otherUsermodel>(
+      create: (context) => otherUsermodel(),
+    ),
+
+    ChangeNotifierProvider<Ride_r>(
+      create: (context) =>  Ride_r(),
+    ),
+
+
+
+    ChangeNotifierProvider<ReqModel>(
+      create: (context) => ReqModel(),
+    ),
+    ChangeNotifierProvider<History>(
+      create: (context) => History(),
+    ),
+    // ChangeNotifierProvider<AppState>(
+    // create: (context) => AppState(),
+    // ),
+    ChangeNotifierProvider<helper>(
+      create: (context) => helper(),
+    )
+  ], child:MyApp())));
 }
 
 

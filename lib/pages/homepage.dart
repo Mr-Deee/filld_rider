@@ -2,11 +2,15 @@ import 'package:filld_rider/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as geolocator;
+import '../Models/Assistants/assistantmethods.dart';
 import '../Models/Ride_r.dart';
 import '../Models/Users.dart';
 import '../Models/otherUserModel.dart';
+import '../assistants/helper.dart';
 import '../configMaps.dart';
 import '../notifications/pushNotificationService.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import 'Authpage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -27,6 +31,7 @@ class _homepageState extends State<homepage> {
   final _emailController = TextEditingController();
   final location = TextEditingController();
   final _passwordController = TextEditingController();
+  TextEditingController _locationController = TextEditingController();
 
 
   Position? _currentPosition;
@@ -50,6 +55,96 @@ class _homepageState extends State<homepage> {
       }
     });
   }
+
+  @override
+  void initState() {
+    setState(() {
+      Provider.of<helper>(context, listen: false).getCurrentLocation();
+      Provider.of<helper>(context, listen: false).getAddressFromLatLng();
+    });
+
+
+    super.initState();
+    AssistantMethod.getCurrentOnlineUserInfo(context);
+    AssistantMethod.getCurrentOnlineOtherUserInfo(context);
+    //getPicture();
+    // _checkGps();
+    _requestLocationPermission();
+    requestLocationPermission();
+    AssistantMethod.getCurrentrequestinfo(context);
+    AssistantMethod.obtainTripRequestsHistoryData(context);
+    getCurrentArtisanInfo();
+
+  }  void _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
+      );
+      // List<Placemark> placemarks = await placemarkFromCoordinates(
+      //   position.latitude,
+      //   position.longitude,
+      // );
+      List<Placemark> placemarks = await GeocodingPlatform.instance
+          .placemarkFromCoordinates(position.latitude, position.longitude,
+          localeIdentifier: "en");
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+        String placeName = placemark.name ?? ''; // Name of the place
+        String locality = placemark.locality ?? ''; // City or locality
+        String administrativeArea =
+            placemark.administrativeArea ?? ''; // State or region
+
+        String fullAddress = '$placeName, $locality, $administrativeArea';
+
+        setState(() {
+          _currentPosition = position;
+          _locationController.text = fullAddress;
+        });
+      }
+    } catch (e) {
+      print('Error fetching location: $e');
+      _getCurrentLocation();
+    }
+  }
+
+
+  // Future _checkGps() async {
+  //   if (!await location.serviceEnabled()) {
+  //     location.requestService();
+  //   }
+  // }
+  void _requestLocationPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      // Location permission is granted, you can now access the location.
+      _getCurrentLocation();
+    } else if (status.isDenied) {
+      // Permission has been denied, show a snackbar or dialog to inform the user.
+      // You can also open the device settings to allow the permission manually.
+      openAppSettings();
+    } else if (status.isPermanentlyDenied) {
+      // The user has permanently denied the permission. You may show a dialog
+      // with a link to the app settings.
+    }
+  }
+  Future<void> requestLocationPermission() async {
+    final serviceStatusLocation = await Permission.locationWhenInUse.isGranted;
+
+    bool isLocation =
+        serviceStatusLocation == Permission.location.serviceStatus.isEnabled;
+
+    final status = await Permission.locationWhenInUse.request();
+
+    if (status == PermissionStatus.granted) {
+      print('Permission Granted');
+    } else if (status == PermissionStatus.denied) {
+      print('Permission denied');
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      print('Permission Permanently Denied');
+      await openAppSettings();
+    }
+  }
+
 
 
   getCurrentArtisanInfo() async {

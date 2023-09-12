@@ -10,6 +10,7 @@ import '../main.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'Onetimepassword.dart';
 import 'homepage.dart';
+import 'mainscreen.dart';
 class AuthPage extends StatefulWidget {
 
   @override
@@ -307,7 +308,7 @@ class _SignInFormState extends State<SignInForm> {
       // else
       if (firebaseUser != null) {
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => homepage()),
+            MaterialPageRoute(builder: (context) => MainScreen()),
                 (Route<dynamic> route) => false);
         displayToast("Logged-in ", context);
       } else {

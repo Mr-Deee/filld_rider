@@ -241,88 +241,89 @@ class _homepageState extends State<homepage> {
           //  color: Colors.black87,
         ),
 
-        // Positioned(
-        //   top: 70.0,
-        //   left: 0.0,
-        //   right: 0.0,
-        //   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        //     Padding(
-        //       padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //       child: RaisedButton(
-        //         shape: new RoundedRectangleBorder(
-        //           borderRadius: new BorderRadius.circular(24.0),
-        //         ),
-        //         onPressed: () async {
-        //           currentfirebaseUser = await FirebaseAuth.instance.currentUser;
-        //           driversRef
-        //               .child(currentfirebaseUser.uid)
-        //               .child("DriverStatus")
-        //               .once()
-        //               .then((event) {
-        //             if (event == "Deactivated") {
-        //               displayToast("Sorry You are not Activated", context);
-        //               DriverActivated();
-        //               //getLocationLiveUpdates();
-        //
-        //               setState(() {
-        //                 driverStatusColor = Colors.red;
-        //                 driverStatusText = "offline -Deactivated";
-        //                 isDriverAvailable = false;
-        //               });
-        //             }
-        //
-        //             else if (isDriverAvailable != true) {
-        //               makeDriverOnlineNow();
-        //               getLocationLiveUpdates();
-        //
-        //               setState(() {
-        //                 driverStatusColor = Colors.green;
-        //                 driverStatusText = "Online ";
-        //                 isDriverAvailable = true;
-        //               });
-        //               displayToast("you are Online Now.", context);
-        //             } else {
-        //               makeDriverOfflineNow();
-        //
-        //               setState(() {
-        //                 driverStatusColor = Colors.white70;
-        //                 driverStatusText = "Offline ";
-        //                 isDriverAvailable = false;
-        //               });
-        //
-        //               displayToast("you are offline Now.", context);
-        //             }
-        //           });
-        //         },
-        //         color: driverStatusColor,
-        //         child: Padding(
-        //           padding: EdgeInsets.all(12.0),
-        //           child: Row(
-        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //             children: [
-        //               Text(
-        //                 driverStatusText,
-        //                 style: TextStyle(
-        //                     fontSize: 20.0,
-        //                     fontWeight: FontWeight.bold,
-        //                     color: Colors.black),
-        //               ),
-        //               Icon(
-        //                 Icons.online_prediction,
-        //                 color: Colors.black,
-        //                 size: 26.0,
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //       ),
-        //     )
-        //   ]),
-        // ),
-        //  Column(children: [
-        //   SizedBox(
-        //     height: 30,
-        //   ),
+        Positioned(
+          top: 70.0,
+          left: 0.0,
+          right: 0.0,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(24.0),
+                )),
+                onPressed: () async {
+                  currentfirebaseUser = await FirebaseAuth.instance.currentUser;
+                  RiderRequestRef
+                      .child(currentfirebaseUser!.uid)
+                      .child("RiderStatus")
+                      .once()
+                      .then((event) {
+                    if (event == "Deactivated") {
+                      displayToast("Sorry You are not Activated", context);
+                      // DriverActivated();
+                      //getLocationLiveUpdates();
+
+                      setState(() {
+                        driverStatusColor = Colors.red;
+                        driverStatusText = "offline -Deactivated";
+                        isDriverAvailable = false;
+                      });
+                    }
+
+                    else if (isDriverAvailable != true) {
+                      makeRiderOnlineNow();
+                      getLocationLiveUpdates();
+
+                      setState(() {
+                        driverStatusColor = Colors.green;
+                        driverStatusText = "Online ";
+                        isDriverAvailable = true;
+                      });
+                      displayToast("you are Online Now.", context);
+                    } else {
+                      makeRiderOfflineNow();
+
+                      setState(() {
+                        driverStatusColor = Colors.white70;
+                        driverStatusText = "Offline ";
+                        isDriverAvailable = false;
+                      });
+
+                      displayToast("you are offline Now.", context);
+                    }
+                  });
+                },
+                // bacolor: driverStatusColor,
+                child: Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        driverStatusText,
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      Icon(
+                        Icons.online_prediction,
+                        color: Colors.black,
+                        size: 26.0,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ]),
+        ),
+         Column(children: [
+          SizedBox(
+            height: 30,
+          ),
         //
         //
         //   Column(
@@ -393,12 +394,14 @@ class _homepageState extends State<homepage> {
         //
         //
         // ])
-      ],);
+      ],)]);
 
       // bottomNavigationBar: (),
 
   }
-  void makeArtisanOnlineNow() async {
+
+
+  void makeRiderOnlineNow() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
@@ -441,7 +444,7 @@ class _homepageState extends State<homepage> {
     displayToast("Sorry You are not Activated", context);
   }
 
-  void makeArtisanOfflineNow() {
+  void makeRiderOfflineNow() {
     Geofire.removeLocation(currentfirebaseUser!.uid);
     RiderRequestRef.onDisconnect();
     RiderRequestRef.remove();

@@ -3,6 +3,7 @@ import 'package:filld_rider/assistants/helper.dart';
 import 'package:filld_rider/pages/Onetimepassword.dart';
 import 'package:filld_rider/pages/homepage.dart';
 import 'package:filld_rider/pages/Authpage.dart';
+import 'package:filld_rider/pages/mainscreen.dart';
 import 'package:filld_rider/pages/riderdetails.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -85,10 +86,11 @@ class MyApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
         initialRoute: FirebaseAuth.instance.currentUser == null
         ? '/onboarding'
-            : '/Homepage',
+            : '/Main',
         routes: {
           // "/splash":(context) => SplashScreen(),
           "/onboarding": (context) => OnBoardingPage(),
+          "/Main": (context) => MainScreen(),
           "/verify": (context) => OtpVerificationScreen(verificationId: '',),
           "/Riderdetails": (context) => Riderdetails(),
 

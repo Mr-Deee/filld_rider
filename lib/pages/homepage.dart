@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:filld_rider/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import '../assistants/helper.dart';
 import '../configMaps.dart';
 import '../notifications/pushNotificationService.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'Authpage.dart';
 import 'package:geocoding/geocoding.dart';
@@ -19,12 +22,16 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 
 class homepage extends StatefulWidget {
   const homepage({Key? key}) : super(key: key);
-
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
   @override
   State<homepage> createState() => _homepageState();
 }
 
 class _homepageState extends State<homepage> {
+
   String? currentSelectedValue;
   List<String> cylindertype = ["5kg", "9kg", "  12kg"];
   final _cylindertype = TextEditingController();
@@ -32,6 +39,18 @@ class _homepageState extends State<homepage> {
   final location = TextEditingController();
   final _passwordController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
+  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+
+  GoogleMapController? newGoogleMapController;
+
+  var geoLocator = Geolocator();
+
+  String driverStatusText = "Go Online ";
+
+  Color driverStatusColor = Colors.white70;
+
+  bool isDriverAvailable = false;
+  bool isDriverActivated = false;
 
 
   Position? _currentPosition;
@@ -127,6 +146,33 @@ class _homepageState extends State<homepage> {
       // with a link to the app settings.
     }
   }
+  void getLocationLiveUpdates() {
+    homeTabPageStreamSubscription =
+        Geolocator.getPositionStream().listen((Position position) {
+          currentPosition = position;
+
+          if (isDriverAvailable == true) {
+            Geofire.setLocation(
+                currentfirebaseUser!.uid, position.latitude, position.longitude);
+          }
+
+          LatLng latLng = LatLng(position.latitude, position.longitude);
+          newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+        });
+  }
+
+  void locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+
+    LatLng latLatPosition = LatLng(position.latitude, position.longitude);
+
+    CameraPosition cameraPosition =
+    new CameraPosition(target: latLatPosition, zoom: 14);
+    newGoogleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
+
   Future<void> requestLocationPermission() async {
     final serviceStatusLocation = await Permission.locationWhenInUse.isGranted;
 
@@ -173,86 +219,184 @@ class _homepageState extends State<homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(children: [
-          SizedBox(
-            height: 30,
-          ),
+    return Stack(
+      children: [
+        GoogleMap(
+          mapType: MapType.normal,
+          myLocationButtonEnabled: true,
+          initialCameraPosition: homepage._kGooglePlex,
+          myLocationEnabled: true,
+          onMapCreated: (GoogleMapController controller) {
+            _controllerGoogleMap.complete(controller);
+            newGoogleMapController = controller;
 
+            locatePosition();
+          },
+        ),
 
-          Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 16.0,left:70.0,right:20.0),
-                child: Switch(
-                  value: isSwitched,
+        //online offline driver Container
+        Container(
+          height: 140.0,
+          width: double.infinity,
+          //  color: Colors.black87,
+        ),
 
-                  onChanged: (value) async {
-                    currentfirebaseUser =
-                    await FirebaseAuth.instance.currentUser;
-
-
-                    if (isSwitched == false) {
-                      makeArtisanOnlineNow();
-                      getLocationLiveUpdates();
-
-                      setState(() {
-                        isSwitched = true;
-                      });
-                      displayToast(" Online .", context);
-                    } else {
-                      makeArtisanOfflineNow();
-
-                      setState(() {
-                        isSwitched = false;
-
-                        ArtisanStatusColor = Colors.white70;
-                        ArtisanStatusText = "Offline ";
-                        isArtisanAvailable = false;
-                      });
-
-                      displayToast("offline .", context);
-                    };
-
-                  },
-
-                  activeTrackColor: Colors.black38,
-                  activeColor: Colors.black,
-
-
-                  // child: Padding(
-                  //   padding: EdgeInsets.all(12.0),
-                  //   child: Row(
-                  //     mainAxisAlignment:
-                  //     MainAxisAlignment.spaceBetween,
-                  //     children: [
-                  //       Text(
-                  //         HandyManStatusText,
-                  //         style: TextStyle(
-                  //             fontSize: 20.0,
-                  //             fontWeight: FontWeight.bold,
-                  //             color: Colors.black),
-                  //       ),
-                  //       Icon(
-                  //         Icons.online_prediction,
-                  //         color: Colors.black,
-                  //         size: 26.0,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                ),
-              ),
-            ],
-          ),
-
-
-        ]),
-      ),
+        // Positioned(
+        //   top: 70.0,
+        //   left: 0.0,
+        //   right: 0.0,
+        //   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        //     Padding(
+        //       padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //       child: RaisedButton(
+        //         shape: new RoundedRectangleBorder(
+        //           borderRadius: new BorderRadius.circular(24.0),
+        //         ),
+        //         onPressed: () async {
+        //           currentfirebaseUser = await FirebaseAuth.instance.currentUser;
+        //           driversRef
+        //               .child(currentfirebaseUser.uid)
+        //               .child("DriverStatus")
+        //               .once()
+        //               .then((event) {
+        //             if (event == "Deactivated") {
+        //               displayToast("Sorry You are not Activated", context);
+        //               DriverActivated();
+        //               //getLocationLiveUpdates();
+        //
+        //               setState(() {
+        //                 driverStatusColor = Colors.red;
+        //                 driverStatusText = "offline -Deactivated";
+        //                 isDriverAvailable = false;
+        //               });
+        //             }
+        //
+        //             else if (isDriverAvailable != true) {
+        //               makeDriverOnlineNow();
+        //               getLocationLiveUpdates();
+        //
+        //               setState(() {
+        //                 driverStatusColor = Colors.green;
+        //                 driverStatusText = "Online ";
+        //                 isDriverAvailable = true;
+        //               });
+        //               displayToast("you are Online Now.", context);
+        //             } else {
+        //               makeDriverOfflineNow();
+        //
+        //               setState(() {
+        //                 driverStatusColor = Colors.white70;
+        //                 driverStatusText = "Offline ";
+        //                 isDriverAvailable = false;
+        //               });
+        //
+        //               displayToast("you are offline Now.", context);
+        //             }
+        //           });
+        //         },
+        //         color: driverStatusColor,
+        //         child: Padding(
+        //           padding: EdgeInsets.all(12.0),
+        //           child: Row(
+        //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //             children: [
+        //               Text(
+        //                 driverStatusText,
+        //                 style: TextStyle(
+        //                     fontSize: 20.0,
+        //                     fontWeight: FontWeight.bold,
+        //                     color: Colors.black),
+        //               ),
+        //               Icon(
+        //                 Icons.online_prediction,
+        //                 color: Colors.black,
+        //                 size: 26.0,
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //       ),
+        //     )
+        //   ]),
+        // ),
+        //  Column(children: [
+        //   SizedBox(
+        //     height: 30,
+        //   ),
+        //
+        //
+        //   Column(
+        //     children: [
+        //       Padding(
+        //         padding: EdgeInsets.only(top: 16.0,left:70.0,right:20.0),
+        //         child: Switch(
+        //           value: isSwitched,
+        //
+        //           onChanged: (value) async {
+        //             currentfirebaseUser =
+        //             await FirebaseAuth.instance.currentUser;
+        //
+        //
+        //             if (isSwitched == false) {
+        //               makeArtisanOnlineNow();
+        //               getLocationLiveUpdates();
+        //
+        //               setState(() {
+        //                 isSwitched = true;
+        //               });
+        //               displayToast(" Online .", context);
+        //             } else {
+        //               makeArtisanOfflineNow();
+        //
+        //               setState(() {
+        //                 isSwitched = false;
+        //
+        //                 ArtisanStatusColor = Colors.white70;
+        //                 ArtisanStatusText = "Offline ";
+        //                 isArtisanAvailable = false;
+        //               });
+        //
+        //               displayToast("offline .", context);
+        //             };
+        //
+        //           },
+        //
+        //           activeTrackColor: Colors.black38,
+        //           activeColor: Colors.black,
+        //
+        //           // child: Padding(
+        //           //   padding: EdgeInsets.all(12.0),
+        //           //   child: Row(
+        //           //     mainAxisAlignment:
+        //           //     MainAxisAlignment.spaceBetween,
+        //           //     children: [
+        //           //       Text(
+        //           //         HandyManStatusText,
+        //           //         style: TextStyle(
+        //           //             fontSize: 20.0,
+        //           //             fontWeight: FontWeight.bold,
+        //           //             color: Colors.black),
+        //           //       ),
+        //           //       Icon(
+        //           //         Icons.online_prediction,
+        //           //         color: Colors.black,
+        //           //         size: 26.0,
+        //           //       ),
+        //           //     ],
+        //           //   ),
+        //           // ),
+        //         ),
+        //       ),
+        //
+        //     ],
+        //   ),
+        //
+        //
+        // ])
+      ],);
 
       // bottomNavigationBar: (),
-    );
+
   }
   void makeArtisanOnlineNow() async {
     Position position = await Geolocator.getCurrentPosition(
@@ -268,7 +412,7 @@ class _homepageState extends State<homepage> {
       "service_type" :Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Service!,
       "client_phone"  :Provider.of<Users>(context,listen:false).userInfo!.phone!,
       "Experience" :Provider.of<otherUsermodel>(context,listen: false).otherinfo!.Experience!,
-      "Institution": Provider.of<otherUsermodel>(context,listen: false).otherinfo!.Institution!,
+      // "Institution": Provider.of<otherUsermodel>(context,listen: false).otherinfo!.Institution!,
       "email":Provider.of<Users>(context,listen:false).userInfo!.email!,
       "Education":  Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Education!,
       "Description": Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Description!,
@@ -276,7 +420,7 @@ class _homepageState extends State<homepage> {
 
     };
     RiderRequestRef.set("searching");
-    Geofire.initialize("availableArtisans");
+    Geofire.initialize("availableRider");
     Geofire.setLocation(
       currentfirebaseUser!.uid,
       currentPosition!.latitude,
@@ -287,20 +431,7 @@ class _homepageState extends State<homepage> {
     RiderRequestRef.onValue.listen((event) {});
   }
 
-  void getLocationLiveUpdates() {
-    homeTabPageStreamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
-          currentPosition = position;
 
-          if (isArtisanAvailable == true) {
-            Geofire.setLocation(
-                currentfirebaseUser!.uid, position.latitude, position.longitude);
-          }
-
-          // LatLng latLng = LatLng(position.latitude, position.longitude);
-          // newGoogleMapController.animateCamera(CameraUpdate.newLatLng(latLng));
-        });
-  }
 
   Future<void> ArtisanActivated() async {
     Geofire.removeLocation(currentfirebaseUser!.uid);

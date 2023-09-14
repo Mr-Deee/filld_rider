@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 
 class Ride_r extends ChangeNotifier
 {
-  String ?name;
+  String ?firstname;
+  String ?lastname;
   String ?phone;
   String ?email;
   String ?id;
@@ -12,16 +13,17 @@ class Ride_r extends ChangeNotifier
   String ?plate_number;
   String ?profilepicture;
 
-  Ride_r({this.name, this.phone, this.email, this.id, this.servicetype, this.education, this.plate_number, this.profilepicture,});
+  Ride_r({this.firstname, this.lastname,this.phone, this.email, this.id, this.servicetype, this.education, this.plate_number, this.profilepicture,});
 
   Ride_r.fromSnapshot(DataSnapshot dataSnapshot) {
     final data = Map<String, dynamic>.from((dataSnapshot).value as Map);
 
 
       id= data['uid'];
-      phone= data["phone"];
+      phone= data["phoneNumber"];
       email= data["email"];
-      name= data["name"];
+      firstname= data["FirstName"];
+    lastname= data["LastName"];
      // profilepicture= data["profilepicture"].toString();
     servicetype= data["Service Type"];
     education= data["Education Background"];

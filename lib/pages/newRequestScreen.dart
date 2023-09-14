@@ -437,7 +437,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     clientRequestRef
         .child(rideRequestId)
         .child("artisan_name")
-        .set(riderinformation?.name);
+        .set(riderinformation?.firstname);
     clientRequestRef
         .child(rideRequestId)
         .child("artisan_phone")

@@ -15,7 +15,7 @@ class Riderdetails extends StatefulWidget {
 
 class _RiderdetailsState extends State<Riderdetails> {
   final DatabaseReference databaseReference =
-  FirebaseDatabase.instance.reference().child('users');
+  FirebaseDatabase.instance.reference().child('Riders');
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _imagePicker = ImagePicker();
 
@@ -51,7 +51,7 @@ class _RiderdetailsState extends State<Riderdetails> {
     final Map<String, dynamic> profileData = {
       'riderImageUrl': riderImageUrl,
       'licenseImageUrl': licenseImageUrl,
-      'insuranceImageUrl': insuranceImageUrl,
+      // 'insuranceImageUrl': insuranceImageUrl,
       'numberPlate': _numberPlate,
       'motorType': _motorType,
       'licensePlateNumber': _licensePlateNumber,
@@ -130,21 +130,51 @@ class _RiderdetailsState extends State<Riderdetails> {
   Widget _buildImagePicker({required String title, required Function(File) setImage}) {
     return Column(
       children: <Widget>[
-        Text(title),
+        Text("ProfileImage",style: TextStyle(fontWeight: FontWeight.bold),),
         SizedBox(height: 8),
-        _buildImagePreview(setImage),
+
+        CircleAvatar(
+          radius: 50, // Adjust the radius as needed
+          backgroundColor: Colors.blue, // Background color of the avatar
+          child: _riderImage != null
+              ? ClipOval(
+            child: Image.file(
+              _riderImage!,
+              width: 100, // Adjust the width as needed
+              height: 100, // Adjust the height as needed
+              fit: BoxFit.cover, // Adjust the BoxFit as needed
+            ),
+          )
+              : GestureDetector(
+    onTap: () {
+        _pickImage(ImageSource.gallery, setImage);
+      },
+
+                child: ClipOval(
+            child: Image.asset(
+                "assets/images/profile-image.png",
+                width: 100, // Adjust the width as needed
+                height: 100, // Adjust the height as needed
+                fit: BoxFit.cover, // Adjust the BoxFit as needed
+            ),
+          ),
+              ),
+        ),
+        SizedBox(height: 10),
+
+        // _buildImagePreview(setImage),
         // ElevatedButton(
         //   onPressed: () {
         //     _pickImage(ImageSource.gallery, setImage);
         //   },
         //   child: Text('Pick from Gallery'),
         // ),
-        ElevatedButton(
-          onPressed: () {
-            _pickImage(ImageSource.camera, setImage);
-          },
-          child: Text('Take a Photo'),
-        ),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     _pickImage(ImageSource.camera, setImage);
+        //   },
+        //   child: Text('Take a Photo'),
+        // ),
       ],
     );
   }

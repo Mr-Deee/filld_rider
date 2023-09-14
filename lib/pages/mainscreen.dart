@@ -2,6 +2,9 @@
 import 'package:filld_rider/pages/homepage.dart';
 import 'package:flutter/material.dart';
 
+import 'ProfileTab.dart';
+import 'earningsTabPage.dart';
+
 class MainScreen extends StatefulWidget {
   static const String idScreen = "mainScreen";
 
@@ -50,9 +53,9 @@ class _MainScreenState extends State<MainScreen>
 
         children: [
           homepage(),
-          // EarningsTabPage(),
+          EarningsTabPage(),
           // RatingTabPage(),
-          // ProfileTabPage(),
+           ProfileTabPage(),
         ],
 
       ),

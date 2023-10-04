@@ -250,6 +250,7 @@ class _homepageState extends State<homepage> {
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: driverStatusColor,
                 shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(24.0),
                 )),
@@ -407,7 +408,7 @@ class _homepageState extends State<homepage> {
     currentPosition = position;
 
 
-    Map<String, dynamic> artisanMap = {
+    Map<String, dynamic> riderMap = {
       "Profilepicture": Provider.of<Users>(context, listen:false).userInfo!.profilepicture!,
       "client_name" :  Provider.of<Users>(context, listen:false).userInfo!.firstname!  +   Provider.of<Users>(context, listen:false).userInfo!.lastname!,
       "FirstName":Provider.of<Users>(context, listen:false).userInfo!.firstname!,
@@ -429,7 +430,7 @@ class _homepageState extends State<homepage> {
       currentPosition!.latitude,
       currentPosition!.longitude,
     );
-    await availableRider.update(artisanMap);
+    await availableRider.update(riderMap);
 
     RiderRequestRef.onValue.listen((event) {});
   }

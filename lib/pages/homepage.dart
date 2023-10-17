@@ -33,12 +33,15 @@ class homepage extends StatefulWidget {
 class _homepageState extends State<homepage> {
 
   String? currentSelectedValue;
-  List<String> cylindertype = ["5kg", "9kg", "  12kg"];
-  final _cylindertype = TextEditingController();
-  final _emailController = TextEditingController();
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
   final location = TextEditingController();
-  final _passwordController = TextEditingController();
-  TextEditingController _locationController = TextEditingController();
+
+  @override
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
 
   GoogleMapController? newGoogleMapController;
@@ -60,20 +63,7 @@ class _homepageState extends State<homepage> {
   Color ArtisanStatusColor = Colors.white70;
   bool isArtisanAvailable = false;
   bool isArtisanActivated = false;
-  getartisanType() {
-    RiderRequestRef
-        .child(currentfirebaseUser!.uid)
-        .child("service_type")
-        .once()
-        .then((value) {
-      if (value != null) {
-        print("Info got");
-        setState(() {
-          rideType = value.toString();
-        });
-      }
-    });
-  }
+
 
   @override
   void initState() {
@@ -89,42 +79,46 @@ class _homepageState extends State<homepage> {
     //getPicture();
     // _checkGps();
     _requestLocationPermission();
-    requestLocationPermission();
+    getCurrentArtisanInfo();
+    // requestLocationPermission();
     AssistantMethod.getCurrentrequestinfo(context);
     AssistantMethod.obtainTripRequestsHistoryData(context);
-    getCurrentArtisanInfo();
 
-  }  void _getCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation,
-      );
-      // List<Placemark> placemarks = await placemarkFromCoordinates(
-      //   position.latitude,
-      //   position.longitude,
-      // );
-      List<Placemark> placemarks = await GeocodingPlatform.instance
-          .placemarkFromCoordinates(position.latitude, position.longitude,
-          localeIdentifier: "en");
-      if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[0];
-        String placeName = placemark.name ?? ''; // Name of the place
-        String locality = placemark.locality ?? ''; // City or locality
-        String administrativeArea =
-            placemark.administrativeArea ?? ''; // State or region
 
-        String fullAddress = '$placeName, $locality, $administrativeArea';
-
-        setState(() {
-          _currentPosition = position;
-          _locationController.text = fullAddress;
-        });
-      }
-    } catch (e) {
-      print('Error fetching location: $e');
-      _getCurrentLocation();
-    }
   }
+
+
+  // void _getCurrentLocation() async {
+  //   try {
+  //     Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.bestForNavigation,
+  //     );
+  //     // List<Placemark> placemarks = await placemarkFromCoordinates(
+  //     //   position.latitude,
+  //     //   position.longitude,
+  //     // );
+  //     List<Placemark> placemarks = await GeocodingPlatform.instance
+  //         .placemarkFromCoordinates(position.latitude, position.longitude,
+  //         localeIdentifier: "en");
+  //     if (placemarks.isNotEmpty) {
+  //       Placemark placemark = placemarks[0];
+  //       String placeName = placemark.name ?? ''; // Name of the place
+  //       String locality = placemark.locality ?? ''; // City or locality
+  //       String administrativeArea =
+  //           placemark.administrativeArea ?? ''; // State or region
+  //
+  //       String fullAddress = '$placeName, $locality, $administrativeArea';
+  //
+  //       setState(() {
+  //         _currentPosition = position;
+  //         _locationController.text = fullAddress;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching location: $e');
+  //     _getCurrentLocation();
+  //   }
+  // }
 
 
   // Future _checkGps() async {
@@ -136,7 +130,7 @@ class _homepageState extends State<homepage> {
     var status = await Permission.location.request();
     if (status.isGranted) {
       // Location permission is granted, you can now access the location.
-      _getCurrentLocation();
+      // _getCurrentLocation();
     } else if (status.isDenied) {
       // Permission has been denied, show a snackbar or dialog to inform the user.
       // You can also open the device settings to allow the permission manually.
@@ -173,24 +167,39 @@ class _homepageState extends State<homepage> {
     newGoogleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
-  Future<void> requestLocationPermission() async {
-    final serviceStatusLocation = await Permission.locationWhenInUse.isGranted;
+  // Future<void> requestLocationPermission() async {
+  //   final serviceStatusLocation = await Permission.locationWhenInUse.isGranted;
+  //
+  //   bool isLocation =
+  //       serviceStatusLocation == Permission.location.serviceStatus.isEnabled;
+  //
+  //   final status = await Permission.locationWhenInUse.request();
+  //
+  //   if (status == PermissionStatus.granted) {
+  //     print('Permission Granted');
+  //   } else if (status == PermissionStatus.denied) {
+  //     print('Permission denied');
+  //   } else if (status == PermissionStatus.permanentlyDenied) {
+  //     print('Permission Permanently Denied');
+  //     await openAppSettings();
+  //   }
+  // }
 
-    bool isLocation =
-        serviceStatusLocation == Permission.location.serviceStatus.isEnabled;
-
-    final status = await Permission.locationWhenInUse.request();
-
-    if (status == PermissionStatus.granted) {
-      print('Permission Granted');
-    } else if (status == PermissionStatus.denied) {
-      print('Permission denied');
-    } else if (status == PermissionStatus.permanentlyDenied) {
-      print('Permission Permanently Denied');
-      await openAppSettings();
-    }
-  }
-
+  // getRideType() {
+  //   Ridersdb
+  //       .child(currentfirebaseUser!.uid)
+  //       .child("car_details")
+  //       .child("type")
+  //       .once()
+  //       .then((value) {
+  //     if (value != null) {
+  //       print("Info got");
+  //       setState(() {
+  //         rideType = value.toString();
+  //       });
+  //     }
+  //   });
+  // }
 
 
   getCurrentArtisanInfo() async {
@@ -210,9 +219,9 @@ class _homepageState extends State<homepage> {
     pushNotificationService.initialize(context);
     pushNotificationService.getToken();
 
-    // AssistantMethod.retrieveHistoryInfo(context);
+    AssistantMethod.retrieveHistoryInfo(context);
     //getRatings();
-    getartisanType();
+    // getRideType();
   }
 
   bool isSwitched = false;
@@ -325,74 +334,7 @@ class _homepageState extends State<homepage> {
           SizedBox(
             height: 30,
           ),
-        //
-        //
-        //   Column(
-        //     children: [
-        //       Padding(
-        //         padding: EdgeInsets.only(top: 16.0,left:70.0,right:20.0),
-        //         child: Switch(
-        //           value: isSwitched,
-        //
-        //           onChanged: (value) async {
-        //             currentfirebaseUser =
-        //             await FirebaseAuth.instance.currentUser;
-        //
-        //
-        //             if (isSwitched == false) {
-        //               makeArtisanOnlineNow();
-        //               getLocationLiveUpdates();
-        //
-        //               setState(() {
-        //                 isSwitched = true;
-        //               });
-        //               displayToast(" Online .", context);
-        //             } else {
-        //               makeArtisanOfflineNow();
-        //
-        //               setState(() {
-        //                 isSwitched = false;
-        //
-        //                 ArtisanStatusColor = Colors.white70;
-        //                 ArtisanStatusText = "Offline ";
-        //                 isArtisanAvailable = false;
-        //               });
-        //
-        //               displayToast("offline .", context);
-        //             };
-        //
-        //           },
-        //
-        //           activeTrackColor: Colors.black38,
-        //           activeColor: Colors.black,
-        //
-        //           // child: Padding(
-        //           //   padding: EdgeInsets.all(12.0),
-        //           //   child: Row(
-        //           //     mainAxisAlignment:
-        //           //     MainAxisAlignment.spaceBetween,
-        //           //     children: [
-        //           //       Text(
-        //           //         HandyManStatusText,
-        //           //         style: TextStyle(
-        //           //             fontSize: 20.0,
-        //           //             fontWeight: FontWeight.bold,
-        //           //             color: Colors.black),
-        //           //       ),
-        //           //       Icon(
-        //           //         Icons.online_prediction,
-        //           //         color: Colors.black,
-        //           //         size: 26.0,
-        //           //       ),
-        //           //     ],
-        //           //   ),
-        //           // ),
-        //         ),
-        //       ),
-        //
-        //     ],
-        //   ),
-        //
+
         //
         // ])
       ],)]);
@@ -407,22 +349,6 @@ class _homepageState extends State<homepage> {
         desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
 
-
-    Map<String, dynamic> riderMap = {
-      "Profilepicture": Provider.of<Users>(context, listen:false).userInfo!.profilepicture!,
-      "client_name" :  Provider.of<Users>(context, listen:false).userInfo!.firstname!  +   Provider.of<Users>(context, listen:false).userInfo!.lastname!,
-      "FirstName":Provider.of<Users>(context, listen:false).userInfo!.firstname!,
-      "LastName":Provider.of<Users>(context, listen:false).userInfo!.lastname!,
-      "service_type" :Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Service!,
-      "client_phone"  :Provider.of<Users>(context,listen:false).userInfo!.phone!,
-      "Experience" :Provider.of<otherUsermodel>(context,listen: false).otherinfo!.Experience!,
-      // "Institution": Provider.of<otherUsermodel>(context,listen: false).otherinfo!.Institution!,
-      "email":Provider.of<Users>(context,listen:false).userInfo!.email!,
-      "Education":  Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Education!,
-      "Description": Provider.of<otherUsermodel>(context,listen:false).otherinfo!.Description!,
-      "Location":Provider.of<otherUsermodel>(context,listen: false).otherinfo!.location??"",
-
-    };
     RiderRequestRef.set("searching");
     Geofire.initialize("availableRider");
     Geofire.setLocation(
@@ -430,8 +356,8 @@ class _homepageState extends State<homepage> {
       currentPosition!.latitude,
       currentPosition!.longitude,
     );
-    await availableRider.update(riderMap);
-
+    // await availableRider.update(riderMap);
+    RiderRequestRef.set("Searching");
     RiderRequestRef.onValue.listen((event) {});
   }
 
@@ -449,9 +375,7 @@ class _homepageState extends State<homepage> {
     Geofire.removeLocation(currentfirebaseUser!.uid);
     RiderRequestRef.onDisconnect();
     RiderRequestRef.remove();
-    //rideRequestRef= null;
-    //return makeDriverOnlineNow();
-    // _restartApp();
+
   }
 }
 

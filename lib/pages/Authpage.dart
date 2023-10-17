@@ -1,3 +1,4 @@
+import 'package:filld_rider/pages/riderdetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,8 +13,11 @@ import '../main.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'Onetimepassword.dart';
 import 'homepage.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart';
 import 'mainscreen.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 class AuthPage extends StatefulWidget {
 
   @override
@@ -23,6 +27,8 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   bool _isSignIn = true;
 
+
+  TextEditingController _locationController = TextEditingController();
 
 
 
@@ -348,6 +354,7 @@ class _SignUpFormState extends State<SignUpForm> {
     // TODO: implement initState
     super.initState();
     requestSmsPermission();
+    _requestLocationPermission();
 
   }
 
@@ -359,6 +366,61 @@ class _SignUpFormState extends State<SignUpForm> {
 
 
   final Random random = Random();
+
+
+  void _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
+      );
+      // List<Placemark> placemarks = await placemarkFromCoordinates(
+      //   position.latitude,
+      //   position.longitude,
+      // );
+      List<Placemark> placemarks = await GeocodingPlatform.instance
+          .placemarkFromCoordinates(position.latitude, position.longitude,
+          localeIdentifier: "en");
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+        String placeName = placemark.name ?? ''; // Name of the place
+        String locality = placemark.locality ?? ''; // City or locality
+        String administrativeArea =
+            placemark.administrativeArea ?? ''; // State or region
+
+        String fullAddress = '$placeName, $locality, $administrativeArea';
+
+        setState(() {
+          // _currentPosition = position;
+          // _locationController.text = fullAddress;
+        });
+      }
+    } catch (e) {
+      print('Error fetching location: $e');
+      _getCurrentLocation();
+    }
+  }
+
+
+  // Future _checkGps() async {
+  //   if (!await location.serviceEnabled()) {
+  //     location.requestService();
+  //   }
+  // }
+  void _requestLocationPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      // Location permission is granted, you can now access the location.
+      _getCurrentLocation();
+    } else if (status.isDenied) {
+      // Permission has been denied, show a snackbar or dialog to inform the user.
+      // You can also open the device settings to allow the permission manually.
+      openAppSettings();
+    } else if (status.isPermanentlyDenied) {
+      // The user has permanently denied the permission. You may show a dialog
+      // with a link to the app settings.
+    }
+  }
+  //Request permission On signup
   void requestSmsPermission() async {
     if (await Permission.sms.request().isGranted) {
       // You have the SEND_SMS permission.
@@ -377,7 +439,7 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
 
-
+//SendVerififcation
   void sendVerificationCode() {
     final int verificationCode = random.nextInt(900000) + 100000;
     final String message = 'Your verification code is: $verificationCode';
@@ -566,12 +628,19 @@ class _SignUpFormState extends State<SignUpForm> {
         currentfirebaseUser = firebaseUser;
         // registerInfirestore(context);
 
-        sendVerificationCode();
-        Navigator.push(
+        // sendVerificationCode();
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) =>
+        //         OtpVerificationScreen(verificationId: verificationId),
+        //   ),
+        //
+          Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) =>
-                OtpVerificationScreen(verificationId: verificationId),
+            Riderdetails(),
           ),
         );
       } else {

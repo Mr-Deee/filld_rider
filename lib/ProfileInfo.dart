@@ -32,14 +32,14 @@ class ProfileInfo extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title!,
+                    title??"",
                     style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
                   ),
                   SizedBox(
                     height: 5.0,
                   ),
                   Text(
-                    subtitle!,
+                    subtitle??"",
                     style: TextStyle(fontSize: 14.0),
                   ),
                 ],

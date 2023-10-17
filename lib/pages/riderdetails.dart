@@ -26,6 +26,7 @@ class _RiderdetailsState extends State<Riderdetails> {
   String _numberPlate = '';
   String _motorType = '';
   String _licensePlateNumber = '';
+  String motorcolor = '';
 
   Future<void> _pickImage(ImageSource source, Function(File) setImage) async {
     final pickedFile = await _imagePicker.getImage(source: source);
@@ -50,14 +51,15 @@ class _RiderdetailsState extends State<Riderdetails> {
     // Create a map of user data to update in the Realtime Database
     final Map<String, dynamic> profileData = {
       'riderImageUrl': riderImageUrl,
-      'licenseImageUrl': licenseImageUrl,
+      // 'licenseImageUrl': licenseImageUrl,
+      'Motor-Color': motorcolor,
       // 'insuranceImageUrl': insuranceImageUrl,
-      'numberPlate': _numberPlate,
+      // 'numberPlate': _numberPlate,
       'motorType': _motorType,
       'licensePlateNumber': _licensePlateNumber,
     };
 
-    await databaseReference.child(currentUser.uid).update(profileData);
+    await databaseReference.child(currentUser.uid).child("car_details").update(profileData);
 
     // Profile updated successfully
     // You can navigate to a different screen or show a success message
@@ -106,6 +108,14 @@ class _RiderdetailsState extends State<Riderdetails> {
               onChanged: (value) {
                 setState(() {
                   _motorType = value;
+                });
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(labelText: 'Motor-Color'),
+              onChanged: (value) {
+                setState(() {
+                  motorcolor = value;
                 });
               },
             ),

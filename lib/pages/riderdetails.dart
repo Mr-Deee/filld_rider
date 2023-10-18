@@ -53,6 +53,7 @@ class _RiderdetailsState extends State<Riderdetails> {
       'riderImageUrl': riderImageUrl,
       // 'licenseImageUrl': licenseImageUrl,
       'Motor-Color': motorcolor,
+      'type': "bike",
       // 'insuranceImageUrl': insuranceImageUrl,
       // 'numberPlate': _numberPlate,
       'motorType': _motorType,

@@ -23,9 +23,10 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 class homepage extends StatefulWidget {
   const homepage({Key? key}) : super(key: key);
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    target: LatLng (5.614818, -0.205874),
+    zoom: 24.4746,
   );
+
   @override
   State<homepage> createState() => _homepageState();
 }
@@ -34,10 +35,6 @@ class _homepageState extends State<homepage> {
 
   String? currentSelectedValue;
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
 
   final location = TextEditingController();
 
@@ -55,15 +52,14 @@ class _homepageState extends State<homepage> {
   bool isDriverAvailable = false;
   bool isDriverActivated = false;
 
-
+  Set<Marker> markersSet = {};
   Position? _currentPosition;
   String? _currentAddress;
   String ArtisanStatusText = "Go Online ";
 
   Color ArtisanStatusColor = Colors.white70;
-  bool isArtisanAvailable = false;
-  bool isArtisanActivated = false;
 
+  double bottomPaddingOfMap = 0;
 
   @override
   void initState() {
@@ -141,6 +137,8 @@ class _homepageState extends State<homepage> {
     }
   }
   void getLocationLiveUpdates() {
+    double previousLatitude = 0.0;
+    double previousLongitude = 0.0;
     homeTabPageStreamSubscription =
         Geolocator.getPositionStream().listen((Position position) {
           currentPosition = position;
@@ -149,15 +147,22 @@ class _homepageState extends State<homepage> {
             Geofire.setLocation(
                 currentfirebaseUser!.uid, position.latitude, position.longitude);
           }
+          if (position.latitude != previousLatitude || position.longitude != previousLongitude) {
+            LatLng latLng = LatLng(position.latitude, position.longitude);
+            newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
 
-          LatLng latLng = LatLng(position.latitude, position.longitude);
-          newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+            // Update the previous latitude and longitude for future comparisons
+            previousLatitude = position.latitude;
+            previousLongitude = position.longitude;
+          }
+          // LatLng latLng = LatLng(position.latitude, position.longitude);
+          // newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
         });
   }
 
   void locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
     currentPosition = position;
 
     LatLng latLatPosition = LatLng(position.latitude, position.longitude);
@@ -235,10 +240,13 @@ class _homepageState extends State<homepage> {
           myLocationButtonEnabled: true,
           initialCameraPosition: homepage._kGooglePlex,
           myLocationEnabled: true,
+          // markers: markersSet,
           onMapCreated: (GoogleMapController controller) {
             _controllerGoogleMap.complete(controller);
             newGoogleMapController = controller;
-
+            // setState(() {
+            //   bottomPaddingOfMap = 0.0;
+            // });
             locatePosition();
           },
         ),

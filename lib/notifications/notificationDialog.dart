@@ -36,7 +36,7 @@ class NotificationDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 10.0),
-            Image.asset("assets/images/glass3.png", width: 150.0,),
+            Image.asset("assets/images/delivery-with-white-background-2.png", width: 150.0,),
             SizedBox(height: 0.0,),
             Text("New Delivery Request", style: TextStyle(fontFamily: "Brand Bold", fontSize: 20.0,color: Colors.black),),
             SizedBox(height: 20.0),
@@ -49,7 +49,7 @@ class NotificationDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //Text("Pick Up", style: TextStyle(fontSize: 20.0,color: Colors.black),),
-                   Image.asset("assets/images/glass3.png", height: 16.0, width: 16.0,),
+                   Image.asset("assets/images/pickup.png", height: 16.0, width: 16.0,),
                       SizedBox(width: 20.0,),
                      Expanded(child: Container(
                          child:  Container(child: Text(clientDetails?.pickup_address??"", style: TextStyle(fontSize: 18.0,color: Colors.black), )),
@@ -62,7 +62,7 @@ class NotificationDialog extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  // Image.asset("images/desticon.png", height: 16.0, width: 16.0,),
+                  Image.asset("images/location.png", height: 16.0, width: 16.0,),
                       SizedBox(width: 20.0,),
 
                       Expanded(

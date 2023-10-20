@@ -17,7 +17,7 @@ import '../main.dart';
 import '../progressDialog.dart';
 
 class NewRequestScreen extends StatefulWidget {
-  final Clientdetails clientDetails;
+  final ClientDetails clientDetails;
 
   NewRequestScreen({required this.clientDetails});
 
@@ -111,7 +111,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       oldPos = mPostion;
       updateRideDetails();
 
-      String? rideRequestId = widget.clientDetails.artisan_request_id;
+      String? rideRequestId = widget.clientDetails.ride_request_id;
       Map locMap = {
         "latitude": currentPosition?.latitude.toString(),
         "longitude": currentPosition?.longitude.toString(),
@@ -222,7 +222,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                             Expanded(
                               child: Container(
                                 child: Text(
-                                  widget.clientDetails.client_Address ?? "",
+                                  widget.clientDetails.pickup_address ?? "",
                                   style: TextStyle(fontSize: 18.0),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -244,7 +244,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                 if (status == "accepted") {
                                   status = "arrived";
                                   String? rideRequestId =
-                                      widget.clientDetails.artisan_request_id;
+                                      widget.clientDetails.ride_request_id;
                                   clientRequestRef
                                       .child(rideRequestId!)
                                       .child("status")
@@ -272,7 +272,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                 } else if (status == "arrived") {
                                   status = "onride";
                                   String? rideRequestId =
-                                      widget.clientDetails.artisan_request_id;
+                                      widget.clientDetails.ride_request_id;
                                   clientRequestRef
                                       .child(rideRequestId!)
                                       .child("status")
@@ -430,42 +430,69 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       circleSet.add(dropOffLocCircle);
     });
   }
-
   void acceptRideRequest() {
-    String? rideRequestId = widget.clientDetails.artisan_request_id;
+    String? rideRequestId = widget.clientDetails.ride_request_id;
     clientRequestRef.child(rideRequestId!).child("status").set("accepted");
-    clientRequestRef
-        .child(rideRequestId)
-        .child("artisan_name")
-        .set(riderinformation?.firstname);
-    clientRequestRef
-        .child(rideRequestId)
-        .child("artisan_phone")
-        .set(riderinformation?.phone);
-    clientRequestRef
-        .child(rideRequestId)
-        .child("artisan_id")
-        .set(riderinformation?.id);
-    clientRequestRef.child(rideRequestId).child("artisan_details").set(
-        '${riderinformation?.education} ● ${riderinformation?.servicetype} ● ${riderinformation?.phone}');
+    clientRequestRef.child(rideRequestId).child("driver_name").set(
+        riderinformation?.firstname);
+    clientRequestRef.child(rideRequestId!).child("driver_phone").set(
+        riderinformation?.phone);
+    clientRequestRef.child(rideRequestId).child("driver_id").set(
+        riderinformation?.id);
+    clientRequestRef.child(rideRequestId).child("car_details").set(
+        ' ●  ● ${riderinformation?.plate_number}'
+    );
 
-    clientRequestRef
-        .child(rideRequestId)
-        .child("profilepicture")
-        .set(riderinformation?.profilepicture);
 
-    Map locMap = {
+    clientRequestRef.child(rideRequestId).child("profilepicture").set(
+        riderinformation?.profilepicture);
+
+
+    Map locMap =
+    {
       "latitude": currentPosition?.latitude.toString(),
       "longitude": currentPosition?.longitude.toString(),
     };
-    clientRequestRef.child(rideRequestId).child("artisan_location").set(locMap);
+    clientRequestRef.child(rideRequestId).child("driver_location").set(locMap);
 
-      RiderRequestRef
-        .child(currentfirebaseUser!.uid)
-        .child("history")
-        .child(rideRequestId)
-        .set(true);
+    RiderRequestRef.child(currentfirebaseUser!.uid).child("history").child(
+        rideRequestId).set(true);
   }
+  // void acceptRideRequest() {
+  //   String? rideRequestId = widget.clientDetails.ride_request_id;
+  //   clientRequestRef.child(rideRequestId!).child("status").set("accepted");
+  //   clientRequestRef
+  //       .child(rideRequestId)
+  //       .child("artisan_name")
+  //       .set(riderinformation?.firstname);
+  //   clientRequestRef
+  //       .child(rideRequestId)
+  //       .child("artisan_phone")
+  //       .set(riderinformation?.phone);
+  //   clientRequestRef
+  //       .child(rideRequestId)
+  //       .child("artisan_id")
+  //       .set(riderinformation?.id);
+  //   clientRequestRef.child(rideRequestId).child("artisan_details").set(
+  //       '${riderinformation?.education} ● ${riderinformation?.servicetype} ● ${riderinformation?.phone}');
+  //
+  //   clientRequestRef
+  //       .child(rideRequestId)
+  //       .child("profilepicture")
+  //       .set(riderinformation?.profilepicture);
+  //
+  //   Map locMap = {
+  //     "latitude": currentPosition?.latitude.toString(),
+  //     "longitude": currentPosition?.longitude.toString(),
+  //   };
+  //   clientRequestRef.child(rideRequestId).child("artisan_location").set(locMap);
+  //
+  //     RiderRequestRef
+  //       .child(currentfirebaseUser!.uid)
+  //       .child("history")
+  //       .child(rideRequestId)
+  //       .set(true);
+  // }
 
   void updateRideDetails() async {
     if (isRequestingDirection == false) {
@@ -524,7 +551,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
     int fareAmount = AssistantMethod.calculateFares(directionalDetails!);
 
-    String? rideRequestId = widget.clientDetails.artisan_request_id;
+    String? rideRequestId = widget.clientDetails.ride_request_id;
     clientRequestRef
         .child(rideRequestId!)
         .child("fares")

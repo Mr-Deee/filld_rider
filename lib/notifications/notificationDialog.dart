@@ -13,7 +13,7 @@ class NotificationDialog extends StatelessWidget {
   //final assetsAudioPlayer =AssetsAudioPlayer();
 
 
-  final Clientdetails? clientDetails;
+  final ClientDetails? clientDetails;
   NotificationDialog({this.clientDetails});
 
 
@@ -36,9 +36,9 @@ class NotificationDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 10.0),
-            Image.asset("assets/images/tools.png", width: 150.0,),
+            Image.asset("assets/images/glass3.png", width: 150.0,),
             SizedBox(height: 0.0,),
-            Text("New Artisan Request", style: TextStyle(fontFamily: "Brand Bold", fontSize: 20.0,color: Colors.black),),
+            Text("New Delivery Request", style: TextStyle(fontFamily: "Brand Bold", fontSize: 20.0,color: Colors.black),),
             SizedBox(height: 20.0),
             Padding(
               padding: EdgeInsets.all(18.0),
@@ -49,10 +49,10 @@ class NotificationDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //Text("Pick Up", style: TextStyle(fontSize: 20.0,color: Colors.black),),
-                   Image.asset("assets/images/tools.png", height: 16.0, width: 16.0,),
+                   Image.asset("assets/images/glass3.png", height: 16.0, width: 16.0,),
                       SizedBox(width: 20.0,),
                      Expanded(child: Container(
-                         child:  Container(child: Text(clientDetails!.client_Address??"", style: TextStyle(fontSize: 18.0,color: Colors.black), )),
+                         child:  Container(child: Text(clientDetails?.pickup_address??"", style: TextStyle(fontSize: 18.0,color: Colors.black), )),
                          //Text("Artisan Address", style: TextStyle(fontSize: 18.0,color: Colors.black), )),
                      ),
                      ) ],
@@ -66,7 +66,7 @@ class NotificationDialog extends StatelessWidget {
                       SizedBox(width: 20.0,),
 
                       Expanded(
-                          child: Container(child: Text(clientDetails!.finalClient_address??"", style: TextStyle(fontSize: 18.0,color: Colors.black), )),
+                          child: Container(child: Text(clientDetails?.dropoff_address??"", style: TextStyle(fontSize: 18.0,color: Colors.black), )),
 
                           //Container(child: Text("Client Address", style: TextStyle(fontSize: 18.0,color: Colors.black38),))
                       ),
@@ -154,7 +154,7 @@ class NotificationDialog extends StatelessWidget {
       }
 
 
-      if(theRideId == clientDetails?.artisan_request_id)
+      if(theRideId == clientDetails?.ride_request_id)
       {
         RiderRequestRef.set("accepted");
         AssistantMethod.disableHomeTabLiveLocationUpdates();

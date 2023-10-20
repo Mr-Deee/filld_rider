@@ -57,7 +57,7 @@ class PushNotificationService {
     String? token = await messaging.getToken();
     print("This is token :: ");
     print(token);
-    RiderRequestRef.child(currentfirebaseUser!.uid).child("token").set(token);
+    Ridersdb.child(currentfirebaseUser!.uid).child("token").set(token);
     print("JUST GOT IT");
     messaging.subscribeToTopic("alldrivers");
     messaging.subscribeToTopic("allusers");
@@ -80,8 +80,8 @@ class PushNotificationService {
     return rideRequestId;
   }
 
-  void retrieveRideRequestInfo(String artisanRequestId, BuildContext context) {
-    clientRequestRef.child(artisanRequestId).once().then((event) {
+  void retrieveRideRequestInfo(String rideRequestId, BuildContext context) {
+    clientRequestRef.child(rideRequestId).once().then((event) {
       final map = event.snapshot.value as Map<dynamic,dynamic>;
       // var dataSnapshot = value.snapshot;
       // final map = dataSnapshot.value as Map<dynamic, dynamic>;
@@ -91,37 +91,36 @@ class PushNotificationService {
         //assetsAudioPlayer.play();
 
         double pickUpLocationLat = double.parse(
-            map['client_Coordinates']['latitude'].toString());
+            map['pickup']['latitude'].toString());
         double pickUpLocationLng = double.parse(
-            map['client_Coordinates']['longitude'].toString());
-       String clientAddress = map['Client_address'].toString();
-        // String artisanAddress= map["artisan_address"].toString();
+            map['pickup']['longitude'].toString());
+        String pickUpAddress = map['pickup_address'].toString();
+
         double dropOffLocationLat = double.parse(
-            map['client_Coordinates']['latitude'].toString());
+            map['dropoff']['latitude'].toString());
         double dropOffLocationLng = double.parse(
-            map['client_Coordinates']['longitude'].toString());
-        String finalClientaddress = map['finalClient_address']
+            map['dropoff']['longitude'].toString());
+        String dropOffAddress = map['dropoff_address']
             .toString();
 
         String paymentMethod = map['payment_method'].toString();
 
-        String client_name = map["client_name"];
-        String client_phone = map["client_phone"];
+        // String client_name = map["client_name"];
+        // String client_phone = map["client_phone"];
 
-        Clientdetails clientDetails = Clientdetails();
-        clientDetails.artisan_request_id = artisanRequestId;
-        clientDetails.client_Address = clientAddress;
-        clientDetails.finalClient_address= finalClientaddress;
+        ClientDetails clientDetails = ClientDetails();
+        clientDetails.ride_request_id = rideRequestId;
+        clientDetails.pickup_address = pickUpAddress;
+        clientDetails.dropoff_address = dropOffAddress;
         clientDetails.pickup = LatLng(pickUpLocationLat, pickUpLocationLng);
         clientDetails.dropoff = LatLng(dropOffLocationLat, dropOffLocationLng);
         clientDetails.payment_method = paymentMethod;
-        clientDetails.client_name = client_name;
-        clientDetails.client_phone = client_phone;
+        // clientDetails.client_name = client_name;
+        // clientDetails.client_phone = client_phone;
 
         print("Information :: ");
-        print(clientDetails.client_Address);
-      //  print(clientDetails.artisan_address);
-
+        print(clientDetails.pickup_address);
+        print(clientDetails.dropoff_address);
 
         showDialog(
           context: context,

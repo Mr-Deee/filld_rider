@@ -73,10 +73,10 @@ class _homepageState extends State<homepage> {
     AssistantMethod.getCurrentOnlineUserInfo(context);
     AssistantMethod.getCurrentOnlineOtherUserInfo(context);
     //getPicture();
-    // _checkGps();
+ // _checkGps();
     _requestLocationPermission();
     getCurrentArtisanInfo();
-    // requestLocationPermission();
+    requestLocationPermission();
     AssistantMethod.getCurrentrequestinfo(context);
     AssistantMethod.obtainTripRequestsHistoryData(context);
 
@@ -116,7 +116,7 @@ class _homepageState extends State<homepage> {
   //   }
   // }
 
-
+  //
   // Future _checkGps() async {
   //   if (!await location.serviceEnabled()) {
   //     location.requestService();
@@ -172,39 +172,39 @@ class _homepageState extends State<homepage> {
     newGoogleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
-  // Future<void> requestLocationPermission() async {
-  //   final serviceStatusLocation = await Permission.locationWhenInUse.isGranted;
-  //
-  //   bool isLocation =
-  //       serviceStatusLocation == Permission.location.serviceStatus.isEnabled;
-  //
-  //   final status = await Permission.locationWhenInUse.request();
-  //
-  //   if (status == PermissionStatus.granted) {
-  //     print('Permission Granted');
-  //   } else if (status == PermissionStatus.denied) {
-  //     print('Permission denied');
-  //   } else if (status == PermissionStatus.permanentlyDenied) {
-  //     print('Permission Permanently Denied');
-  //     await openAppSettings();
-  //   }
-  // }
+  Future<void> requestLocationPermission() async {
+    final serviceStatusLocation = await Permission.locationWhenInUse.isGranted;
 
-  // getRideType() {
-  //   Ridersdb
-  //       .child(currentfirebaseUser!.uid)
-  //       .child("car_details")
-  //       .child("type")
-  //       .once()
-  //       .then((value) {
-  //     if (value != null) {
-  //       print("Info got");
-  //       setState(() {
-  //         rideType = value.toString();
-  //       });
-  //     }
-  //   });
-  // }
+    bool isLocation =
+        serviceStatusLocation == Permission.location.serviceStatus.isEnabled;
+
+    final status = await Permission.locationWhenInUse.request();
+
+    if (status == PermissionStatus.granted) {
+      print('Permission Granted');
+    } else if (status == PermissionStatus.denied) {
+      print('Permission denied');
+    } else if (status == PermissionStatus.permanentlyDenied) {
+      print('Permission Permanently Denied');
+      await openAppSettings();
+    }
+  }
+
+  getRideType() {
+    Ridersdb
+        .child(currentfirebaseUser!.uid)
+        .child("car_details")
+        .child("type")
+        .once()
+        .then((value) {
+      if (value != null) {
+        print("Info got");
+        setState(() {
+          rideType = value.toString();
+        });
+      }
+    });
+  }
 
 
   getCurrentArtisanInfo() async {
@@ -226,7 +226,7 @@ class _homepageState extends State<homepage> {
 
     AssistantMethod.retrieveHistoryInfo(context);
     //getRatings();
-    // getRideType();
+    getRideType();
   }
 
   bool isSwitched = false;

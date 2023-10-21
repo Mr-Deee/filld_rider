@@ -8,12 +8,12 @@ class Ride_r extends ChangeNotifier
   String ?phone;
   String ?email;
   String ?id;
-  String ?servicetype;
-  String ?education;
+  String ?automobile_color;
+  String ? automobile_model;
   String ?plate_number;
   String ?profilepicture;
 
-  Ride_r({this.firstname, this.lastname,this.phone, this.email, this.id, this.servicetype, this.education, this.plate_number, this.profilepicture,});
+  Ride_r({this.firstname, this.lastname,this.phone, this.email, this.id, this.automobile_color, this.automobile_model, this.plate_number, this.profilepicture,});
 
   Ride_r.fromSnapshot(DataSnapshot dataSnapshot) {
     final data = Map<String, dynamic>.from((dataSnapshot).value as Map);
@@ -23,10 +23,10 @@ class Ride_r extends ChangeNotifier
       phone= data["phoneNumber"];
       email= data["email"];
       firstname= data["FirstName"];
-    lastname= data["LastName"];
-     // profilepicture= data["profilepicture"].toString();
-    servicetype= data["Service Type"];
-    education= data["Education Background"];
+      lastname= data["LastName"];
+      profilepicture= data["profilepicture"].toString();
+    automobile_color= data["Service Type"];
+    automobile_model= data["motorBrand"];
 
      // plate_number=data["car_details"]["plate_number"];
 

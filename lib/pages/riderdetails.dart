@@ -51,12 +51,9 @@ class _RiderdetailsState extends State<Riderdetails> {
     // Create a map of user data to update in the Realtime Database
     final Map<String, dynamic> profileData = {
       'riderImageUrl': riderImageUrl,
-      // 'licenseImageUrl': licenseImageUrl,
-      'Motor-Color': motorcolor,
+      'autombileColor': motorcolor,
       'type': "bike",
-      // 'insuranceImageUrl': insuranceImageUrl,
-      // 'numberPlate': _numberPlate,
-      'motorType': _motorType,
+      'motorBrand': _motorType,
       'licensePlateNumber': _licensePlateNumber,
     };
 

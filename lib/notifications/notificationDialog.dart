@@ -30,15 +30,17 @@ class NotificationDialog extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(20.0),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 10.0),
-            Image.asset("assets/images/delivery-with-white-background-2.png", width: 150.0,),
-            SizedBox(height: 0.0,),
-            Text("New Delivery Request", style: TextStyle(fontFamily: "Brand Bold", fontSize: 20.0,color: Colors.black),),
+
+            Image.asset("assets/images/delivery-with-white-background-2.png", width: 100.0,),
+
+            Text("FILL'D", style: TextStyle(fontFamily: "Brand Bold", fontSize: 20.0,color: Colors.black,fontWeight: FontWeight.bold),),
+
+            Text("New Delivery Request", style: TextStyle(fontFamily: "Brand Bold", fontSize: 20.0,color: Colors.black,fontWeight: FontWeight.bold),),
             SizedBox(height: 20.0),
             Padding(
               padding: EdgeInsets.all(18.0),
@@ -49,7 +51,7 @@ class NotificationDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //Text("Pick Up", style: TextStyle(fontSize: 20.0,color: Colors.black),),
-                   Image.asset("assets/images/pickup.png", height: 16.0, width: 16.0,),
+                   Image.asset("assets/images/pickup.png", height: 26.0, width: 26.0,),
                       SizedBox(width: 20.0,),
                      Expanded(child: Container(
                          child:  Container(child: Text(clientDetails?.pickup_address??"", style: TextStyle(fontSize: 18.0,color: Colors.black), )),
@@ -62,7 +64,7 @@ class NotificationDialog extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                  Image.asset("images/location.png", height: 16.0, width: 16.0,),
+                  Image.asset("assets/images/location.png", height: 26.0, width: 26.0,),
                       SizedBox(width: 20.0,),
 
                       Expanded(
@@ -79,7 +81,7 @@ class NotificationDialog extends StatelessWidget {
             ),
 
             SizedBox(height: 15.0),
-            Divider(height: 2.0, thickness: 4.0,),
+            Divider(height: 2.0, thickness: 8.0,color: Colors.black,),
             SizedBox(height: 0.0),
 
             Padding(
@@ -89,19 +91,23 @@ class NotificationDialog extends StatelessWidget {
                 children: [
 
                   ElevatedButton(
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(18.0),
-                    //     side: BorderSide(color: Colors.red)),
-                    // color: Colors.white,
-                    // textColor: Colors.red,
-                    // padding: EdgeInsets.all(8.0),
+                    style: ElevatedButton.styleFrom(
+
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.red)),
+                      backgroundColor: Colors.red,
+                      // textColor: Colors.red,
+                      padding: EdgeInsets.all(8.0),
+                    ),
+
                     onPressed: ()
                     {
                       //assetsAudioPlayer.stop();
                       Navigator.pop(context);
                     },
                     child: Text(
-                      "Cancel".toUpperCase(),
+                      "Decline".toUpperCase(),
                       style: TextStyle(
                         fontSize: 14.0,
                       ),
@@ -111,9 +117,14 @@ class NotificationDialog extends StatelessWidget {
                   SizedBox(width: 25.0),
 
                   ElevatedButton(
-                    // shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(18.0),
-                    //     side: BorderSide(color: Colors.green)),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.green)),
+
+                                    backgroundColor: Colors.green
+                    ),
+
                     onPressed: ()
                     {
                       //assetsAudioPlayer.stop();

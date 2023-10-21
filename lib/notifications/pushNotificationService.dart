@@ -105,8 +105,8 @@ class PushNotificationService {
 
         String paymentMethod = map['payment_method'].toString();
 
-        // String client_name = map["client_name"];
-        // String client_phone = map["client_phone"];
+        String client_name = map["client_name"];
+        String client_phone = map["client_phone"];
 
         ClientDetails clientDetails = ClientDetails();
         clientDetails.ride_request_id = rideRequestId;
@@ -115,8 +115,8 @@ class PushNotificationService {
         clientDetails.pickup = LatLng(pickUpLocationLat, pickUpLocationLng);
         clientDetails.dropoff = LatLng(dropOffLocationLat, dropOffLocationLng);
         clientDetails.payment_method = paymentMethod;
-        // clientDetails.client_name = client_name;
-        // clientDetails.client_phone = client_phone;
+        clientDetails.client_name = client_name;
+        clientDetails.client_phone = client_phone;
 
         print("Information :: ");
         print(clientDetails.pickup_address);

@@ -54,7 +54,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   String durationRide = "";
   bool isRequestingDirection = false;
   String btnTitle = "Arrived";
-  Color btnColor = Colors.black87;
+  Color btnColor = Colors.blueAccent;
   StreamSubscription<DatabaseEvent>? rideStreamSubscription;
 
   Timer? timer;
@@ -209,13 +209,13 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: 16.0,
+                          height: 8.0,
                         ),
                         Row(
                           children: [
-                            // Image.asset(
-                            //   "images/pickicon.png", height: 16.0,
-                            //   width: 16.0,),
+                            Image.asset(
+                              "assets/images/pickup.png", height: 26.0,
+                              width: 16.0,),
                             SizedBox(
                               width: 18.0,
                             ),
@@ -231,7 +231,26 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: 26.0,
+                          height: 16.0,
+                        ),
+                        Row(
+                          children: [
+                            Image.asset(
+                              "assets/images/location.png", height: 16.0,
+                              width: 16.0,),
+                            SizedBox(
+                              width: 18.0,
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Text(
+                                  widget.clientDetails.dropoff_address ?? "",
+                                  style: TextStyle(fontSize: 18.0),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(
                           height: 26.0,
@@ -240,6 +259,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             // ignore: deprecated_member_use
                             child: ElevatedButton(
+
                               onPressed: () async {
                                 if (status == "accepted") {
                                   status = "arrived";
@@ -440,7 +460,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     clientRequestRef.child(rideRequestId).child("driver_id").set(
         riderinformation?.id);
     clientRequestRef.child(rideRequestId).child("car_details").set(
-        ' ●  ● ${riderinformation?.plate_number}'
+        '${riderinformation?.automobile_color} ● ${riderinformation
+            ?.automobile_model} ● ${riderinformation?.plate_number}'
     );
 
 

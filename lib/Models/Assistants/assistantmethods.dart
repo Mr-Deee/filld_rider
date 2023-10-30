@@ -1,4 +1,3 @@
-import 'package:filld_rider/Models/RequestModel.dart';
 import 'package:filld_rider/Models/directDetails.dart';
 import 'package:filld_rider/assistants/requestAssistant.dart';
 import 'package:filld_rider/main.dart';
@@ -9,16 +8,47 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import '../Ride_r.dart';
 
 import '../../DataHandler/appData.dart';
 import '../../configMaps.dart';
 import '../Users.dart';
-import '../otherUserModel.dart';
 // import '../otherUserModel.dart';
 
 class AssistantMethod{
+  static void getCurrentOnlineUserInfo(BuildContext context) async {
+    print('assistant methods step 3:: get current online user info');
+    firebaseUser = FirebaseAuth.instance.currentUser; // CALL FIREBASE AUTH INSTANCE
+    print('assistant methods step 4:: call firebase auth instance');
+    String? userId = firebaseUser!.uid; // ASSIGN UID FROM FIREBASE TO LOCAL STRING
+    print('assistant methods step 5:: assign firebase uid to string');
+    print(userId);
+    DatabaseReference reference = FirebaseDatabase.instance.ref().child("Riders").child(userId);
+    print(
+        'assistant methods step 6:: call users document from firebase database using userId');
+    reference.once().then(( event) async {
+      final dataSnapshot = event.snapshot;
+      if (dataSnapshot.value!= null) {
+        print(
+            'assistant methods step 7:: assign users data to usersCurrentInfo object');
 
+        DatabaseEvent event = await reference.once();
+        print(event);
+
+        context.read<Ride_r>().setRider(Ride_r.fromMap(Map<String, dynamic>.from(event.snapshot.value as dynamic)));
+        print('assistant methods step 8:: assign users data to usersCurrentInfo object');
+        print(Users().firstname);
+
+      }
+    }
+    );
+
+
+
+
+
+
+  }
 
   static int calculateFares(DirectionDetails directionDetails) {
     //in terms of GHS
@@ -51,65 +81,10 @@ class AssistantMethod{
     Geofire.setLocation(currentfirebaseUser!.uid, currentPosition!.latitude,
         currentPosition!.longitude);
   }
-  static void getCurrentOnlineUserInfo(BuildContext context) async {
-    print('assistant methods step 3:: get current online user info');
-    firebaseUser =
-        FirebaseAuth.instance.currentUser; // CALL FIREBASE AUTH INSTANCE
-    print('assistant methods step 4:: call firebase auth instance');
-    String? userId =
-        firebaseUser!.uid; // ASSIGN UID FROM FIREBASE TO LOCAL STRING
-    print('assistant methods step 5:: assign firebase uid to string');
-    DatabaseReference reference =
-    FirebaseDatabase.instance.reference().child("Artisans").child(userId!);
-    print(
-        'assistant methods step 6:: call users document from firebase database using userId');
-    reference.once().then(( event) async {
-      final dataSnapshot = event.snapshot;
-      if (dataSnapshot.value!= null) {
-        //userCurrentInfo = Users.fromSnapshot(dataSnapshot);
-        // IF DATA CALLED FROM THE FIREBASE DOCUMENT ISN'T NULL
-        // =userCurrentInfo = Users.fromSnapshot(
-        //     dataSnapShot);ASSIGN DATA FROM SNAPSHOT TO 'USERS' OBJECT
-
-         DatabaseEvent event = await reference.once();
-
-        context.read<Users>().setUser(Users.fromMap(Map<String, dynamic>.from(event.snapshot.value as dynamic)));
-        print(
-            'assistant methods step 7:: assign users data to usersCurrentInfo object');
-      }
-    }
-    );
 
 
 
 
-
-
-  }
-
-
-
-  static void getCurrentrequestinfo(BuildContext context) async {
-    print('assistant methods step 30:: get current online userOccupation info');
-    firebaseUser =
-        FirebaseAuth.instance.currentUser; // CALL FIREBASE AUTH INSTANCE
-    print('assistant methods step 39:: call firebase auth instance');
-
-    print(
-        'assistant methods step 78:: call users document from firebase database using userId');
-    clientRequestRef.once().then(( event) async {
-      final dataSnapshot = event.snapshot;
-      if (dataSnapshot.value!= null) {
-        context.read<ReqModel>().setotherUser(ReqModel.fromSnapshot(dataSnapshot) );
-        print(
-            'assistant methods step 12:: assign users data to usersCurrentInfo object');
-      }
-    }
-    );
-
-
-
-  }
 
   static void retrieveHistoryInfo(context)
   {
@@ -119,12 +94,12 @@ class AssistantMethod{
       final dataSnapshot = event.snapshot;
       if(dataSnapshot.value != null)
       {
-        print('assistant methods step 84::{         }');
+        print('assistant methods step 84::{}');
         //update total number of trip counts to provider
         Map<dynamic, dynamic> keys = dataSnapshot as Map;
         int tripCounter = keys.length;
         Provider.of<AppData>(context, listen: false).updateTripsCounter(tripCounter);
-        print('assistant methods step 84::{         }');
+        print('assistant methods step 84::{}');
         //update trip keys to provider
         List<String> tripHistoryKeys = [];
         keys.forEach((key, value)
@@ -162,38 +137,7 @@ class AssistantMethod{
     }
   }
 
-  static void getCurrentOnlineOtherUserInfo(BuildContext context) async {
-    print('assistant methods step 3:: get current online user info');
-    firebaseUser =
-        FirebaseAuth.instance.currentUser; // CALL FIREBASE AUTH INSTANCE
-    print('assistant methods step 4:: call firebase auth instance');
-    String? userId =
-        firebaseUser!.uid; // ASSIGN UID FROM FIREBASE TO LOCAL STRING
-    print('assistant methods step 5:: assign firebase uid to string');
-    DatabaseReference reference =
-    FirebaseDatabase.instance.reference().child("Artisans").child(userId);
-    print(
-        'assistant methods step 6:: call users document from firebase database using userId');
-    reference.once().then(( event) async {
-      final dataSnapshot = event.snapshot;
-      if (dataSnapshot.value!= null) {
-        //userCurrentInfo = Users.fromSnapshot(dataSnapshot);
-        // IF DATA CALLED FROM THE FIREBASE DOCUMENT ISN'T NULL
-        // =userCurrentInfo = Users.fromSnapshot(
-        //     dataSnapShot);ASSIGN DATA FROM SNAPSHOT TO 'USERS' OBJECT
 
-        DatabaseEvent event = await reference.once();
-
-        context.read<otherUsermodel>().setotherUser(otherUsermodel.fromMap(Map<String, dynamic>.from(event.snapshot.value as dynamic)));
-        print(
-            'assistant methods step 7:: assign users data to usersCurrentInfo object');
-      }
-    }
-    );
-
-
-
-  }
 
 
   static void disableHomeTabLiveLocationUpdates() {

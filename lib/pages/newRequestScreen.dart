@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:provider/provider.dart';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../CollectFareDialog.dart';
 import '../Models/Assistants/assistantmethods.dart';
 import '../Models/Assistants/mapKitAssistant.dart';
+import '../Models/Ride_r.dart';
 import '../Models/Users.dart';
 import '../Models/clientDetails.dart';
 import '../configMaps.dart';
@@ -118,7 +120,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       };
       clientRequestRef
           .child(rideRequestId!)
-          .child("artisan_location")
+          .child("driver_location")
           .set(locMap);
     });
   }
@@ -451,22 +453,24 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     });
   }
   void acceptRideRequest() {
+
+    final rideprovider= Provider.of<Ride_r>(context,listen: false).riderInfo;
     String? rideRequestId = widget.clientDetails.ride_request_id;
     clientRequestRef.child(rideRequestId!).child("status").set("accepted");
     clientRequestRef.child(rideRequestId).child("driver_name").set(
-        riderinformation?.firstname);
-    clientRequestRef.child(rideRequestId!).child("driver_phone").set(
-        riderinformation?.phone);
+        rideprovider?.firstname );
+    clientRequestRef.child(rideRequestId).child("driver_phone").set(
+        rideprovider?.phone);
     clientRequestRef.child(rideRequestId).child("driver_id").set(
-        riderinformation?.id);
+        rideprovider?.id);
     clientRequestRef.child(rideRequestId).child("car_details").set(
-        '${riderinformation?.automobile_color} ● ${riderinformation
-            ?.automobile_model} ● ${riderinformation?.plate_number}'
+        '${rideprovider?.automobile_color} ● ${rideprovider
+            ?.automobile_model} ● ${rideprovider?.plate_number}'
     );
 
 
     clientRequestRef.child(rideRequestId).child("profilepicture").set(
-        riderinformation?.profilepicture);
+        rideprovider?.profilepicture);
 
 
     Map locMap =

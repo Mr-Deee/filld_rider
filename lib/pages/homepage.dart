@@ -7,7 +7,6 @@ import 'package:geolocator/geolocator.dart' as geolocator;
 import '../Models/Assistants/assistantmethods.dart';
 import '../Models/Ride_r.dart';
 import '../Models/Users.dart';
-import '../Models/otherUserModel.dart';
 import '../assistants/helper.dart';
 import '../configMaps.dart';
 import '../notifications/pushNotificationService.dart';
@@ -70,14 +69,16 @@ class _homepageState extends State<homepage> {
 
 
     super.initState();
+    //
+    // getPicture();
     AssistantMethod.getCurrentOnlineUserInfo(context);
-    AssistantMethod.getCurrentOnlineOtherUserInfo(context);
+
     //getPicture();
  // _checkGps();
     _requestLocationPermission();
     getCurrentArtisanInfo();
     requestLocationPermission();
-    AssistantMethod.getCurrentrequestinfo(context);
+
     AssistantMethod.obtainTripRequestsHistoryData(context);
 
 
@@ -211,8 +212,9 @@ class _homepageState extends State<homepage> {
     currentfirebaseUser = await FirebaseAuth.instance.currentUser;
     Ridersdb.child(currentfirebaseUser!.uid).once().then((event) {
       print("value");
-      if (event.snapshot.value != null) {
-        riderinformation = Ride_r.fromSnapshot(event.snapshot);
+      if (event.snapshot.value  != null) {
+        riderinformation = Ride_r.fromMap(event.snapshot as Map<String, dynamic>);
+
       }
 
       PushNotificationService pushNotificationService = PushNotificationService();
@@ -262,7 +264,9 @@ class _homepageState extends State<homepage> {
           top: 70.0,
           left: 0.0,
           right: 0.0,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(

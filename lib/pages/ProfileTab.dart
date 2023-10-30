@@ -12,7 +12,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
+import 'package:provider/provider.dart';
 
+import '../Models/Ride_r.dart';
 import '../Models/Users.dart';
 import '../ProfileInfo.dart';
 import '../configMaps.dart';
@@ -23,6 +25,8 @@ import '../configMaps.dart';
 class ProfileTabPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -90,12 +94,13 @@ class ProfileTabPage extends StatelessWidget {
 
 
   Widget Profile(BuildContext context){
-
+    // var profile= Provider.of<Ride_r>(context, listen: false).profilepicture;
+final rideprovider= Provider.of<Ride_r>(context).riderInfo;
     return SafeArea(
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          padding:  EdgeInsets.symmetric(horizontal: 25.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -107,21 +112,10 @@ class ProfileTabPage extends StatelessWidget {
                   Container(
                     child: CircleAvatar(
                         radius: 70,
-                        child: FutureBuilder(
-                            future: getPicture(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return CircleAvatar(
-                                  radius: 70,
-                                  backgroundImage: NetworkImage(snapshot.data!),
-                                );
-                              } else {
-                                return CircleAvatar(
-                                    radius: 70,
-                                    backgroundImage:
-                                    AssetImage("images/user_icon.png"));
-                              }
-                            })),
+                    backgroundImage:rideprovider?.profilepicture != null
+                          ? NetworkImage(rideprovider!.profilepicture!)
+                          : AssetImage("images/user_icon.png")as ImageProvider<Object>,
+                           ),
                   ),
                 ]),
               ),
@@ -139,15 +133,16 @@ class ProfileTabPage extends StatelessWidget {
               SizedBox(
                 height: 28.0,
               ),
+              Text("${rideprovider?.firstname}"),
               ProfileInfo(
-                leading: 'images/26x26user.svg',
-                title: riderinformation?.firstname,
+                leading: '',
+                title: rideprovider?.firstname,
                 subtitle: 'Your Name',
               ),
               Divider(),
               ProfileInfo(
                 leading: 'images/Vectormail.svg',
-                title: riderinformation?.email,
+                title: rideprovider?.email,
                 subtitle: 'Your Email',
               ),
               Divider(),
@@ -163,7 +158,7 @@ class ProfileTabPage extends StatelessWidget {
               Divider(),
               ProfileInfo(
                 leading: 'images/26x26phone.svg',
-                title: riderinformation?.phone,
+                title: rideprovider?.phone,
                 subtitle: 'Your phone number',
               ),
               Divider(),
@@ -201,14 +196,14 @@ class ProfileTabPage extends StatelessWidget {
   static Future<String> getPicture() async {
     User? user = await FirebaseAuth.instance.currentUser;
     return FirebaseDatabase.instance
-        .reference()
-        .child('drivers')
+        .ref()
+        .child('Riders')
         .child(user!.uid)
         .once()
         .then((value) {
       var dataSnapshot = value.snapshot;
       final map = dataSnapshot.value as Map<dynamic, dynamic>;
-      return map['profilepicture'].toString();
+      return map['riderImageUrl'].toString();
     });
   }
 }

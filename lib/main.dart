@@ -11,9 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'DataHandler/appData.dart';
 import 'Models/Historymodel.dart';
-import 'Models/RequestModel.dart';
 import 'Models/Users.dart';
-import 'Models/otherUserModel.dart';
 import 'firebase_options.dart';
 import 'onboarding.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -37,9 +35,9 @@ void main()async {
       create: (context) => Users(),
     ),
 
-    ChangeNotifierProvider<otherUsermodel>(
-      create: (context) => otherUsermodel(),
-    ),
+    // ChangeNotifierProvider<otherUsermodel>(
+    //   create: (context) => otherUsermodel(),
+    // ),
 
     ChangeNotifierProvider<Ride_r>(
       create: (context) =>  Ride_r(),
@@ -47,9 +45,9 @@ void main()async {
 
 
 
-    ChangeNotifierProvider<ReqModel>(
-      create: (context) => ReqModel(),
-    ),
+    // ChangeNotifierProvider<ReqModel>(
+    //   create: (context) => ReqModel(),
+    // ),
     ChangeNotifierProvider<History>(
       create: (context) => History(),
     ),

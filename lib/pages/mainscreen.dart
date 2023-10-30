@@ -1,5 +1,6 @@
 
 import 'package:filld_rider/pages/homepage.dart';
+import 'package:filld_rider/pages/ratingTabPage.dart';
 import 'package:flutter/material.dart';
 
 import 'ProfileTab.dart';
@@ -54,7 +55,7 @@ class _MainScreenState extends State<MainScreen>
         children: [
           homepage(),
           EarningsTabPage(),
-          // RatingTabPage(),
+          RatingTabPage(),
            ProfileTabPage(),
         ],
 
@@ -116,7 +117,7 @@ class _MainScreenState extends State<MainScreen>
                       ? Colors.black
                       : Colors.black38,
                 ),
-                SizedBox(height: size.width * .03),
+                // SizedBox(height: size.width * .03),
               ],
             ),
           ),

@@ -129,7 +129,7 @@ class NotificationDialog extends StatelessWidget {
                     {
                       //assetsAudioPlayer.stop();
                      checkAvailabilityOfRide(context);
-                   //  return context;
+
 
 
                     },

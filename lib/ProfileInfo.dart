@@ -33,7 +33,7 @@ class ProfileInfo extends StatelessWidget {
                 children: [
                   Text(
                     title??"",
-                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
+                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.w400, fontSize: 18),
                   ),
                   SizedBox(
                     height: 5.0,

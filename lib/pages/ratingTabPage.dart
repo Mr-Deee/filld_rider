@@ -1,7 +1,6 @@
 // import 'package:driver_app/configMaps.dart';
 import 'package:flutter/material.dart';
-// import 'package:smooth_star_rating/smooth_star_rating.dart';
-
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import '../configMaps.dart';
 
 class RatingTabPage extends StatefulWidget {
@@ -37,6 +36,7 @@ class _RatingTabPageState extends State<RatingTabPage> {
                 style: TextStyle(
                     fontSize: 20.0,
                     fontFamily: "Brand Bold",
+                    fontWeight: FontWeight.bold,
                     color: Colors.black),
               ),
               SizedBox(
@@ -55,10 +55,10 @@ class _RatingTabPageState extends State<RatingTabPage> {
                 allowHalfRating: true,
                 starCount: 5,
                 size: 45,
-                isReadOnly: true,
+                // isReadOnly: true,
               ),
               SizedBox(
-                height: 14.0,
+                height: 6.0,
               ),
               Text(
                 title,

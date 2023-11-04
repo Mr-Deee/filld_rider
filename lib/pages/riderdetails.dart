@@ -22,10 +22,16 @@ class _RiderdetailsState extends State<Riderdetails> {
   File? _riderImage;
   File? _licenseImage;
   File? _insuranceImage;
+  File? _GhanaCardImage;
 
   String _numberPlate = '';
   String _motorType = '';
+  String _nextofkin = '';
+  String _nextofkinnum = '';
+  String _nextofkinrelationship = '';
   String _licensePlateNumber = '';
+  String _GHCardNumber = '';
+  String _location = '';
   String motorcolor = '';
 
   Future<void> _pickImage(ImageSource source, Function(File) setImage) async {
@@ -47,15 +53,29 @@ class _RiderdetailsState extends State<Riderdetails> {
     final riderImageUrl = await _uploadImageToStorage(_riderImage);
     final licenseImageUrl = await _uploadImageToStorage(_licenseImage);
     final insuranceImageUrl = await _uploadImageToStorage(_insuranceImage);
+    final GhanaCardUrl = await _uploadImageToStorage(_GhanaCardImage);
+
+    final Map<String, dynamic> userprofile = {
+      'NextofKinName': _nextofkin,
+      'NextofKinNumber': _nextofkinnum,
+      'NextofKinRelationship': _nextofkinrelationship,
+      'location': _location,
+    };
+    await databaseReference.child(currentUser.uid).update(userprofile);
 
     // Create a map of user data to update in the Realtime Database
+
+
     final Map<String, dynamic> profileData = {
       'riderImageUrl': riderImageUrl,
       'riderLicense': licenseImageUrl,
+      'GhanaCardUrl': GhanaCardUrl,
       'autombileColor': motorcolor,
       'type': "bike",
       'motorBrand': _motorType,
+
       'licensePlateNumber': _licensePlateNumber,
+      'GhanaCardNumber': _GHCardNumber,
     };
 
     await databaseReference.child(currentUser.uid).child("car_details").update(profileData);
@@ -88,9 +108,13 @@ class _RiderdetailsState extends State<Riderdetails> {
         .of(context)
         .size;
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Rider Profile'),
-      // ),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+
+        title: Text('Rider Profile',style: TextStyle(color: Colors.black),),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
@@ -106,7 +130,7 @@ class _RiderdetailsState extends State<Riderdetails> {
               },
             ),
 
-            SizedBox(height: 39,),
+            SizedBox(height: 19,),
             Container(
               height: size.width / 7,
               width: size.width / 2.2,
@@ -141,7 +165,7 @@ class _RiderdetailsState extends State<Riderdetails> {
                 },
               ),
             ),
-            SizedBox(height: 39,),
+            SizedBox(height: 19,),
             Container(
 
               height: size.width / 7,
@@ -173,30 +197,139 @@ class _RiderdetailsState extends State<Riderdetails> {
                 },
               ),
             ),
-            SizedBox(height: 39,),
-            Row(
-              children: [
+            SizedBox(height: 9,),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
 
            Container(
-             height: 120,
-             width: 120,
-             child: Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: ListView(
-                    children: <Widget>[
+               height: 70,
+               width: 170
+               ,
+               child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: ListView(
+                      children: <Widget>[
 
 
-                      _buildImagePickerLicene(
-                        title: 'Upload LicenseImage',
-                        setImage: (File image) {
-                          setState(() {
-                            _licenseImage = image;
-                          });
-                        },
-                      ),])),
+                        _buildImagePickerLicene(
+                          title: 'Upload LicenseImage',
+                          setImage: (File image) {
+                            setState(() {
+                              _licenseImage = image;
+                            });
+                          },
+                        ),])),
            ),
 
 
+                  Container(
+                    height: size.width / 7,
+                    width: size.width / 2.1,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(
+                        right: size.width / 30),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextFormField(
+                      decoration: InputDecoration( prefixIcon: Icon(
+                        Icons.numbers_rounded,
+                        color: Colors.black,
+                      ),
+                          border: InputBorder.none,
+                          hintMaxLines: 1,
+                          hintText: 'XXXXX..',
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),labelText: 'License Plate Number'),
+                      onChanged: (value) {
+                        setState(() {
+                          _licensePlateNumber = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 5,),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+
+                  Container(
+                    height: 70,
+                    width: 170
+                    ,
+                    child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: ListView(
+                            children: <Widget>[
+
+
+                              _buildImagePickerGHCARD(
+                                title: 'Upload Ghana Card',
+                                setImage: (File image) {
+                                  setState(() {
+                                    _GhanaCardImage = image;
+                                  });
+                                },
+                              ),])),
+                  ),
+
+
+                  Container(
+                    height: size.width / 7,
+                    width: size.width / 2.1,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(
+                        right: size.width / 30),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextFormField(
+                      decoration: InputDecoration( prefixIcon: Icon(
+                        Icons.numbers_rounded,
+                        color: Colors.black,
+                      ),
+                          border: InputBorder.none,
+                          hintMaxLines: 1,
+                          hintText: 'GHA-XXXXXX...',
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),labelText: 'GHCard Number'),
+                      onChanged: (value) {
+                        setState(() {
+                          _GHCardNumber = value;
+                        });
+                      },
+                    ),
+                  ),
+
+
+
+                ],
+              ),
+            ),
+
+            Divider(
+              color: Colors.black,
+              thickness: 2,
+              indent: 20,
+              endIndent: 20,
+            ),
+            SizedBox(height: 19,),
+        Text('Next Of Kin',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+            Row(
+              children: [
                 Container(
                   height: size.width / 7,
                   width: size.width / 2.2,
@@ -208,29 +341,140 @@ class _RiderdetailsState extends State<Riderdetails> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: TextFormField(
-                    decoration: InputDecoration( prefixIcon: Icon(
-                      Icons.numbers_rounded,
-                      color: Colors.black,
-                    ),
-                        border: InputBorder.none,
-                        hintMaxLines: 1,
-                        hintText: 'Black...',
-                        hintStyle: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),labelText: 'License Plate Number'),
+
+
+
+                    decoration: InputDecoration(
+                      labelText: 'Next Of Kin',
+                      prefixIcon: Icon(
+                        Icons.next_plan,
+                        color: Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      hintMaxLines: 1,
+                      hintText: 'Kwaku..',
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),),
                     onChanged: (value) {
                       setState(() {
-                        _licensePlateNumber = value;
+                        _nextofkin = value;
+                      });
+                    },
+                  ),
+                ),
+                Container(
+                  height: size.width / 7,
+                  width: size.width / 2.2,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(
+                      right: size.width / 30),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextFormField(
+
+
+
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      prefixIcon: Icon(
+                        Icons.phone,
+                        color: Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      hintMaxLines: 1,
+                      hintText: '+233....',
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),),
+                    onChanged: (value) {
+                      setState(() {
+                        _nextofkinnum = value;
                       });
                     },
                   ),
                 ),
               ],
             ),
+            SizedBox(height: 19,),
+            Row(
+              children: [
+                Container(
+                  height: size.width / 7,
+                  width: size.width / 2.2,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(
+                      right: size.width / 30),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextFormField(
+
+
+
+                    decoration: InputDecoration(
+                      labelText: 'Location',
+                      prefixIcon: Icon(
+                        Icons.my_location,
+                        color: Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      hintMaxLines: 1,
+                      hintText: 'Tema..',
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),),
+                    onChanged: (value) {
+                      setState(() {
+                        _location = value;
+                      });
+                    },
+                  ),
+                ),
+                Container(
+                  height: size.width / 7,
+                  width: size.width / 2.2,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(
+                      right: size.width / 30),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Relationship',
+                      prefixIcon: Icon(
+                        Icons.family_restroom,
+                        color: Colors.black,
+                      ),
+                      border: InputBorder.none,
+                      hintMaxLines: 1,
+                      hintText: 'Mother...',
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),),
+                    onChanged: (value) {
+                      setState(() {
+                        _nextofkinrelationship = value;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 19,),
+
             ElevatedButton(
               onPressed: _saveProfile,
-              child: Text('Save Profile'),
+              child: Text('Save'),
             ),
           ],
         ),
@@ -242,7 +486,7 @@ class _RiderdetailsState extends State<Riderdetails> {
     return Column(
       children: <Widget>[
         Text("ProfileImage",style: TextStyle(fontWeight: FontWeight.bold),),
-        SizedBox(height: 34),
+        SizedBox(height: 14),
 
         CircleAvatar(
           radius: 50, // Adjust the radius as needed
@@ -294,7 +538,7 @@ class _RiderdetailsState extends State<Riderdetails> {
   Widget _buildImagePickerLicene({required String title, required Function(File) setImage}) {
     return Column(
       children: <Widget>[
-        Text("Upload License Image",style: TextStyle(fontWeight: FontWeight.bold),),
+        Text("Upload License",style: TextStyle(fontWeight: FontWeight.bold),),
         SizedBox(height:10),
 
         CircleAvatar(
@@ -316,7 +560,8 @@ class _RiderdetailsState extends State<Riderdetails> {
 
             child: ClipOval(
               child: Image.asset(
-                "assets/images/license.png",
+                "assets/images/IMPORT.png",
+
                 width: 100, // Adjust the width as needed
                 height: 100, // Adjust the height as needed
                 fit: BoxFit.cover, // Adjust the BoxFit as needed
@@ -324,6 +569,65 @@ class _RiderdetailsState extends State<Riderdetails> {
             ),
           ),
         ),
+
+
+
+        SizedBox(height: 10),
+
+        // _buildImagePreview(setImage),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     _pickImage(ImageSource.gallery, setImage);
+        //   },
+        //   child: Text('Pick from Gallery'),
+        // ),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     _pickImage(ImageSource.camera, setImage);
+        //   },
+        //   child: Text('Take a Photo'),
+        // ),
+      ],
+    );
+  }
+
+
+  Widget _buildImagePickerGHCARD({required String title, required Function(File) setImage}) {
+    return Column(
+      children: <Widget>[
+        Text("Upload Ghana Card",style: TextStyle(fontWeight: FontWeight.bold),),
+        SizedBox(height:10),
+
+        CircleAvatar(
+          radius: 20, // Adjust the radius as needed
+          backgroundColor: Colors.blue, // Background color of the avatar
+          child: _GhanaCardImage != null
+              ? ClipOval(
+            child: Image.file(
+              _GhanaCardImage!,
+              width: 100, // Adjust the width as needed
+              height: 100, // Adjust the height as needed
+              fit: BoxFit.cover, // Adjust the BoxFit as needed
+            ),
+          )
+              : GestureDetector(
+            onTap: () {
+              _pickImage(ImageSource.gallery, setImage);
+            },
+
+            child: ClipOval(
+              child: Image.asset(
+                "assets/images/IMPORT.png",
+                width: 100, // Adjust the width as needed
+                height: 100, // Adjust the height as needed
+                fit: BoxFit.cover, // Adjust the BoxFit as needed
+              ),
+            ),
+          ),
+        ),
+
+
+
         SizedBox(height: 10),
 
         // _buildImagePreview(setImage),

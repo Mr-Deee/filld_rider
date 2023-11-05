@@ -57,7 +57,7 @@ class EarningsTabPage extends StatelessWidget {
                       width: 16,
                     ),
                     Text(
-                      'Total Trips',
+                      'Total Delievries',
                       style: TextStyle(fontSize: 16),
                     ),
                     Expanded(

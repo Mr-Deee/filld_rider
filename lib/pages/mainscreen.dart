@@ -97,7 +97,7 @@ class _MainScreenState extends State<MainScreen>
                   duration: Duration(milliseconds: 1500),
                   curve: Curves.fastLinearToSlowEaseIn,
                   margin: EdgeInsets.only(
-                    bottom: index == selectedIndex ? 0 : size.width * .029,
+                    bottom: index == selectedIndex ? 0 : size.width * .0101,
                     right: size.width * .0422,
                     left: size.width * .0422,
                   ),
@@ -112,7 +112,7 @@ class _MainScreenState extends State<MainScreen>
                 ),
                 Icon(
                   listOfIcons[index],
-                  size: size.width * .076,
+                  size: size.width * .086,
                   color: index == selectedIndex
                       ? Colors.black
                       : Colors.black38,

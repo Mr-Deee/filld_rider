@@ -1,7 +1,7 @@
 // import 'package:driver_app/configMaps.dart';
 import 'package:flutter/material.dart';
 // import 'package:smooth_star_rating/smooth_star_rating.dart';
-
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import '../configMaps.dart';
 
 class RatingTabPage extends StatefulWidget {
@@ -49,14 +49,15 @@ class _RatingTabPageState extends State<RatingTabPage> {
               SizedBox(
                 height: 16.0,
               ),
-              // SmoothStarRating(
-              //   rating: starCounter,
-              //   color: Colors.green,
-              //   allowHalfRating: true,
-              //   starCount: 5,
-              //   size: 45,
-              //   isReadOnly: true,
-              // ),
+              RatingStars(
+                value: starCounter,
+                starColor: Colors.lightGreenAccent,                // allowHalfRating: true,
+                starCount: 5,
+                starSize: 45,
+                starSpacing: 2,
+                starOffColor: const Color(0xffe7e8ea),
+                // isReadOnly: true,
+              ),
               SizedBox(
                 height: 14.0,
               ),

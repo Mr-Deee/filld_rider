@@ -85,9 +85,22 @@ class AssistantMethod{
 
 
 
-
   static void retrieveHistoryInfo(context)
   {
+
+
+    Ridersdb.child(currentfirebaseUser!.uid).child("earnings").once().then((
+        event) {
+
+      // var dataSnapshot = value.snapshot;
+      // final map = dataSnapshot.value as Map<dynamic, dynamic>;
+      if( event.snapshot.value!= null){
+        String earnings = event.snapshot.value.toString();
+        Provider.of<AppData>(context, listen: false).updateEarnings(earnings);
+
+        print("earnings:$earnings");
+      }
+    });
     //retrieve and display Trip History
     clientRequestRef.orderByChild("client_name").once().then((event)
     {

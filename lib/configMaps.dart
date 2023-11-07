@@ -11,7 +11,7 @@ import 'package:geolocator/geolocator.dart';
 // String mapKey ="AIzaSyALq45ym3PbPzoeBB8ULxsVdQ2VSRFWWuQ";
 String mapKey ="AIzaSyC6UDM8O3wlMa5SNLHfcM8MGEFJ3ejc55U";
 
-
+var history;
 // Arti_san? artisanInformation;
 Ride_r? riderinformation;
 //User firebaseUser;

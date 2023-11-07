@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart' as geolocator;
 import '../Models/Assistants/assistantmethods.dart';
 import '../Models/Ride_r.dart';
 import '../Models/Users.dart';
+import '../Models/appstate.dart';
 import '../assistants/helper.dart';
 import '../configMaps.dart';
 import '../notifications/pushNotificationService.dart';
@@ -78,8 +79,8 @@ class _homepageState extends State<homepage> {
     _requestLocationPermission();
     getCurrentArtisanInfo();
     requestLocationPermission();
-
     AssistantMethod.obtainTripRequestsHistoryData(context);
+
 
 
   }
@@ -213,7 +214,7 @@ class _homepageState extends State<homepage> {
     Ridersdb.child(currentfirebaseUser!.uid).once().then((event) {
       print("value");
       if (event.snapshot.value  != null) {
-        riderinformation = Ride_r.fromMap(event.snapshot as Map<String, dynamic>);
+        riderinformation = Ride_r.fromMap(event.snapshot.value as Map<String, dynamic>);
 
       }
 
@@ -271,11 +272,12 @@ class _homepageState extends State<homepage> {
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: driverStatusColor,
+                  backgroundColor: context.read<AppState>().driverStatusColor,
                 shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(24.0),
                 )),
                 onPressed: () async {
+                  final appState = context.read<AppState>();
                   currentfirebaseUser = await FirebaseAuth.instance.currentUser;
                   RiderRequestRef
                       .child(currentfirebaseUser!.uid)
@@ -286,31 +288,38 @@ class _homepageState extends State<homepage> {
                       displayToast("Sorry You are not Activated", context);
                       // DriverActivated();
                       //getLocationLiveUpdates();
+                      // appState.updateDriverStatus(Colors.red, "Offline - Deactivated", false);
 
                       setState(() {
-                        driverStatusColor = Colors.red;
-                        driverStatusText = "offline -Deactivated";
-                        isDriverAvailable = false;
-                      });
+                        // driverStatusColor = Colors.red;
+                        appState.updateDriverStatus(Colors.red, "Offline - Deactivated", false);
+                        // isDriverAvailable = false;
+                      }
+                       );
                     }
 
-                    else if (isDriverAvailable != true) {
+                    else if (!appState.isDriverAvailable) {
+                      // appState.updateDriverStatus(Colors.green, "Online", true);
                       makeRiderOnlineNow();
                       getLocationLiveUpdates();
 
+                      //
                       setState(() {
-                        driverStatusColor = Colors.green;
-                        driverStatusText = "Online ";
-                        isDriverAvailable = true;
+                        // driverStatusColor = Colors.green;
+                        // isDriverAvailable = true;
+                        appState.updateDriverStatus(Colors.green, "Online", true);
+
                       });
                       displayToast("you are Online Now.", context);
                     } else {
                       makeRiderOfflineNow();
-
                       setState(() {
-                        driverStatusColor = Colors.white70;
-                        driverStatusText = "Offline ";
-                        isDriverAvailable = false;
+                        // appState.updateDriverStatus(Colors.white70, "Offline", false);
+                        appState.updateDriverStatus(Colors.white70, "Offline", false);
+
+                        // driverStatusColor = Colors.white70;
+                        // driverStatusText = "Offline ";
+                        // isDriverAvailable = false;
                       });
 
                       displayToast("you are offline Now.", context);

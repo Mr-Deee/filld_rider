@@ -1,11 +1,12 @@
+import 'package:filld_rider/DataHandler/appData.dart';
+import 'package:filld_rider/HistoryItem.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
+import '../Models/history.dart';
 
 
-import '../DataHandler/appData.dart';
-import '../HistoryItem.dart';
 
 
 class HistoryScreen extends StatefulWidget {
@@ -36,8 +37,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
         padding: EdgeInsets.all(0),
         itemBuilder: (context, index)
         {
+
+          History history = Provider.of<AppData>(context, listen: false).tripHistoryDataList[index] as History;
+
           return HistoryItem(
-            history: Provider.of<AppData>(context, listen: false).tripHistoryDataList[index],
+            clienthistory: history,
           );
         },
         separatorBuilder: (BuildContext context, int index) => Divider(thickness: 3.0, height: 3.0,),

@@ -1,4 +1,5 @@
 import 'package:filld_rider/Models/Ride_r.dart';
+import 'package:filld_rider/Models/appstate.dart';
 import 'package:filld_rider/assistants/helper.dart';
 import 'package:filld_rider/pages/Onetimepassword.dart';
 import 'package:filld_rider/pages/homepage.dart';
@@ -51,6 +52,12 @@ void main()async {
     ChangeNotifierProvider<History>(
       create: (context) => History(),
     ),
+    ChangeNotifierProvider<AppState>(
+      create: (context) => AppState(),
+    ),
+
+
+
     // ChangeNotifierProvider<AppState>(
     // create: (context) => AppState(),
     // ),

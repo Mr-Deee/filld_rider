@@ -9,6 +9,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../Ride_r.dart';
+import 'package:filld_rider/Models/history.dart';
 
 import '../../DataHandler/appData.dart';
 import '../../configMaps.dart';
@@ -82,6 +83,25 @@ class AssistantMethod{
         currentPosition!.longitude);
   }
 
+  static void obtainTripRequestsHistoryData(context)
+  {
+    var keys = Provider.of<AppData>(context, listen: false).tripHistoryKeys;
+
+    for(String key in keys)
+    {
+      clientRequestRef.child(key).once().then((event) {
+
+        print("newevent:$clientRequestRef");
+        // var dataSnapshot = event.snapshot;
+        // final map = dataSnapshot.value ;
+        if( event.snapshot.value!= null)
+        {
+          history = History.fromSnapshot(event.snapshot);
+          Provider.of<AppData>(context, listen: false).updateTripHistoryData(history);
+        }
+      });
+    }
+  }
 
 
 
@@ -125,30 +145,7 @@ class AssistantMethod{
     });
   }
 
-  static void obtainTripRequestsHistoryData(context)
-  {
-    var keys = Provider.of<AppData>(context, listen: false).tripHistoryKeys;
 
-    for(String key in keys)
-    {
-      clientRequestRef.child(key).once().then((event) {
-        final snapshot = event.snapshot;
-        if(snapshot.value != null)
-        {
-          clientRequestRef.child(key).once().then((event)
-          {
-            // final snap = event.snapshot;
-            final name = event.snapshot;
-            if(name!=null)
-           {
-              // var history = History.fromSnapshot(snapshot);
-              // Provider.of<AppData>(context, listen: false).updateTripHistoryData(history);
-            }
-          });
-        }
-      });
-    }
-  }
 
 
 

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:filld_rider/Models/history.dart';
 
 import '../Models/Assistants/assistantmethods.dart';
-import 'Models/Historymodel.dart';
 
 
 class HistoryItem extends StatelessWidget
 {
-  final History? history;
-  HistoryItem({this.history});
+  final History clienthistory;
+  HistoryItem({required this.clienthistory});
 
   @override
   Widget build(BuildContext context)
@@ -31,7 +31,7 @@ class HistoryItem extends StatelessWidget
                       width: 16,
                     ),
                     SizedBox(width: 18,),
-                    Expanded(child: Container(child: Text(history!.pickup!, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 18),))),
+                    Expanded(child: Container(child: Text(clienthistory!.pickup!, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 18),))),
                     SizedBox(width: 5,),
 
                     // Text('\ GH¢${history!.fares}', style: TextStyle(fontFamily: 'Brand Bold', fontSize: 16, color: Colors.black87),),
@@ -53,14 +53,14 @@ class HistoryItem extends StatelessWidget
                     ),
                     SizedBox(width: 18,),
 
-                    Text(history!.dropOff!, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 18),),
+                    Text(clienthistory!.dropOff!, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 18),),
                   ],
                 ),
               ),
 
               SizedBox(height: 15,),
 
-              Text(AssistantMethod.formatTripDate(history!.createdAt!), style: TextStyle(color: Colors.grey),),
+              Text(AssistantMethod.formatTripDate(clienthistory!.createdAt!), style: TextStyle(color: Colors.grey),),
             ],
           ),
         ],

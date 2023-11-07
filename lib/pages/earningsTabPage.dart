@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../DataHandler/appData.dart';
-import 'History.dart';
+import 'HistoryScreen.dart';
 
 class EarningsTabPage extends StatelessWidget {
   @override

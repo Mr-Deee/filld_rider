@@ -56,10 +56,10 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void updateTripHistoryData(History eachHistory) {
-  //   tripHistoryDataList.add(eachHistory);
-  //   notifyListeners();
-  // }
+  void updateTripHistoryData(History eachHistory) {
+    tripHistoryDataList.add(eachHistory);
+    notifyListeners();
+  }
 
   changeDropLocationAddress(String destination) {
     _dropOffLocationText = destination;

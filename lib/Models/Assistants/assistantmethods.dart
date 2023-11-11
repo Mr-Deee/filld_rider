@@ -122,7 +122,7 @@ class AssistantMethod{
       }
     });
     //retrieve and display Trip History
-    clientRequestRef.orderByChild("client_name").once().then((event)
+    clientRequestRef.orderByChild("driver_name").once().then((event)
     {
       final dataSnapshot = event.snapshot;
       if(dataSnapshot.value != null)

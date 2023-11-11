@@ -133,7 +133,8 @@ final rideprovider= Provider.of<Ride_r>(context).riderInfo;
               SizedBox(
                 height: 28.0,
               ),
-              Text("${rideprovider?.firstname}"), Text("${Riderskey.key}"),
+              Text("${rideprovider?.firstname}"),
+              //Text("${Riderskey.key}"),
               ProfileInfo(
                 leading: '',
                 title: rideprovider?.firstname,

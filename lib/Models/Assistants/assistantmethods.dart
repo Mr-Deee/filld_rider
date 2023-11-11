@@ -91,7 +91,7 @@ class AssistantMethod{
     {
       clientRequestRef.child(key).once().then((event) {
 
-        print("newevent:$clientRequestRef");
+        print("newevent:$event");
         // var dataSnapshot = event.snapshot;
         // final map = dataSnapshot.value ;
         if( event.snapshot.value!= null)
@@ -127,9 +127,12 @@ class AssistantMethod{
       final dataSnapshot = event.snapshot;
       if(dataSnapshot.value != null)
       {
+        if (dataSnapshot.value is Map<dynamic, dynamic>) {
+          Map<dynamic, dynamic> keys = dataSnapshot.value as Map<dynamic, dynamic>;
+
         print('assistant methods step 84::{}');
         //update total number of trip counts to provider
-        Map<dynamic, dynamic> keys = dataSnapshot as Map;
+        // Map<dynamic, dynamic> keys = dataSnapshot as Map;
         int tripCounter = keys.length;
         Provider.of<AppData>(context, listen: false).updateTripsCounter(tripCounter);
         print('assistant methods step 84::{}');
@@ -141,6 +144,7 @@ class AssistantMethod{
         });
         Provider.of<AppData>(context, listen: false).updateTripKeys(tripHistoryKeys);
         obtainTripRequestsHistoryData(context);
+      }
       }
     });
   }

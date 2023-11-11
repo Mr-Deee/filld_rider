@@ -65,8 +65,7 @@ class CollectFareDialog extends StatelessWidget
                 onPressed: () async
                 {
                   Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+
 
 
 

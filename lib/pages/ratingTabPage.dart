@@ -12,7 +12,7 @@ class _RatingTabPageState extends State<RatingTabPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.white60,
       body: Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
@@ -22,8 +22,8 @@ class _RatingTabPageState extends State<RatingTabPage> {
           margin: EdgeInsets.all(5.0),
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5.0),
+            color: Colors.white70,
+            borderRadius: BorderRadius.circular(20.0),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -63,9 +63,9 @@ class _RatingTabPageState extends State<RatingTabPage> {
               Text(
                 title,
                 style: TextStyle(
-                    fontSize: 55.0,
+                    fontSize: 23.0,
                     fontFamily: "Signatra",
-                    color: Colors.green),
+                    color: Colors.black),
               ),
               SizedBox(
                 height: 16.0,

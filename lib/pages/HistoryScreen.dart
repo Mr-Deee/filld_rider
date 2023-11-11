@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
-import '../Models/history.dart';
 
 
 
@@ -38,10 +37,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
         itemBuilder: (context, index)
         {
 
-          History history = Provider.of<AppData>(context, listen: false).tripHistoryDataList[index] as History;
+          final historyItem= Provider.of<AppData>(context, listen: false).tripHistoryDataList[index];
 
           return HistoryItem(
-            clienthistory: history,
+            clienthistory: Provider.of<AppData>(context, listen: false).tripHistoryDataList[index],
           );
         },
         separatorBuilder: (BuildContext context, int index) => Divider(thickness: 3.0, height: 3.0,),

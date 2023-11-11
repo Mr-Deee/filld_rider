@@ -56,7 +56,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   String durationRide = "";
   bool isRequestingDirection = false;
   String btnTitle = "Arrived";
-  Color btnColor = Colors.blueAccent;
+  Color btnColor = Colors.white;
   StreamSubscription<DatabaseEvent>? rideStreamSubscription;
 
   Timer? timer;
@@ -206,7 +206,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 10.0),
-                              child: Icon(Icons.work),
+                              child: Icon(Icons.motorcycle),
                             ),
                           ],
                         ),
@@ -274,7 +274,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
                                   setState(() {
                                     btnTitle = "Start Job";
-                                    btnColor = Colors.white;
+                                    btnColor = Colors.lightGreenAccent;
                                   });
 
                                   showDialog(
@@ -324,7 +324,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                           color: Colors.black),
                                     ),
                                     Icon(
-                                      Icons.work,
+                                      Icons.sports_motorsports,
                                       color: Colors.black,
                                       size: 26.0,
                                     ),
@@ -462,7 +462,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     clientRequestRef.child(rideRequestId).child("driver_phone").set(
         rideprovider?.phone);
     clientRequestRef.child(rideRequestId).child("driver_id").set(
-        rideprovider?.id);
+        Riderskey.key);
     clientRequestRef.child(rideRequestId).child("car_details").set(
         '${rideprovider?.automobile_color} ● ${rideprovider
             ?.automobile_model} ● ${rideprovider?.plate_number}'
@@ -597,7 +597,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   }
 
   void saveEarnings(int fareAmount) {
-    clientRequestRef
+    Ridersdb
         .child(currentfirebaseUser!.uid)
         .child("earnings")
         .once()
@@ -606,13 +606,13 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
         double oldEarnings = double.parse(event.toString());
         double totalEarnings = fareAmount + oldEarnings;
 
-        clientRequestRef
+        Ridersdb
             .child(currentfirebaseUser!.uid)
             .child("earnings")
             .set(totalEarnings.toStringAsFixed(2));
       } else {
         double totalEarnings = fareAmount.toDouble();
-        clientRequestRef
+        Ridersdb
             .child(currentfirebaseUser!.uid)
             .child("earnings")
             .set(totalEarnings.toStringAsFixed(2));

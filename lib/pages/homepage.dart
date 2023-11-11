@@ -208,13 +208,65 @@ class _homepageState extends State<homepage> {
     });
   }
 
+  getRatings() {
+    //update ratings
+    Ridersdb
+        .child(currentfirebaseUser!.uid)
+        .child("ratings")
+        .once()
+        .then((value) {
+      var dataSnapshot = value.snapshot;
+      final map = dataSnapshot.value ;
+
+      if (dataSnapshot != null) {
+        double ratings = double.parse(map.toString());
+        setState(() {
+          starCounter = ratings;
+        });
+
+        if (starCounter <= 1.5) {
+          setState(() {
+            title = "Very Bad";
+          });
+          return;
+        }
+        if (starCounter <= 2.5) {
+          setState(() {
+            title = "Bad";
+          });
+
+          return;
+        }
+        if (starCounter <= 3.5) {
+          setState(() {
+            title = "Good";
+          });
+
+          return;
+        }
+        if (starCounter <= 4.5) {
+          setState(() {
+            title = "Very Good";
+          });
+          return;
+        }
+        if (starCounter <= 5.0) {
+          setState(() {
+            title = "Excellent";
+          });
+
+          return;
+        }
+      }
+    });
+  }
 
   getCurrentArtisanInfo() async {
     currentfirebaseUser = await FirebaseAuth.instance.currentUser;
     Ridersdb.child(currentfirebaseUser!.uid).once().then((event) {
       print("value");
-      if (event.snapshot.value  != null) {
-        riderinformation = Ride_r.fromMap(event.snapshot.value as Map<String, dynamic>);
+      if (event.snapshot.value is Map<Object?, Object?>) {
+        riderinformation = Ride_r.fromMap((event.snapshot.value as Map<Object?, Object?>).cast<String, dynamic>());
 
       }
 
@@ -228,7 +280,7 @@ class _homepageState extends State<homepage> {
     pushNotificationService.getToken();
 
     AssistantMethod.retrieveHistoryInfo(context);
-    //getRatings();
+    getRatings();
     getRideType();
   }
 

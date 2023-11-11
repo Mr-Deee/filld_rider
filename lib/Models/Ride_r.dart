@@ -20,9 +20,10 @@ class Ride_r extends ChangeNotifier
   static Ride_r fromMap(Map<String, dynamic> data)
 
   {
+    // Map<String, dynamic> data = snapshot.value;
     //var data= dataSnapshot.value;
     return Ride_r(
-      id: data['uid'],
+      id: data['id'],
       phone: data["phoneNumber"],
       email: data["email"],
       firstname: data["FirstName"],

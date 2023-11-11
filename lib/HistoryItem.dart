@@ -26,7 +26,7 @@ class HistoryItem extends StatelessWidget
                   children: <Widget>[
 
                     Image.asset(
-                      'assets/images/pickico.png',
+                      'assets/images/pickup.png',
                       height: 16,
                       width: 16,
                     ),
@@ -47,7 +47,7 @@ class HistoryItem extends StatelessWidget
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Image.asset(
-                      'assets/images/destico.png',
+                      'assets/images/location.png',
                       height: 16,
                       width: 16,
                     ),

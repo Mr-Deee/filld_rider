@@ -1,5 +1,6 @@
 import 'package:filld_rider/Models/Ride_r.dart';
 import 'package:filld_rider/Models/appstate.dart';
+import 'package:filld_rider/Models/history.dart';
 import 'package:filld_rider/assistants/helper.dart';
 import 'package:filld_rider/pages/Onetimepassword.dart';
 import 'package:filld_rider/pages/homepage.dart';
@@ -11,7 +12,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'DataHandler/appData.dart';
-import 'Models/Historymodel.dart';
 import 'Models/Users.dart';
 import 'firebase_options.dart';
 import 'onboarding.dart';
@@ -49,9 +49,9 @@ void main()async {
     // ChangeNotifierProvider<ReqModel>(
     //   create: (context) => ReqModel(),
     // ),
-    ChangeNotifierProvider<History>(
-      create: (context) => History(),
-    ),
+    // ChangeNotifierProvider<History>(
+    //   create: (context) => History(),
+    // ),
     ChangeNotifierProvider<AppState>(
       create: (context) => AppState(),
     ),
@@ -77,6 +77,7 @@ final uid = user?.uid;
 DatabaseReference  clientRequestRef = FirebaseDatabase.instance.ref().child("GasRequests");
 DatabaseReference RiderRequestRef= FirebaseDatabase.instance.ref().child("Riders").child(uid!).child("new Rider");
 DatabaseReference Ridersdb = FirebaseDatabase.instance.ref().child("Riders");
+DatabaseReference Riderskey = FirebaseDatabase.instance.ref().child("Riders").child(uid!);
 DatabaseReference availableRider = FirebaseDatabase.instance.ref().child("availableRider").child(uid!);
 
 class MyApp extends StatelessWidget {

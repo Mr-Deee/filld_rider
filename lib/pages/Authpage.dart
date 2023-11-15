@@ -9,6 +9,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'dart:math';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../Models/Assistants/assistantmethods.dart';
 import '../main.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'Onetimepassword.dart';
@@ -24,12 +25,86 @@ class AuthPage extends StatefulWidget {
   _AuthPageState createState() => _AuthPageState();
 }
 
+
 class _AuthPageState extends State<AuthPage> {
   bool _isSignIn = true;
+  Position? currentPosition;
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    locatePosition(context);
+    // requestSmsPermission();
+     _requestLocationPermission();
+    AssistantMethod.getCurrentOnlineUserInfo(context);
+     _getCurrentLocation();
+
+  }
+  GoogleMapController? newGoogleMapController;
 
 
   TextEditingController _locationController = TextEditingController();
+  void _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
+      );
+      // List<Placemark> placemarks = await placemarkFromCoordinates(
+      //   position.latitude,
+      //   position.longitude,
+      // );
+      List<Placemark> placemarks = await GeocodingPlatform.instance
+          .placemarkFromCoordinates(position.latitude, position.longitude,
+          localeIdentifier: "en");
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+        String placeName = placemark.name ?? ''; // Name of the place
+        String locality = placemark.locality ?? ''; // City or locality
+        String administrativeArea =
+            placemark.administrativeArea ?? ''; // State or region
 
+        String fullAddress = '$placeName, $locality, $administrativeArea';
+
+        setState(() {
+          currentPosition = position;
+          _locationController.text = fullAddress;
+        });
+      }
+    } catch (e) {
+      print('Error fetching location: $e');
+      _getCurrentLocation();
+    }
+  }
+  void _requestLocationPermission() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      // Location permission is granted, you can now access the location.
+      _getCurrentLocation();
+    } else if (status.isDenied) {
+      // Permission has been denied, show a snackbar or dialog to inform the user.
+      // You can also open the device settings to allow the permission manually.
+      openAppSettings();
+    } else if (status.isPermanentlyDenied) {
+      // The user has permanently denied the permission. You may show a dialog
+      // with a link to the app settings.
+    }
+  }
+  void locatePosition(BuildContext context) async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+    LatLng latLatPosition = LatLng(position.latitude, position.longitude);
+
+    CameraPosition cameraPosition =
+    new CameraPosition(target: latLatPosition, zoom: 20);
+    newGoogleMapController
+        ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    // String address =
+    // await AssistantMethod.searchCoordinateAddress(position, context);
+    // print("This is your Address::" + address);
+    // initGeoFireListener();
+
+  }
 
 
   void _toggleForm(bool isSignIn) {
@@ -319,6 +394,7 @@ class _SignInFormState extends State<SignInForm> {
       // }
       // else
       if (firebaseUser != null) {
+        AssistantMethod.getCurrentOnlineUserInfo(context);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => MainScreen()),
                 (Route<dynamic> route) => false);
@@ -353,20 +429,33 @@ class _SignUpFormState extends State<SignUpForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    requestSmsPermission();
+    locatePosition();
+    // requestSmsPermission();
+    _getCurrentLocation();
+
     _requestLocationPermission();
 
   }
 
-  String selectedCountryCode = '+1'; // Default country code
+  String selectedCountryCode = '+233'; // Default country code
 
 
   String verificationId = '';
-
-
+  GoogleMapController? newGoogleMapController;
+  Position? currentPosition;
 
   final Random random = Random();
+  void locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    currentPosition = position;
 
+    LatLng latLatPosition = LatLng(position.latitude, position.longitude);
+
+    CameraPosition cameraPosition =
+    new CameraPosition(target: latLatPosition, zoom: 14);
+    newGoogleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
 
   void _getCurrentLocation() async {
     try {
@@ -516,10 +605,10 @@ class _SignUpFormState extends State<SignUpForm> {
                   selectedCountryCode = code.dialCode!;
                 });
               },
-              initialSelection: 'US', // Initial country
+              initialSelection: 'GH', // Initial country
               showCountryOnly: false,
               showOnlyCountryWhenClosed: false,
-              favorite: ['+1', 'US'],
+              favorite: ['+233', 'GH'],
             ),
             Container(
               width: 200.0, // Adjust to the desired width
@@ -590,7 +679,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                     Colors.black),),
                               SizedBox(width: 26.0,),
-                              Text("Verifying Your Number...")
+                              Text("Signing up,please wait...")
 
                             ],
                           ),

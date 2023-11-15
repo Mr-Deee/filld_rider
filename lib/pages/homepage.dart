@@ -70,7 +70,8 @@ class _homepageState extends State<homepage> {
 
 
     super.initState();
-    //
+    locatePosition();
+
     // getPicture();
     AssistantMethod.getCurrentOnlineUserInfo(context);
 
@@ -303,6 +304,7 @@ class _homepageState extends State<homepage> {
             //   bottomPaddingOfMap = 0.0;
             // });
             locatePosition();
+
           },
         ),
 

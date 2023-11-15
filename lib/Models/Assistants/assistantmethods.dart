@@ -1,3 +1,4 @@
+import 'package:filld_rider/Models/address.dart';
 import 'package:filld_rider/Models/directDetails.dart';
 import 'package:filld_rider/assistants/requestAssistant.dart';
 import 'package:filld_rider/main.dart';
@@ -17,6 +18,10 @@ import '../Users.dart';
 // import '../otherUserModel.dart';
 
 class AssistantMethod{
+
+
+
+
   static void getCurrentOnlineUserInfo(BuildContext context) async {
     print('assistant methods step 3:: get current online user info');
     firebaseUser = FirebaseAuth.instance.currentUser; // CALL FIREBASE AUTH INSTANCE

@@ -51,9 +51,9 @@ class _RiderdetailsState extends State<Riderdetails> {
 
     // Upload images to Firebase Storage
     final riderImageUrl = await _uploadImageToStorage(_riderImage);
-    final licenseImageUrl = await _uploadImageToStorage(_licenseImage);
+    final licenseImageUrl = await licenseImageUrltostorage(_licenseImage);
     final insuranceImageUrl = await _uploadImageToStorage(_insuranceImage);
-    final GhanaCardUrl = await _uploadImageToStorage(_GhanaCardImage);
+    final GhanaCardUrl = await _uploadImageToGhanaCardUrl(_GhanaCardImage);
 
     final Map<String, dynamic> userprofile = {
       'NextofKinName': _nextofkin,
@@ -79,6 +79,7 @@ class _RiderdetailsState extends State<Riderdetails> {
     };
 
     await databaseReference.child(currentUser.uid).child("car_details").update(profileData);
+    await databaseReference.child(currentUser.uid).update({'status':'deactivated'});
 
     // Profile updated successfully
     // You can navigate to a different screen or show a success message
@@ -89,6 +90,18 @@ class _RiderdetailsState extends State<Riderdetails> {
     ),
     );}
 
+  Future<String> licenseImageUrltostorage(File? imageFile) async {
+    if (imageFile == null) {
+      return ''; // Return an empty string if no image is provided
+    }
+
+    final Reference storageReference =
+    FirebaseStorage.instance.ref().child('licenseImageUrl/${DateTime.now().toString()}');
+    final UploadTask uploadTask = storageReference.putFile(imageFile);
+    await uploadTask.whenComplete(() => null);
+    final String downloadURL = await storageReference.getDownloadURL();
+    return downloadURL;
+  }
   Future<String> _uploadImageToStorage(File? imageFile) async {
     if (imageFile == null) {
       return ''; // Return an empty string if no image is provided
@@ -96,6 +109,18 @@ class _RiderdetailsState extends State<Riderdetails> {
 
     final Reference storageReference =
     FirebaseStorage.instance.ref().child('profile_images/${DateTime.now().toString()}');
+    final UploadTask uploadTask = storageReference.putFile(imageFile);
+    await uploadTask.whenComplete(() => null);
+    final String downloadURL = await storageReference.getDownloadURL();
+    return downloadURL;
+  }
+  Future<String> _uploadImageToGhanaCardUrl(File? imageFile) async {
+    if (imageFile == null) {
+      return ''; // Return an empty string if no image is provided
+    }
+
+    final Reference storageReference =
+    FirebaseStorage.instance.ref().child('GhanaCardUrl/${DateTime.now().toString()}');
     final UploadTask uploadTask = storageReference.putFile(imageFile);
     await uploadTask.whenComplete(() => null);
     final String downloadURL = await storageReference.getDownloadURL();

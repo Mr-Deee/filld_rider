@@ -333,12 +333,11 @@ class _homepageState extends State<homepage> {
                 onPressed: () async {
                   final appState = context.read<AppState>();
                   currentfirebaseUser = await FirebaseAuth.instance.currentUser;
-                  RiderRequestRef
-                      .child(currentfirebaseUser!.uid)
-                      .child("RiderStatus")
+                  Ridersdb.child(auth.currentUser!.uid)
+                      .child("status")
                       .once()
                       .then((event) {
-                    if (event == "Deactivated") {
+                    if (event == "deactivated") {
                       displayToast("Sorry You are not Activated", context);
                       // DriverActivated();
                       //getLocationLiveUpdates();

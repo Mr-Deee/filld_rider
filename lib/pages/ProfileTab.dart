@@ -114,7 +114,7 @@ final rideprovider= Provider.of<Ride_r>(context).riderInfo;
                         radius: 70,
                     backgroundImage:rideprovider?.profilepicture != null
                           ? NetworkImage(rideprovider!.profilepicture!)
-                          : AssetImage("images/user_icon.png")as ImageProvider<Object>,
+                          : AssetImage("assets/images/user_icon.png")as ImageProvider<Object>,
                            ),
                   ),
                 ]),

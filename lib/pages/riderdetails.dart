@@ -67,7 +67,7 @@ class _RiderdetailsState extends State<Riderdetails> {
                               valueColor: AlwaysStoppedAnimation<Color>(
                                   Colors.black),),
                             SizedBox(width: 26.0,),
-                            Text("Signing up,please wait...")
+                            Text("Updating Your Details ,please wait...")
 
                           ],)))));});
 
@@ -88,6 +88,7 @@ class _RiderdetailsState extends State<Riderdetails> {
       'NextofKinNumber': _nextofkinnum,
       'NextofKinRelationship': _nextofkinrelationship,
       'location': _location,
+      'riderImageUrl': riderImageUrl,
     };
     await databaseReference.child(currentUser.uid).update(userprofile);
 
@@ -101,7 +102,6 @@ class _RiderdetailsState extends State<Riderdetails> {
       'autombileColor': motorcolor,
       'type': "bike",
       'motorBrand': _motorType,
-
       'licensePlateNumber': _licensePlateNumber,
       'GhanaCardNumber': _GHCardNumber,
     };

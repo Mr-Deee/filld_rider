@@ -333,19 +333,21 @@ class _homepageState extends State<homepage> {
                 onPressed: () async {
                   final appState = context.read<AppState>();
                   currentfirebaseUser = await FirebaseAuth.instance.currentUser;
-                  Ridersdb.child(auth.currentUser!.uid)
-                      .child("status")
+                  Riderskey
+                      .orderByChild("status")
                       .once()
-                      .then((event) {
-                    if (event == "deactivated") {
+                      .then((event) { print('ssdsss$event');
+                        var data =event.snapshot.value ;
+                    if (data == "deactivated") {
+                      print('ssdsss$event');
                       displayToast("Sorry You are not Activated", context);
                       // DriverActivated();
                       //getLocationLiveUpdates();
-                      // appState.updateDriverStatus(Colors.red, "Offline - Deactivated", false);
+                       appState.updateDriverStatus(Colors.red, "Offline - Deactivated", false);
 
                       setState(() {
                         // driverStatusColor = Colors.red;
-                        appState.updateDriverStatus(Colors.red, "Offline - Deactivated", false);
+                        appState.updateDriverStatus(Colors.red, "Offline - Deactivated", true);
                         // isDriverAvailable = false;
                       }
                        );

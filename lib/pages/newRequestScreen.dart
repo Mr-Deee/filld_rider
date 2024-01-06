@@ -301,14 +301,26 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                       .set(status);
 
                                   setState(() {
-                                    btnTitle = "End Job";
+                                    btnTitle = "Arrived At Gas Station";
                                     btnColor = Colors.redAccent;
                                   });
 
                                   initTimer();
-                                } else if (status == "onride") {
-                                  endTheTrip();
+                                } else if (status == "arrived") {
+                                  status = "Continue";
+                                  String? rideRequestId =
+                                      widget.clientDetails.ride_request_id;
+                                  clientRequestRef
+                                      .child(rideRequestId!)
+                                      .child("status")
+                                      .set(status);
+                                  await getPlaceDirection2(
+                                      widget.clientDetails.dropoff!,
+                                      widget.clientDetails.pickup!);
                                 }
+                                // else if (status == "onride") {
+                                //   endTheTrip();
+                                // }
                               },
                               child: Padding(
                                 padding: EdgeInsets.all(17.0),
@@ -345,8 +357,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     ]));
   }
 
-  Future<void> getPlaceDirection(
-      LatLng pickUpLatLng, LatLng dropOffLatLng) async {
+  Future<void> getPlaceDirection(LatLng pickUpLatLng, LatLng dropOffLatLng) async {
     showDialog(
         context: context,
         builder: (BuildContext context) => ProgressDialog(
@@ -355,6 +366,112 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
     var details = await AssistantMethod.obtainPlaceDirectionDetails(
         pickUpLatLng, dropOffLatLng);
+
+    Navigator.pop(context);
+
+    print("This is Encoded Points ::");
+    print(details!.encodedPoints);
+
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> decodedPolyLinePointsResult =
+        polylinePoints.decodePolyline(details.encodedPoints!);
+
+    polylineCoordinates.clear();
+
+    if (decodedPolyLinePointsResult.isNotEmpty) {
+      decodedPolyLinePointsResult.forEach((PointLatLng pointLatLng) {
+        polylineCoordinates
+            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+      });
+    }
+
+    polyLineSet.clear();
+
+    setState(() {
+      Polyline polyline = Polyline(
+        color: Colors.black,
+        polylineId: PolylineId("PolylineID"),
+        jointType: JointType.round,
+        points: polylineCoordinates,
+        width: 5,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+
+      polyLineSet.add(polyline);
+    });
+
+    LatLngBounds latLngBounds;
+    if (pickUpLatLng.latitude > dropOffLatLng.latitude &&
+        pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds =
+          LatLngBounds(southwest: dropOffLatLng, northeast: pickUpLatLng);
+    } else if (pickUpLatLng.longitude > dropOffLatLng.longitude) {
+      latLngBounds = LatLngBounds(
+          southwest: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude),
+          northeast: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude));
+    } else if (pickUpLatLng.latitude > dropOffLatLng.latitude) {
+      latLngBounds = LatLngBounds(
+          southwest: LatLng(dropOffLatLng.latitude, pickUpLatLng.longitude),
+          northeast: LatLng(pickUpLatLng.latitude, dropOffLatLng.longitude));
+    } else {
+      latLngBounds =
+          LatLngBounds(southwest: pickUpLatLng, northeast: dropOffLatLng);
+    }
+
+    newRideGoogleMapController!
+        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 70));
+
+    Marker pickUpLocMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
+      position: pickUpLatLng,
+      markerId: MarkerId("pickUpId"),
+    );
+
+    Marker dropOffLocMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      position: dropOffLatLng,
+      markerId: MarkerId("dropOffId"),
+    );
+
+    setState(() {
+      markersSet.add(pickUpLocMarker);
+      markersSet.add(dropOffLocMarker);
+    });
+
+    Circle pickUpLocCircle = Circle(
+      fillColor: Colors.blueAccent,
+      center: pickUpLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.blueAccent,
+      circleId: CircleId("pickUpId"),
+    );
+
+    Circle dropOffLocCircle = Circle(
+      fillColor: Colors.black,
+      center: dropOffLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.black,
+      circleId: CircleId("dropOffId"),
+    );
+
+    setState(() {
+      circleSet.add(pickUpLocCircle);
+      circleSet.add(dropOffLocCircle);
+    });
+  }
+  Future<void> getPlaceDirection2(LatLng pickUpLatLng, LatLng dropOffLatLng) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => ProgressDialog(
+              message: "Please wait...",
+            ));
+
+    var details = await AssistantMethod.obtainPlaceDirectionDetails(
+        dropOffLatLng, pickUpLatLng,);
 
     Navigator.pop(context);
 
@@ -546,6 +663,33 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       isRequestingDirection = false;
     }
   }
+  void updateRideDetails2() async {
+    if (isRequestingDirection == false) {
+      isRequestingDirection = true;
+      if (myPosition == null) {
+        return;
+      }
+      //this the drivers position
+      var posLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
+      LatLng? destinationLatLng;
+
+      if (status == "continue") {
+        destinationLatLng = widget.clientDetails.pickup;
+      } else {
+        destinationLatLng = widget.clientDetails.dropoff;
+      }
+
+      var directionDetails = await AssistantMethod.obtainPlaceDirectionDetails(
+          posLatLng, destinationLatLng!);
+      if (directionDetails != null) {
+        setState(() {
+          durationRide = directionDetails.durationText!;
+        });
+      }
+
+      isRequestingDirection = false;
+    }
+  }
 
   // }
 
@@ -595,7 +739,36 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
     saveEarnings(fareAmount);
   }
+SendPrompt() async{
 
+  var currentLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
+
+  var directionalDetails = await AssistantMethod.obtainPlaceDirectionDetails(
+      widget.clientDetails.pickup!, currentLatLng);
+
+
+  int fareAmount = AssistantMethod.calculateFares(directionalDetails!);
+
+  String? rideRequestId = widget.clientDetails.ride_request_id;
+  // clientRequestRef
+  //     .child(rideRequestId!)
+  //     .child("fares")
+  //     .set(fareAmount.toString());
+  clientRequestRef.child(rideRequestId!).child("status").set("At Gas Station");
+
+
+  // showDialog(
+  //   context: context,
+  //   barrierDismissible: false,
+  //   builder: (BuildContext context) => CollectFareDialog(
+  //     paymentMethod: widget.clientDetails.payment_method,
+  //     fareAmount: fareAmount,
+  //   ),
+  // );
+
+  saveEarnings(fareAmount);
+
+}
   void saveEarnings(int fareAmount) {
     Ridersdb
         .child(currentfirebaseUser!.uid)

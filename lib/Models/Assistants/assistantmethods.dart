@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:filld_rider/Models/address.dart';
 import 'package:filld_rider/Models/directDetails.dart';
 import 'package:filld_rider/assistants/requestAssistant.dart';
@@ -11,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../Ride_r.dart';
 import 'package:filld_rider/Models/history.dart';
+import 'package:http/http.dart' as http;
 
 import '../../DataHandler/appData.dart';
 import '../../configMaps.dart';
@@ -20,6 +23,39 @@ import '../Users.dart';
 class AssistantMethod{
 
 
+  static sendNotificationToClient(String token, context, String ride_request_id) async {
+    // var destination =
+    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
+    Map<String, String> headerMap = {
+      'Content-Type': 'application/json',
+      'Authorization': serverToken,
+    };
+
+    Map notificationMap = {
+      'body': 'Gas Station Number Sent by Rider.',
+        'title': 'Rider Has Arrived At Gas Station'
+    };
+
+    Map dataMap = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': '1',
+      'status': 'done',
+      // 'ride_request_id': "ride_request_id",
+    };
+
+    Map sendNotificationMap = {
+      "notification": notificationMap,
+      "data": dataMap,
+      "priority": "high",
+      "to": token,
+    };
+
+    var res = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: headerMap,
+      body: jsonEncode(sendNotificationMap),
+    );
+  }
 
 
   static void getCurrentOnlineUserInfo(BuildContext context) async {

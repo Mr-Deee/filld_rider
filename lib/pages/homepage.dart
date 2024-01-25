@@ -271,9 +271,9 @@ class _homepageState extends State<homepage> {
 
       }
 
-      PushNotificationService pushNotificationService = PushNotificationService();
-      pushNotificationService.initialize(context);
-      pushNotificationService.getToken();
+      // PushNotificationService pushNotificationService = PushNotificationService();
+      // pushNotificationService.initialize(context);
+      // pushNotificationService.getToken();
     });
 
     PushNotificationService pushNotificationService = PushNotificationService();

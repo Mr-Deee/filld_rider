@@ -37,6 +37,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   double _height = 70;
   Color _color = Colors.green;
   BorderRadiusGeometry _borderRadius = BorderRadius.circular(10);
+  final phonecontroller = TextEditingController();
 
   bool _isCollapsed = false;
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
@@ -306,8 +307,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                   });
 
                                   initTimer();
-                                } else if (status == "arrived") {
-                                  status = "Continue";
+                                } else if (status == "onride") {
+                                  ShowPrompt();
                                   String? rideRequestId =
                                       widget.clientDetails.ride_request_id;
                                   clientRequestRef
@@ -324,23 +325,26 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                               },
                               child: Padding(
                                 padding: EdgeInsets.all(17.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      btnTitle,
-                                      style: TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
-                                    ),
-                                    Icon(
-                                      Icons.sports_motorsports,
-                                      color: Colors.black,
-                                      size: 26.0,
-                                    ),
-                                  ],
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        btnTitle,
+                                        style: TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black),
+                                      ),
+                                      Icon(
+                                        Icons.sports_motorsports,
+                                        color: Colors.black,
+                                        size: 26.0,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
@@ -600,41 +604,100 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     RiderRequestRef.child(currentfirebaseUser!.uid).child("history").child(
         rideRequestId).set(true);
   }
-  // void acceptRideRequest() {
-  //   String? rideRequestId = widget.clientDetails.ride_request_id;
-  //   clientRequestRef.child(rideRequestId!).child("status").set("accepted");
-  //   clientRequestRef
-  //       .child(rideRequestId)
-  //       .child("artisan_name")
-  //       .set(riderinformation?.firstname);
-  //   clientRequestRef
-  //       .child(rideRequestId)
-  //       .child("artisan_phone")
-  //       .set(riderinformation?.phone);
-  //   clientRequestRef
-  //       .child(rideRequestId)
-  //       .child("artisan_id")
-  //       .set(riderinformation?.id);
-  //   clientRequestRef.child(rideRequestId).child("artisan_details").set(
-  //       '${riderinformation?.education} ● ${riderinformation?.servicetype} ● ${riderinformation?.phone}');
-  //
-  //   clientRequestRef
-  //       .child(rideRequestId)
-  //       .child("profilepicture")
-  //       .set(riderinformation?.profilepicture);
-  //
-  //   Map locMap = {
-  //     "latitude": currentPosition?.latitude.toString(),
-  //     "longitude": currentPosition?.longitude.toString(),
-  //   };
-  //   clientRequestRef.child(rideRequestId).child("artisan_location").set(locMap);
-  //
-  //     RiderRequestRef
-  //       .child(currentfirebaseUser!.uid)
-  //       .child("history")
-  //       .child(rideRequestId)
-  //       .set(true);
-  // }
+
+  Future<void> ShowPrompt() async {
+    // var currentLatLng = LatLng(myPosition!.latitude, myPosition!.longitude);
+    //
+    // var directionalDetails = await AssistantMethod.obtainPlaceDirectionDetails(
+    //     widget.clientDetails.pickup!, currentLatLng);
+    //
+    // int fareAmount = AssistantMethod.calculateFares(directionalDetails!);
+    //
+    String? rideRequestId = widget.clientDetails.ride_request_id;
+
+    // Show a prompt to enter a number
+    String? transactionId = await showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text("Send"),
+        content: Text("Send"),
+
+        // TextFormField(
+        //   keyboardType: TextInputType.number,
+        //   controller: phonecontroller,
+        //   decoration: InputDecoration(labelText: "Gas Station N.O"),
+        // ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+               clientRequestRef.child(rideRequestId!).child("GasStationNum").set(phonecontroller.text.toString());
+               print(phonecontroller);
+               notifyClient(rideRequestId);
+               // clientRequestRef.child(rideRequestId!).child("status").set("phonecontroller");
+
+              // Navigator.pop(context, transactionIdController.text);
+            },
+            child: Text("Send"),
+          ),
+        ],
+      ),
+    );
+
+    // Send the entered number as a prompt to the client app
+    // sendTransactionIdToClientApp(transactionId);
+
+    // clientRequestRef.child(rideRequestId!).child("status").set("At Gas Station");
+
+    // saveEarnings();
+  }
+
+
+  void notifyClient(String rideRequestId) {
+    String? rideRequestId = widget.clientDetails.ride_request_id;
+print(rideRequestId);
+    DatabaseReference? rideIdRef = clientRequestRef.child(rideRequestId!).child("client_id");
+
+    // Use once() to get the client_id from the database
+    rideIdRef.once().then((DatabaseEvent event) {
+      if (event.snapshot.value != null) {
+        String clientId = event.snapshot.value.toString();
+
+        // Set the "GasCompany" field in Clientsdb using the retrieved client_id
+        Clientsdb.child(clientId).child("GasCompany").set(rideRequestId);
+
+        // Now, you can use clientId for any further processing
+        // ...
+
+        // Retrieve client's email
+        Clientsdb.child(clientId).child("token").once().then((event) {
+          print("wants to send");
+          final snap = event.snapshot;
+          if (snap.value != null) {
+            String token = snap.value.toString();
+            print("wants to send2");
+            // Send notification to the client
+            AssistantMethod.sendNotificationToClient(token, context, rideRequestId);
+            print("wants to send3");
+            print('waaa:$rideRequestId');
+          } else {
+            // Handle the case where the client's email is not available
+            return;
+          }
+        });
+      } else {
+        // Handle the case where client_id is not available
+        return;
+      }
+    });
+  }
+
+
 
   void updateRideDetails() async {
     if (isRequestingDirection == false) {

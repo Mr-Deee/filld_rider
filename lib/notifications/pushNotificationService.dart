@@ -83,6 +83,8 @@ class PushNotificationService {
   void retrieveRideRequestInfo(String rideRequestId, BuildContext context) {
     clientRequestRef.child(rideRequestId).once().then((event) {
       final map = event.snapshot.value as Map<dynamic,dynamic>;
+
+      print("reqid3:$rideRequestId");
       // var dataSnapshot = value.snapshot;
       // final map = dataSnapshot.value as Map<dynamic, dynamic>;
       //var map = Map<String, dynamic>.from(event.snapshot.value as Map);

@@ -31,6 +31,11 @@ dependencies:
   flutter:
     sdk: flutter
 
+  hubtel_merchant_checkout_sdk:
+    git:
+      url: https://github.com/hubtel/hubtel-mobile-flutter-merchant-checkout-sdk.git
+      ref: master
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -75,7 +80,7 @@ dev_dependencies:
   country_code_picker: ^3.0.0
   permission_handler: ^10.0.0
 
-  flutter_svg: ^1.0.3
+  flutter_svg:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -73,4 +73,5 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.firebase:firebase-messaging:23.2.1'
+    implementation "com.hubtel:merchant-checkout-sdk:1.0.1"
 }

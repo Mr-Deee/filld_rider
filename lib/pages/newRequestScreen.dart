@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:hubtel_merchant_checkout_sdk/hubtel_merchant_checkout_sdk.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -14,6 +15,7 @@ import '../Models/Assistants/mapKitAssistant.dart';
 import '../Models/Ride_r.dart';
 import '../Models/Users.dart';
 import '../Models/clientDetails.dart';
+import '../Models/hubtelpay.dart';
 import '../configMaps.dart';
 import '../main.dart';
 import '../progressDialog.dart';
@@ -305,10 +307,31 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                     btnTitle = "Arrived At Gas Station";
                                     btnColor = Colors.redAccent;
                                   });
-
+                                  initiatePayment2();
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) {
+                                  //           return CheckoutScreen(
+                                  //             purchaseInfo: PurchaseInfo(
+                                  //                 amount:double.parse(amountcontroller.text),
+                                  //                 customerPhoneNumber: phoneNumber,
+                                  //                 purchaseDescription: "GAS",
+                                  //                 clientReference: "REF_${DateTime.now().millisecondsSinceEpoch}"),
+                                  //             configuration: HubtelCheckoutConfiguration(
+                                  //                 merchantID: "2019342",
+                                  //                 callbackUrl: "https://webhook.site/f277-4bbc-b9e2-837f3a930ada",
+                                  //                 merchantApiKey: "NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw=="),
+                                  //             themeConfig: ThemeConfig(
+                                  //                 primaryColor: Colors
+                                  //                     .black),
+                                  //           );
+                                  //         }
+                                  //     )
+                                  // );
                                   initTimer();
                                 } else if (status == "onride") {
-                                  ShowPrompt();
+                                  // ShowPrompt();
                                   String? rideRequestId =
                                       widget.clientDetails.ride_request_id;
                                   clientRequestRef

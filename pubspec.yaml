@@ -79,6 +79,7 @@ dev_dependencies:
   fluttertoast:
   country_code_picker: ^3.0.0
   permission_handler: ^10.0.0
+  url_launcher: ^6.0.12
 
   flutter_svg:
 

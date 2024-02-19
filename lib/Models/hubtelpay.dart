@@ -12,58 +12,54 @@ class hubtelpay extends StatefulWidget {
 }
 
 Future<void> initiatePayment2() async {
-  final String url = 'https://payproxyapi.hubtel.com/items/initiate';
-  final String clientId = 'NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw==';
+  // final String url = 'https://payproxyapi.hubtel.com/items/initiate';
+  // final String clientId = 'NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw==';
   final String ?clientReference = "REF_${DateTime.now().millisecondsSinceEpoch}";
-
+  print("1:");
   // final Map<String, dynamic> requestData = {
   //
   // };
 
   try {
-    final response = await http.post(
-      Uri.parse('https://smp.hubtel.com/api/merchants/{2019342}/send/mobilemoney'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw==',
-      },
-      body: jsonEncode({
-        "RecipientName": "Daniel",
-        "RecipientMsisdn":"0503026630",
-        "Amount": 0.3,
-        "description": "Withdrawal",
-        "CustomerEmail": "merchantdaniel8@gmail.com",
-        "Channel":"vodafone-gh",
-        "callbackUrl": "https://webhook.site/f277-4bbc-b9e2-837f3a930ada",
-        "returnUrl": "http://hubtel.com/online",
-        "merchantAccountNumber": "2019342",
-        "cancellationUrl": "http://hubtel.com/online",
-        "clientReference": clientReference ?? "ee",
+    print("2");
 
-      }),
-    );
-    // return json.decode(response.body);
+   var   headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw=='
+    };
+
+
+      var request = http.Request('POST',
+          Uri.parse('https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney'));
+    request.body = json.encode({
+      "RecipientName": "Daniel",
+      "RecipientMsisdn": "233596423095",
+      "CustomerEmail": "merchantdaniel8@gmail.com",
+      "Channel": "mtn-gh",
+      "Amount": 0.1,
+      "PrimaryCallbackUrl": "https://webhook.site/66252c48b-aa29-a8f0182d01ab",
+      "Description": "Withdrawal",
+      "ClientReference": "pay132"
+    });
+    print("3");
+    request.headers.addAll(headers);
+    print("Payment URL: ");
+    http.StreamedResponse response = await request.send();
+    print("Payment URL: $response");
     if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
       try {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        final String paymentUrl = responseData['data']?['checkoutUrl'];
-        if (paymentUrl != null) {
-          final Uri paymentUri = Uri.parse(paymentUrl);
-          // Open the payment URL in a web browser or WebView
+        String paymentUrl = await response.stream.bytesToString();
+        final Uri paymentUri = Uri.parse(paymentUrl);
+
+
+        if (paymentUrl!=null) {
+          // For mobile platforms, you can use the launch function from the 'url_launcher' package
+          await launchUrl(paymentUri);
           print("Payment URL: $paymentUrl");
-          if (paymentUri != null) {
-            if (await canLaunchUrl(paymentUri)) {
-              await launchUrl(paymentUri);
-            } else {
-              print("Error launching URL: $paymentUrl");
-            }
-          }
-          else {
-            print("Expected keys not found in the response");
-          }
         } else {
-          // Handle errors
-          print("Error: ${response.statusCode}, ${response.body}");
+          // For other platforms, you can print the URL for the user to open manually
+          print("Payment URL: $paymentUrl");
         }
       } catch (e) {
         // Handle network or other errors

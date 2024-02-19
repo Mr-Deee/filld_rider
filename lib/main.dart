@@ -1,6 +1,7 @@
 import 'package:filld_rider/Models/Ride_r.dart';
 import 'package:filld_rider/Models/appstate.dart';
 import 'package:filld_rider/Models/history.dart';
+import 'package:filld_rider/Models/hubtelpay.dart';
 import 'package:filld_rider/assistants/helper.dart';
 import 'package:filld_rider/pages/Onetimepassword.dart';
 import 'package:filld_rider/pages/homepage.dart';
@@ -101,6 +102,7 @@ class MyApp extends StatelessWidget {
           "/Main": (context) => MainScreen(),
           "/verify": (context) => OtpVerificationScreen(verificationId: '',),
           "/Riderdetails": (context) => Riderdetails(),
+          "/hubtel": (context) => hubtelpay(),
 
           // "/SignUP": (context) => SignupPage(),
           "/authpage": (context) => AuthPage(),

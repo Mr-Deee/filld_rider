@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import '../Models/Ride_r.dart';
 import '../Models/Users.dart';
+import '../Models/hubtelpay.dart';
 import '../ProfileInfo.dart';
 import '../configMaps.dart';
 // import 'package:flutter_svg/svg.dart';
@@ -185,6 +186,32 @@ final rideprovider= Provider.of<Ride_r>(context).riderInfo;
                               fontWeight: FontWeight.w500),
                         )),
                   )
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                      onTap: () {
+    Navigator.pushNamedAndRemoveUntil(
+    context, '/hubtel', (route) => false);
+    // Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        height: 50.0,
+                        width: 90.0,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.red),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                            child: Text(
+                              'PAY',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w500),
+                            )),
+                      )
+                  ),
+                ],
               ),
             ],
           ),

@@ -307,7 +307,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                     btnTitle = "Arrived At Gas Station";
                                     btnColor = Colors.redAccent;
                                   });
-                                  initiatePayment2();
+                                  // initiatePayment2();
                                   // Navigator.push(
                                   //     context,
                                   //     MaterialPageRoute(

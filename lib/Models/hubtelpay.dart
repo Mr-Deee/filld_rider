@@ -115,7 +115,7 @@ class _hubtelpayState extends State<hubtelpay> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _sendDirectPayment,
+              onPressed: executeScript,
               child: Text('Send Direct Payment'),
             ),
           ],
@@ -164,5 +164,36 @@ Future<void> _sendDirectPayment() async {
     // Payment request failed
     // You can handle error response here
     print('Direct payment request failed with status code: ${response.statusCode}');
+  }
+}
+Future<void> executeScript() async {
+  final apiUrl = 'https://us-central1-artisan-5c916.cloudfunctions.net/hubtelpay';
+      //'http://35.208.43.102:8080/executescript'; // Update with your VM IP address
+  final Map<String, dynamic> requestData = {
+    'RecipientName': "_recipientNameController.text",
+    'recipientMsisdn': "233503026630",
+     'CustomerEmail': "merchantdaniel8@gmail.com",
+     'Channel': 'vodafone-gh',
+      'Amount':0.2,
+     'PrimaryCallbackUrl': 'https://webhook.site/b503d1a9-e726-f315254a6ede',
+     'Description': "dd",
+      'ClientReference': 'pay101'
+    // Include other dynamic values as needed
+  };
+  print('Script executed successfully1');
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(requestData),
+    );
+    print('Script executed successfully2');
+    if (response.statusCode == 200) {
+      print('Script executed successfully');
+    } else {
+      print('Failed to execute script. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error executing script: $e');
   }
 }

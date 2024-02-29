@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:ssh2/ssh2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -77,8 +77,11 @@ class hubtelpay extends StatefulWidget {
 final TextEditingController _recipientNameController = TextEditingController();
 final TextEditingController _recipientMsisdnController = TextEditingController();
 final TextEditingController _customerEmailController = TextEditingController();
+final TextEditingController _channelController = TextEditingController();
 final TextEditingController _amountController = TextEditingController();
+final TextEditingController _primaryCallbackController = TextEditingController();
 final TextEditingController _descriptionController = TextEditingController();
+final TextEditingController _clientReferenceController = TextEditingController();
 class _hubtelpayState extends State<hubtelpay> {
 
   @override
@@ -110,12 +113,17 @@ class _hubtelpayState extends State<hubtelpay> {
               keyboardType: TextInputType.number,
             ),
             TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
+              controller: _amountController,
+              decoration: InputDecoration(labelText: 'Amount'),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: _clientReferenceController,
+              decoration: InputDecoration(labelText: 'Reference'),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: executeScript,
+              onPressed: _executeScript,
               child: Text('Send Direct Payment'),
             ),
           ],
@@ -127,73 +135,104 @@ class _hubtelpayState extends State<hubtelpay> {
 }
 
 
-Future<void> _sendDirectPayment() async {
-  final String apiUrl = 'https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney';
+// Future<void> _sendDirectPayment() async {
+//   final String apiUrl = 'https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney';
+//
+//   // Replace 'YOUR_API_KEY' with your actual Hubtel API key
+//   final String apiKey = 'YOUR_API_KEY';
+//
+//   final Map<String, dynamic> requestData = {
+//     'RecipientName': "Daniel",
+//     'RecipientMsisdn': "233503926630",
+//     'CustomerEmail': "merchantdaniel8@gmail.com",
+//     'Channel': 'vodafone-gh',
+//     'Amount': 0.2,
+//     'PrimaryCallbackUrl': 'https://webhook.site/b503d1a9-e726-f315254a6ede',
+//     'Description': "_descriptionController.tex",
+//     'ClientReference': 'pay101'
+//   };
+//
+//   final response = await http.post(
+//     Uri.parse('https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney'),
+//     headers: {
+//       'Content-Type': 'application/json',
+//       'Authorization': 'Basic NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw==',
+//       'Host': 'https://smp.hubtel.com', // Corrected the host
+//       'Accept': 'application/json',
+//       'Cache-Control': 'no-cache',
+//     },
+//     body: jsonEncode(requestData),
+//   );
+//
+//   if (response.statusCode == 200) {
+//     // Payment request successful
+//     // You can handle success response here
+//     print('Direct payment request successful');
+//   } else {
+//     // Payment request failed
+//     // You can handle error response here
+//     print('Direct payment request failed with status code: ${response.statusCode}');
+//   }
+// }
+// Future<void> executeScript() async {
+//   final apiUrl = 'https://us-central1-artisan-5c916.cloudfunctions.net/hubtelpay';
+//       //'http://35.208.43.102:8080/executescript'; // Update with your VM IP address
+//   final Map<String, dynamic> requestData = {
+//     'RecipientName': "_recipientNameController.text",
+//     'recipientMsisdn': "233503026630",
+//      'CustomerEmail': "merchantdaniel8@gmail.com",
+//      'Channel': 'vodafone-gh',
+//       'Amount':0.2,
+//      'PrimaryCallbackUrl': 'https://webhook.site/b503d1a9-e726-f315254a6ede',
+//      'Description': "dd",
+//       'ClientReference': 'pay101'
+//     // Include other dynamic values as needed
+//   };
+//   print('Script executed successfully1');
+//   try {
+//     final response = await http.post(
+//       Uri.parse(apiUrl),
+//       headers: {'Content-Type': 'application/json'},
+//       body: jsonEncode(requestData),
+//     );
+//     print('Script executed successfully2');
+//     if (response.statusCode == 200) {
+//       print('Script executed successfully');
+//     } else {
+//       print('Failed to execute script. Status code: ${response.statusCode}');
+//     }
+//   } catch (e) {
+//     print('Error executing script: $e');
+//   }
+// }
+void _executeScript() async {
+  SSHClient client = SSHClient(
+    host: '35.208.43.102', // Replace with your GCP VM's static IP
+    port: 22, // Default SSH port
+    username: 'merchantdaniel8@gmail.com', // SSH username
+    passwordOrKey: ''
 
-  // Replace 'YOUR_API_KEY' with your actual Hubtel API key
-  final String apiKey = 'YOUR_API_KEY';
-
-  final Map<String, dynamic> requestData = {
-    'RecipientName': "Daniel",
-    'RecipientMsisdn': "233503926630",
-    'CustomerEmail': "merchantdaniel8@gmail.com",
-    'Channel': 'vodafone-gh',
-    'Amount': 0.2,
-    'PrimaryCallbackUrl': 'https://webhook.site/b503d1a9-e726-f315254a6ede',
-    'Description': "_descriptionController.tex",
-    'ClientReference': 'pay101'
-  };
-
-  final response = await http.post(
-    Uri.parse('https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Basic NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw==',
-      'Host': 'https://smp.hubtel.com', // Corrected the host
-      'Accept': 'application/json',
-      'Cache-Control': 'no-cache',
-    },
-    body: jsonEncode(requestData),
   );
 
-  if (response.statusCode == 200) {
-    // Payment request successful
-    // You can handle success response here
-    print('Direct payment request successful');
-  } else {
-    // Payment request failed
-    // You can handle error response here
-    print('Direct payment request failed with status code: ${response.statusCode}');
-  }
-}
-Future<void> executeScript() async {
-  final apiUrl = 'https://us-central1-artisan-5c916.cloudfunctions.net/hubtelpay';
-      //'http://35.208.43.102:8080/executescript'; // Update with your VM IP address
-  final Map<String, dynamic> requestData = {
-    'RecipientName': "_recipientNameController.text",
-    'recipientMsisdn': "233503026630",
-     'CustomerEmail': "merchantdaniel8@gmail.com",
-     'Channel': 'vodafone-gh',
-      'Amount':0.2,
-     'PrimaryCallbackUrl': 'https://webhook.site/b503d1a9-e726-f315254a6ede',
-     'Description': "dd",
-      'ClientReference': 'pay101'
-    // Include other dynamic values as needed
-  };
-  print('Script executed successfully1');
   try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(requestData),
-    );
-    print('Script executed successfully2');
-    if (response.statusCode == 200) {
-      print('Script executed successfully');
-    } else {
-      print('Failed to execute script. Status code: ${response.statusCode}');
-    }
+    String? result = await client.connect();
+    print(result);
+
+    // Command to execute the script with parameters
+    String command = 'bash /hubtel_request.sh '
+        '${_recipientNameController.text} '
+        '${_recipientMsisdnController.text} '
+        '${_amountController.text} '
+        '${_channelController.text} '
+        '${_clientReferenceController.text} '
+    // Add other parameters here
+        .trim();
+
+    String? output = await client.execute(command);
+    print(output);
+
+    client.disconnect();
   } catch (e) {
-    print('Error executing script: $e');
+    print('Error: $e');
   }
 }

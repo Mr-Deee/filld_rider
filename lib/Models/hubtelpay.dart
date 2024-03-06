@@ -11,68 +11,7 @@ class hubtelpay extends StatefulWidget {
   State<hubtelpay> createState() => _hubtelpayState();
 }
 
-// Future<void> initiatePayment2() async {
-//   // final String url = 'https://payproxyapi.hubtel.com/items/initiate';
-//   // final String clientId = 'NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw==';
-//   final String ?clientReference = "REF_${DateTime.now().millisecondsSinceEpoch}";
-//   print("1:");
-//   // final Map<String, dynamic> requestData = {
-//   //
-//   // };
-//
-//   try {
-//     print("2");
-//
-//    var   headers = {
-//     'Content-Type': 'application/json',
-//     'Authorization': 'Basic NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw=='
-//      'Host:10.128.0.3'
-//     };
-//
-//
-//       var request = http.Request('POST',
-//           Uri.parse('https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney'));
-//     request.body = json.encode({
-//       "RecipientName": "Daniel",
-//       "RecipientMsisdn": "233596423095",
-//       "CustomerEmail": "merchantdaniel8@gmail.com",
-//       "Channel": "mtn-gh",
-//       "Amount": 0.1,
-//       "PrimaryCallbackUrl": "https://webhook.site/66252c48b-aa29-a8f0182d01ab",
-//       "Description": "Withdrawal",
-//       "ClientReference": "pay132"
-//     });
-//     print("3");
-//     request.headers.addAll(headers);
-//     http.StreamedResponse response = await request.send();
-//     print("Payment URL1: $request");
-//     if (response.statusCode == 200) {
-//       String dasd= await response.stream.bytesToString();
-//       print("dash:${dasd}");
-//       print("Payment URL2: $request");
-//       try {
-//         String paymentUrl = await response.stream.bytesToString();
-//         final Uri paymentUri = Uri.parse(paymentUrl);
-//
-//
-//         if (paymentUrl!=null) {
-//           // For mobile platforms, you can use the launch function from the 'url_launcher' package
-//           await launchUrl(paymentUri);
-//           print("Payment URL1: $paymentUri");
-//         } else {
-//           // For other platforms, you can print the URL for the user to open manually
-//           print("Payment URL1: $paymentUri");
-//         }
-//       } catch (e) {
-//         // Handle network or other errors
-//         print("Error: $e");
-//       }
-//     }
-//   }catch (e) {
-//     // Handle network or other errors
-//     print("Error: $e");
-//   }
-// }
+
 
 final TextEditingController _recipientNameController = TextEditingController();
 final TextEditingController _recipientMsisdnController = TextEditingController();
@@ -112,11 +51,7 @@ class _hubtelpayState extends State<hubtelpay> {
               decoration: InputDecoration(labelText: 'Amount'),
               keyboardType: TextInputType.number,
             ),
-            TextField(
-              controller: _amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.number,
-            ),
+
             TextField(
               controller: _clientReferenceController,
               decoration: InputDecoration(labelText: 'Reference'),
@@ -134,89 +69,19 @@ class _hubtelpayState extends State<hubtelpay> {
 
 }
 
-
-// Future<void> _sendDirectPayment() async {
-//   final String apiUrl = 'https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney';
-//
-//   // Replace 'YOUR_API_KEY' with your actual Hubtel API key
-//   final String apiKey = 'YOUR_API_KEY';
-//
-//   final Map<String, dynamic> requestData = {
-//     'RecipientName': "Daniel",
-//     'RecipientMsisdn': "233503926630",
-//     'CustomerEmail': "merchantdaniel8@gmail.com",
-//     'Channel': 'vodafone-gh',
-//     'Amount': 0.2,
-//     'PrimaryCallbackUrl': 'https://webhook.site/b503d1a9-e726-f315254a6ede',
-//     'Description': "_descriptionController.tex",
-//     'ClientReference': 'pay101'
-//   };
-//
-//   final response = await http.post(
-//     Uri.parse('https://smp.hubtel.com/api/merchants/2018643/send/mobilemoney'),
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': 'Basic NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw==',
-//       'Host': 'https://smp.hubtel.com', // Corrected the host
-//       'Accept': 'application/json',
-//       'Cache-Control': 'no-cache',
-//     },
-//     body: jsonEncode(requestData),
-//   );
-//
-//   if (response.statusCode == 200) {
-//     // Payment request successful
-//     // You can handle success response here
-//     print('Direct payment request successful');
-//   } else {
-//     // Payment request failed
-//     // You can handle error response here
-//     print('Direct payment request failed with status code: ${response.statusCode}');
-//   }
-// }
-// Future<void> executeScript() async {
-//   final apiUrl = 'https://us-central1-artisan-5c916.cloudfunctions.net/hubtelpay';
-//       //'http://35.208.43.102:8080/executescript'; // Update with your VM IP address
-//   final Map<String, dynamic> requestData = {
-//     'RecipientName': "_recipientNameController.text",
-//     'recipientMsisdn': "233503026630",
-//      'CustomerEmail': "merchantdaniel8@gmail.com",
-//      'Channel': 'vodafone-gh',
-//       'Amount':0.2,
-//      'PrimaryCallbackUrl': 'https://webhook.site/b503d1a9-e726-f315254a6ede',
-//      'Description': "dd",
-//       'ClientReference': 'pay101'
-//     // Include other dynamic values as needed
-//   };
-//   print('Script executed successfully1');
-//   try {
-//     final response = await http.post(
-//       Uri.parse(apiUrl),
-//       headers: {'Content-Type': 'application/json'},
-//       body: jsonEncode(requestData),
-//     );
-//     print('Script executed successfully2');
-//     if (response.statusCode == 200) {
-//       print('Script executed successfully');
-//     } else {
-//       print('Failed to execute script. Status code: ${response.statusCode}');
-//     }
-//   } catch (e) {
-//     print('Error executing script: $e');
-//   }
-// }
 void _executeScript() async {
   SSHClient client = SSHClient(
     host: '35.208.43.102', // Replace with your GCP VM's static IP
     port: 22, // Default SSH port
-    username: 'merchantdaniel8@gmail.com', // SSH username
-    passwordOrKey: ''
-
+    username: 'filldprojectwideuser',
+    passwordOrKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQChwTWL3hHmEMgNkx2R0lJyej2ADb37HFOzKEg9FmylStC3owePQzDV+CY5DTdxhVuBIpUz6K32zD+xZpVWD8U7niXu0iuIbo0QuJoI8eRP5JYo7R82R2aswPB480OYouI0X22/08pc1c/x7lKCk1pUxYAE/qHRD2XcwFa4EyvjLu27/GGPVWIo+d9Gq6MQ4nkN41Z4PvxjcQfEBZH3lPiu27p6TpXe3lfEhhvlvETjb3KrP9o5X/cFBnf07bKoYyQq/bHSxxUWUwLFl+INXJSNmvVKyImW7V5l6WCwd8LZC6M7K8Zu6bTIMBSeLzBAEP84UgCCGdu8P97BHW+zjsqLpll8gmz+WY7qPfmuUCG+VCZengWd2zdhdWfvEYrdGvfzf6qMGglIj0hHeIF1vPSWxN1QlC/Eb7OSxokI+oCZSMxtttrDoodVNTtbPrkOjQlGiC5Ql3374vGFIckw4YUHUFtLZbpznxk5QuwoaJtdt6N1tdu2C7e3WVQdCWPjjq/ZE6IrCPufAuMeat6vhXCOrrGYXfcPXDSO5peekdVzFJeZU4MrlsQjP0bcBXZHhww19Zj/BoS9fChSdVbv9KbXK/5Jtw0gGqtnUFSipR0NjjdxqP/fVW6wpfk85/cPcAwDq8r42soivMVkER1vL0roMpYx9peyZ9psYruNOg15gQ== filldprojectwideuser'
+    // passwordOrKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDO52OhhtiKwMCOI2ok6E+vljKnea+TH9HtlqKDLJNw+GFiJaE5WlvnjLpebg/maasf6Op05fsKsY9TH0YUv3ksTg0j8YPdCpcguHCv1gXfZU77gBhVF0KNylr4fcKyl5tmYCp5ZTIv31NSTF+e3+enZDRrZsGmnpT63wWVQQFTBl23t+BpUHghoFaL+A6vpEeyP0rCe+EdtO1+4xQhk2t4B3Q0/wqV82DLDB4QJc2wC0N3uCILIz69qKNQL9qxVdRXoiyYE6Bw2DzVRYK0h+/3CdM8yC4fVLjD98b8h3WEDywdVy+JXGAfa4fkb5zrggQQXO1Eu+HV7i/ojaQcXIUr merchantdaniel8@filld.us-central1-a.c.artisan-5c916.internal',
   );
 
   try {
+    // Attempt SSH connection
     String? result = await client.connect();
-    print(result);
+    print('Connection result: $result');
 
     // Command to execute the script with parameters
     String command = 'bash /hubtel_request.sh '
@@ -228,11 +93,48 @@ void _executeScript() async {
     // Add other parameters here
         .trim();
 
+    // Execute the command
     String? output = await client.execute(command);
-    print(output);
+    print('Command output: $output');
 
+    // Disconnect SSH client
     client.disconnect();
   } catch (e) {
-    print('Error: $e');
+    // Error handling
+    print('Error occurred: $e');
+    // Add more specific error handling and logging if needed
   }
 }
+
+
+//
+// void _executeScript() async {
+//   SSHClient client = SSHClient(
+//     host: '35.208.43.102', // Replace with your GCP VM's static IP
+//     port: 22, // Default SSH port
+//     username: 'merchantdaniel8',
+//     passwordOrKey:'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDO52OhhtiKwMCOI2ok6E+vljKnea+TH9HtlqKDLJNw+GFiJaE5WlvnjLpebg/maasf6Op05fsKsY9TH0YUv3ksTg0j8YPdCpcguHCv1gXfZU77gBhVF0KNylr4fcKyl5tmYCp5ZTIv31NSTF+e3+enZDRrZsGmnpT63wWVQQFTBl23t+BpUHghoFaL+A6vpEeyP0rCe+EdtO1+4xQhk2t4B3Q0/wqV82DLDB4QJc2wC0N3uCILIz69qKNQL9qxVdRXoiyYE6Bw2DzVRYK0h+/3CdM8yC4fVLjD98b8h3WEDywdVy+JXGAfa4fkb5zrggQQXO1Eu+HV7i/ojaQcXIUr merchantdaniel8@filld.us-central1-a.c.artisan-5c916.internal',
+//   );
+//
+//   try {
+//     String? result = await client.connect();
+//     print('ddf:$result');
+//
+//     // Command to execute the script with parameters
+//     String command = 'bash /hubtel_request.sh '
+//         '${_recipientNameController.text} '
+//         '${_recipientMsisdnController.text} '
+//         '${_amountController.text} '
+//         '${_channelController.text} '
+//         '${_clientReferenceController.text} '
+//     // Add other parameters here
+//         .trim();
+//
+//     String? output = await client.execute(command);
+//     print(output);
+//
+//     client.disconnect();
+//   } catch (e) {
+//     print('Error: $e');
+//   }
+// }

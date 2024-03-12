@@ -24,6 +24,7 @@ class EarningsTabPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 50),
                 child: Column(
                   children: [
+                   Image(image: AssetImage("assets/images/Moto.png")),
                     Text(
                       'Total Earnings',
                       style: TextStyle(color: Colors.white),

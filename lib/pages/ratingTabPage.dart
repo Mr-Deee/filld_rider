@@ -12,17 +12,19 @@ class _RatingTabPageState extends State<RatingTabPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Rate Review",style: TextStyle(fontWeight: FontWeight.bold),),
+      centerTitle: true,),
       backgroundColor: Colors.white60,
       body: Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         child: Container(
           margin: EdgeInsets.all(5.0),
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white70,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
           child: Column(
@@ -32,7 +34,7 @@ class _RatingTabPageState extends State<RatingTabPage> {
                 height: 22.0,
               ),
               Text(
-                "Your Rating",
+                "Your Review",
                 style: TextStyle(
                     fontSize: 20.0,
                     fontFamily: "Brand Bold",

@@ -6,7 +6,8 @@ import '../configMaps.dart';
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({Key? key, this.leading, this.subtitle, this.title})
       : super(key: key);
-  final String? leading;
+  final IconData? leading; // Changed type to IconData  final String ?title;
+
   final String ?title;
   final String ?subtitle;
 
@@ -22,11 +23,16 @@ class ProfileInfo extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                leading!,
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0,left: 18.0),
+                child: Icon(
+                  leading, // Use IconData directly
+                  size: 27.0, // Adjust size as needed
+                  color: Colors.black, // Adjust color as needed
+                ),
               ),
               SizedBox(
-                width: 20.0,
+                width: 30.0,
               ),
 
 

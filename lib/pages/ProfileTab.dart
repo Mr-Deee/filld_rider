@@ -1,5 +1,5 @@
 
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:filld_rider/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -60,15 +60,17 @@ class ProfileTabPage extends StatelessWidget {
                       ),
 
                       child: Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: CircleAvatar(
+                        padding:  EdgeInsets.all(18.0),
+                        child:CircleAvatar(
                           radius: 60,
                           backgroundImage: rideprovider?.profilepicture != null
-                              ? NetworkImage(rideprovider!.profilepicture!)
-                              : AssetImage("assets/images/user_icon.png") as ImageProvider<Object>,
-                        ),
-                      ),
+                              ? CachedNetworkImageProvider(rideprovider!.profilepicture!)
+                              : AssetImage("assets/images/user_icon.png")as ImageProvider<Object>,
+                        )
+
+
                     ),
+                    )
                   ],
                 ),
               ),

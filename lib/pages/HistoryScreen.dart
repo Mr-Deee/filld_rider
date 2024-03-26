@@ -51,7 +51,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           final historyItem= Provider.of<AppData>(context, listen: false).tripHistoryDataList[index];
 
           return HistoryItem(
-            clienthistory: Provider.of<AppData>(context, listen: false).tripHistoryDataList[index],
+            clientHistory: Provider.of<AppData>(context, listen: false).tripHistoryDataList[index],
           );
         },
         separatorBuilder: (BuildContext context, int index) => Divider(thickness: 3.0, height: 3.0,),

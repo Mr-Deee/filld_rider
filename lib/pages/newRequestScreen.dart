@@ -341,10 +341,21 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                   await getPlaceDirection2(
                                       widget.clientDetails.dropoff!,
                                       widget.clientDetails.pickup!);
+
+                                  setState(() {
+                                    btnTitle = "End Trip";
+                                    btnColor = Colors.redAccent;
+                                    endTheTrip();
+
+                                  });
                                 }
-                                // else if (status == "onride") {
-                                //   endTheTrip();
-                                // }
+                                else if (status == "onride") {
+                                  setState(() {
+                                    btnTitle = "End Trip";
+                                    btnColor = Colors.greenAccent;
+                                  });
+                                  endTheTrip();
+                                }
                               },
                               child: Padding(
                                 padding: EdgeInsets.all(17.0),

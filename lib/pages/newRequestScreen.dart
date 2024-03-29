@@ -295,7 +295,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
                                   Navigator.pop(context);
                                 } else if (status == "arrived") {
-                                  status = "onride";
+                                  status = "returning";
                                   String? rideRequestId =
                                       widget.clientDetails.ride_request_id;
                                   clientRequestRef
@@ -330,8 +330,10 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                   //     )
                                   // );
                                   initTimer();
-                                } else if (status == "onride") {
+                                }
+                                else if (status == "returning") {
                                   // ShowPrompt();
+                                  status = "completed";
                                   String? rideRequestId =
                                       widget.clientDetails.ride_request_id;
                                   clientRequestRef
@@ -341,20 +343,19 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                   await getPlaceDirection2(
                                       widget.clientDetails.dropoff!,
                                       widget.clientDetails.pickup!);
-
                                   setState(() {
-                                    btnTitle = "End Trip";
-                                    btnColor = Colors.redAccent;
-                                    endTheTrip();
-
-                                  });
-                                }
-                                else if (status == "onride") {
-                                  setState(() {
-                                    btnTitle = "End Trip";
+                                    btnTitle = "Complete Delivery";
                                     btnColor = Colors.greenAccent;
+                                    //
                                   });
-                                  endTheTrip();
+
+                                }
+                                else if (status == "completed") {
+                                  // setState(() {
+                                  //   btnTitle = "End Trip";
+                                  //   btnColor = Colors.greenAccent;
+                                  // });
+                                endTheTrip();
                                 }
                               },
                               child: Padding(

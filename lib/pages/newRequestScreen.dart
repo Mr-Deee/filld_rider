@@ -37,7 +37,7 @@ class NewRequestScreen extends StatefulWidget {
 
 class _NewRequestScreenState extends State<NewRequestScreen> {
   double _width = 70;
-  double _height = 70
+  double _height = 70;
   String? facts ="";
 
   Color _color = Colors.green;

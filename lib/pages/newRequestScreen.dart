@@ -830,6 +830,7 @@ print(rideRequestId);
     clientRequestRef.child(rideRequestId).child("status").set("ended");
     rideStreamSubscription?.cancel();
 
+
     showDialog(
       context: context,
       barrierDismissible: false,

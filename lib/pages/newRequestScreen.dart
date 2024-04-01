@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:hubtel_merchant_checkout_sdk/hubtel_merchant_checkout_sdk.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -36,7 +37,9 @@ class NewRequestScreen extends StatefulWidget {
 
 class _NewRequestScreenState extends State<NewRequestScreen> {
   double _width = 70;
-  double _height = 70;
+  double _height = 70
+  String? facts ="";
+
   Color _color = Colors.green;
   BorderRadiusGeometry _borderRadius = BorderRadius.circular(10);
   final phonecontroller = TextEditingController();
@@ -889,5 +892,34 @@ SendPrompt() async{
             .set(totalEarnings.toStringAsFixed(2));
       }
     });
+  }
+
+  Future<void> fetchFacts() async {
+    final url = Uri.parse('https://api.api-ninjas.com/v1/facts?limit=1');
+    final headers = {'X-Api-Key': 'C6I2OTzM2wctRCE6KKi8sQ==SYJVNnpVrCDaY5rE'};
+
+    final response = await http.get(url, headers: headers);
+
+    try {
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        print('jsonData: $jsonData');
+        final data  = jsonData[0]['fact'] ;
+
+        print('Type of data: ${data.runtimeType}');
+        print('Value of data: $data');
+
+        setState(() {
+          facts = data;
+        });
+        // _showFactDialog();
+      } else {
+        throw Exception('Failed to load facts');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

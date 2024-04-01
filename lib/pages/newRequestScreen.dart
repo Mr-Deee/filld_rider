@@ -346,6 +346,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                   await getPlaceDirection2(
                                       widget.clientDetails.dropoff!,
                                       widget.clientDetails.pickup!);
+                                  fetchFacts();
                                   setState(() {
                                     btnTitle = "Complete Delivery";
                                     btnColor = Colors.greenAccent;

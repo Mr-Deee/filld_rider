@@ -86,45 +86,6 @@ class _homepageState extends State<homepage> {
 
   }
 
-
-  // void _getCurrentLocation() async {
-  //   try {
-  //     Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.bestForNavigation,
-  //     );
-  //     // List<Placemark> placemarks = await placemarkFromCoordinates(
-  //     //   position.latitude,
-  //     //   position.longitude,
-  //     // );
-  //     List<Placemark> placemarks = await GeocodingPlatform.instance
-  //         .placemarkFromCoordinates(position.latitude, position.longitude,
-  //         localeIdentifier: "en");
-  //     if (placemarks.isNotEmpty) {
-  //       Placemark placemark = placemarks[0];
-  //       String placeName = placemark.name ?? ''; // Name of the place
-  //       String locality = placemark.locality ?? ''; // City or locality
-  //       String administrativeArea =
-  //           placemark.administrativeArea ?? ''; // State or region
-  //
-  //       String fullAddress = '$placeName, $locality, $administrativeArea';
-  //
-  //       setState(() {
-  //         _currentPosition = position;
-  //         _locationController.text = fullAddress;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching location: $e');
-  //     _getCurrentLocation();
-  //   }
-  // }
-
-  //
-  // Future _checkGps() async {
-  //   if (!await location.serviceEnabled()) {
-  //     location.requestService();
-  //   }
-  // }
   void _requestLocationPermission() async {
     var status = await Permission.location.request();
     if (status.isGranted) {

@@ -52,8 +52,8 @@ class _AuthPageState extends State<AuthPage> {
       //   position.longitude,
       // );
       List<Placemark> placemarks = await GeocodingPlatform.instance
-          .placemarkFromCoordinates(position.latitude, position.longitude,
-          localeIdentifier: "en");
+          !.placemarkFromCoordinates(position.latitude, position.longitude,
+          );
       if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         String placeName = placemark.name ?? ''; // Name of the place
@@ -466,8 +466,8 @@ class _SignUpFormState extends State<SignUpForm> {
       //   position.longitude,
       // );
       List<Placemark> placemarks = await GeocodingPlatform.instance
-          .placemarkFromCoordinates(position.latitude, position.longitude,
-          localeIdentifier: "en");
+          !.placemarkFromCoordinates(position.latitude, position.longitude,
+         );
       if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         String placeName = placemark.name ?? ''; // Name of the place

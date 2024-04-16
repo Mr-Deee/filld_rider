@@ -53,9 +53,9 @@ dev_dependencies:
   cupertino_icons: ^1.0.2
   country_picker: ^2.0.20
   firebase: ^9.0.0
-  maps_toolkit: ^2.0.0
-  geolocator: ^9.0.1
-  geocoding: ^2.0.4
+  maps_toolkit: ^3.0.0
+  geolocator: ^11.0.0
+  geocoding: ^3.0.0
   #  firebase_phone_auth:
   firebase_phone_auth_handler:
   google_maps_flutter: ^2.1.4
@@ -66,11 +66,11 @@ dev_dependencies:
   smooth_star_rating_null_safety: ^1.0.4+2
   firebase_storage: ^11.0.15
   provider: ^6.0.5
-  pinput: ^2.2.31
-  image_picker: ^0.8.7
+  pinput: ^4.0.0
+  image_picker: ^1.0.8
 
   cloud_firestore:
-  firebase_database:
+  firebase_database: 10.5.2
   shared_preferences: ^2.0.9
   get: ^4.6.5
   dot_navigation_bar:
@@ -80,7 +80,7 @@ dev_dependencies:
   email_validator: ^2.1.17
   fluttertoast:
   country_code_picker: ^3.0.0
-  permission_handler: ^10.0.0
+  permission_handler: ^11.3.1
   cached_network_image: ^3.2.0
   url_launcher: ^6.0.12
 
@@ -91,7 +91,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

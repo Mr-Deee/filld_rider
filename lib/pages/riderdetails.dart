@@ -35,7 +35,7 @@ class _RiderdetailsState extends State<Riderdetails> {
   String motorcolor = '';
 
   Future<void> _pickImage(ImageSource source, Function(File) setImage) async {
-    final pickedFile = await _imagePicker.getImage(source: source);
+    final pickedFile = await _imagePicker.pickImage(source: source);
     if (pickedFile != null) {
       setImage(File(pickedFile.path));
     }

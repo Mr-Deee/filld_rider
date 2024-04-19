@@ -73,10 +73,7 @@ class _homepageState extends State<homepage> {
     locatePosition();
 
     // getPicture();
-    AssistantMethod.getCurrentOnlineUserInfo(context);
-
-    //getPicture();
- // _checkGps();
+    // AssistantMethod.getCurrentOnlineUserInfo(context);
     _requestLocationPermission();
     getCurrentArtisanInfo();
     requestLocationPermission();

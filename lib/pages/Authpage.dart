@@ -18,6 +18,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter/services.dart';
 import 'mainscreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class AuthPage extends StatefulWidget {
 
   @override
@@ -28,20 +29,22 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   bool _isSignIn = true;
   Position? currentPosition;
+
   void initState() {
     // TODO: implement initState
     super.initState();
     locatePosition(context);
     // requestSmsPermission();
-     _requestLocationPermission();
+    _requestLocationPermission();
     AssistantMethod.getCurrentOnlineUserInfo(context);
-     _getCurrentLocation();
-
+    _getCurrentLocation();
   }
+
   GoogleMapController? newGoogleMapController;
   bool _obscureText = true;
 
   TextEditingController _locationController = TextEditingController();
+
   void _getCurrentLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
@@ -52,8 +55,8 @@ class _AuthPageState extends State<AuthPage> {
       //   position.longitude,
       // );
       List<Placemark> placemarks = await GeocodingPlatform.instance
-          !.placemarkFromCoordinates(position.latitude, position.longitude,
-          );
+      !.placemarkFromCoordinates(position.latitude, position.longitude,
+      );
       if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         String placeName = placemark.name ?? ''; // Name of the place
@@ -73,6 +76,7 @@ class _AuthPageState extends State<AuthPage> {
       _getCurrentLocation();
     }
   }
+
   void _requestLocationPermission() async {
     var status = await Permission.location.request();
     if (status.isGranted) {
@@ -87,6 +91,7 @@ class _AuthPageState extends State<AuthPage> {
       // with a link to the app settings.
     }
   }
+
   void locatePosition(BuildContext context) async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -111,6 +116,7 @@ class _AuthPageState extends State<AuthPage> {
       _isSignIn = isSignIn;
     });
   }
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   double _sigmaX = 5; // from 0-10
@@ -155,17 +161,23 @@ class _AuthPageState extends State<AuthPage> {
       //Color(0xff23252A),
       body: SingleChildScrollView(
         child: Container(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery
+                .of(context)
+                .size
+                .height,
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   Container(
                     height: 280,
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius:
-                          BorderRadius.all( Radius.circular(40)),
+                      BorderRadius.all(Radius.circular(40)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
@@ -181,25 +193,26 @@ class _AuthPageState extends State<AuthPage> {
                               onPressed: () {
                                 Navigator.of(context).pushNamed("/authpage");
                               },
-                            ),],
+                            ),
+                            ],
                           ),
-          Container(
-              // autogroup5cgo8Cw (LrGFcrPtMqbkTfkxCG5cgo)
-              padding: EdgeInsets.fromLTRB(15, 150, 23, 8),
-              width: double.infinity,
-              decoration: BoxDecoration (
-                image: DecorationImage (
-                  fit: BoxFit.cover,
-                  image: AssetImage (
-                      'assets/images/delivery-with-white-background-1.png',
-                  ),
-                ),
-              ),),
+                          Container(
+                            // autogroup5cgo8Cw (LrGFcrPtMqbkTfkxCG5cgo)
+                            padding: EdgeInsets.fromLTRB(15, 150, 23, 8),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage(
+                                  'assets/images/delivery-with-white-background-1.png',
+                                ),
+                              ),
+                            ),),
                           //
                           // Text(_isSignIn ? 'Sign In' : 'Sign Up'),
                           Center(
                             child: Padding(
-                              padding: EdgeInsets.only(top:1.0),
+                              padding: EdgeInsets.only(top: 1.0),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -207,7 +220,8 @@ class _AuthPageState extends State<AuthPage> {
                                   // _isSignIn ? SignInForm() : SignUpForm(),
                                   SizedBox(height: 1.0),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceEvenly,
                                     children: [
                                       AuthOptionButton(
                                         text: 'Login',
@@ -249,6 +263,7 @@ class _AuthPageState extends State<AuthPage> {
 displayToast(String message, BuildContext context) {
   Fluttertoast.showToast(msg: message);
 }
+
 class AuthOptionButton extends StatelessWidget {
   final String text;
   final bool isSelected;
@@ -283,6 +298,7 @@ class SignInForm extends StatefulWidget {
   @override
   State<SignInForm> createState() => _SignInFormState();
 }
+
 class _SignInFormState extends State<SignInForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -290,10 +306,10 @@ class _SignInFormState extends State<SignInForm> {
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(top: 10.0, left: 35, right: 35, bottom: 30),
+        padding: const EdgeInsets.only(
+            top: 10.0, left: 35, right: 35, bottom: 30),
         child: Column(
           children: [
             SizedBox(height: 30.0),
@@ -406,6 +422,7 @@ class _SignInFormState extends State<SignInForm> {
     }
   }
 }
+
 final emailController = TextEditingController();
 final firstnameController = TextEditingController();
 final lastnameController = TextEditingController();
@@ -414,7 +431,6 @@ final phonecontroller = TextEditingController();
 String _verificationId = "";
 final passwordController = TextEditingController();
 final FirebaseAuth _auth = FirebaseAuth.instance;
-
 
 
 class SignUpForm extends StatefulWidget {
@@ -433,7 +449,6 @@ class _SignUpFormState extends State<SignUpForm> {
     _getCurrentLocation();
 
     _requestLocationPermission();
-
   }
 
   String selectedCountryCode = '+233'; // Default country code
@@ -444,6 +459,7 @@ class _SignUpFormState extends State<SignUpForm> {
   Position? currentPosition;
 
   final Random random = Random();
+
   void locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
@@ -453,7 +469,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
     CameraPosition cameraPosition =
     new CameraPosition(target: latLatPosition, zoom: 14);
-    newGoogleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    newGoogleMapController?.animateCamera(
+        CameraUpdate.newCameraPosition(cameraPosition));
   }
 
   void _getCurrentLocation() async {
@@ -466,8 +483,8 @@ class _SignUpFormState extends State<SignUpForm> {
       //   position.longitude,
       // );
       List<Placemark> placemarks = await GeocodingPlatform.instance
-          !.placemarkFromCoordinates(position.latitude, position.longitude,
-         );
+      !.placemarkFromCoordinates(position.latitude, position.longitude,
+      );
       if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks[0];
         String placeName = placemark.name ?? ''; // Name of the place
@@ -508,13 +525,18 @@ class _SignUpFormState extends State<SignUpForm> {
       // with a link to the app settings.
     }
   }
+
   //Request permission On signup
   void requestSmsPermission() async {
-    if (await Permission.sms.request().isGranted) {
+    if (await Permission.sms
+        .request()
+        .isGranted) {
       // You have the SEND_SMS permission.
     } else {
       // You don't have the SEND_SMS permission. Show a rationale and request the permission.
-      if (await Permission.sms.request().isPermanentlyDenied) {
+      if (await Permission.sms
+          .request()
+          .isPermanentlyDenied) {
         // The user has permanently denied the permission.
         // You may want to navigate them to the app settings.
         openAppSettings();
@@ -525,6 +547,7 @@ class _SignUpFormState extends State<SignUpForm> {
       }
     }
   }
+
   bool _obscureText = true;
 
 //SendVerififcation
@@ -537,28 +560,28 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextFormField(
-          controller: firstnameController,
+            controller: firstnameController,
             decoration: InputDecoration(labelText: 'First name'),
           ),
-        )    ,
+        ),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextFormField(
-          controller: lastnameController,
+            controller: lastnameController,
             decoration: InputDecoration(labelText: 'Last name'),
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextFormField(
-          controller: emailController,
+            controller: emailController,
             decoration: InputDecoration(labelText: 'Email'),
           ),
         ),
@@ -572,7 +595,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   selectedCountryCode = code.dialCode!;
                 });
               },
-              initialSelection: 'GH', // Initial country
+              initialSelection: 'GH',
+              // Initial country
               showCountryOnly: false,
               showOnlyCountryWhenClosed: false,
               favorite: ['+233', 'GH'],
@@ -591,27 +615,28 @@ class _SignUpFormState extends State<SignUpForm> {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: TextField(
-            controller: passwordController,
-  decoration: InputDecoration(
-  labelText: 'Password',
-  suffixIcon: IconButton(
-  icon: Icon(
-  _obscureText ? Icons.visibility_off : Icons.visibility,
-  color: _obscureText ? Colors.grey : Colors.blue,
-  ),
-  onPressed: () {
-  setState(() {
-  _obscureText = !_obscureText;
-  });
+            padding: const EdgeInsets.all(20.0),
+            child: TextField(
+              controller: passwordController,
+              obscureText: _obscureText,
 
-  }),
-        ),)),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: _obscureText ? Colors.grey : Colors.blue,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+
+                    }),
+              ),)),
         ElevatedButton(
           onPressed: () {
             registerNewUser(context);
-
 
 
             // _verifyPhoneNumber();
@@ -632,115 +657,115 @@ class _SignUpFormState extends State<SignUpForm> {
     String fullPhoneNumber = '$selectedCountryCode${phonecontroller.text.trim()
         .toString()}';
 
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return Dialog(
-                backgroundColor: Colors.transparent,
-                child: Container(
-                    margin: EdgeInsets.all(15.0),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.0)
-                    ),
-                    child: Padding(
-                        padding: EdgeInsets.all(15.0),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              SizedBox(width: 6.0,),
-                              CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.black),),
-                              SizedBox(width: 26.0,),
-                              Text("Signing up,please wait...")
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                  margin: EdgeInsets.all(15.0),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0)
+                  ),
+                  child: Padding(
+                      padding: EdgeInsets.all(15.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            SizedBox(width: 6.0,),
+                            CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.black),),
+                            SizedBox(width: 26.0,),
+                            Text("Signing up,please wait...")
 
-                            ],
-                          ),
-                        ))));
-          });
-
-
-      firebaseUser = (await _firebaseAuth
-          .createUserWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text)
-          .catchError((errMsg) {
-        Navigator.pop(context);
-        displayToast("Error" + errMsg.toString(), context);
-      }))
-          .user;
-
-
-      if (firebaseUser != null) // user created
-
-          {
-        //save use into to database
-
-        Map userDataMap = {
-
-          "email": emailController.text.trim().toString(),
-          "FirstName": firstnameController.text.trim().toString(),
-          "LastName": lastnameController.text.trim().toString(),
-          "phoneNumber": fullPhoneNumber,
-          "Password": passwordController.text.trim().toString(),
-
-        };
-        Ridersdb.child(firebaseUser!.uid).set(userDataMap);
-        // Admin.child(firebaseUser!.uid).set(userDataMap);
-
-        currentfirebaseUser = firebaseUser;
-        // registerInfirestore(context);
-
-        // sendVerificationCode();
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) =>
-        //         OtpVerificationScreen(verificationId: verificationId),
-        //   ),
-        //
-          Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-            Riderdetails(),
-          ),
-        );
-      } else {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) {
-        //     return login();
-        //   }),
-        // );      // Navigator.pop(context);
-        // error occured - display error
-        displayToast("user has not been created", context);
-      }
-    }
-
-    Future<void> registerInfirestore(BuildContext context) async {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (firebaseUser != null) {
-        FirebaseFirestore.instance.collection('Clients').doc(user?.uid).set({
-          'FirstName': firstnameController.text.toString().trim(),
-          'MobileNumber': phonecontroller.toString().trim(),
-          // 'fullName':_firstName! +  _lastname!,
-          'Email': emailController.text.toString().trim(),
-          'Password': passwordController.text.toString().trim(),
-          'Phone': phonecontroller.text.toString().trim(),
-          // 'Gender': Gender,
-          // 'Date Of Birth': birthDate,
+                          ],
+                        ),
+                      ))));
         });
-      } else
-        print("ahh shit");
+
+
+    firebaseUser = (await _firebaseAuth
+        .createUserWithEmailAndPassword(
+        email: emailController.text, password: passwordController.text)
+        .catchError((errMsg) {
+      Navigator.pop(context);
+      displayToast("Error" + errMsg.toString(), context);
+    }))
+        .user;
+
+
+    if (firebaseUser != null) // user created
+
+        {
+      //save use into to database
+
+      Map userDataMap = {
+
+        "email": emailController.text.trim().toString(),
+        "FirstName": firstnameController.text.trim().toString(),
+        "LastName": lastnameController.text.trim().toString(),
+        "phoneNumber": fullPhoneNumber,
+        "Password": passwordController.text.trim().toString(),
+
+      };
+      Ridersdb.child(firebaseUser!.uid).set(userDataMap);
+      // Admin.child(firebaseUser!.uid).set(userDataMap);
+
+      currentfirebaseUser = firebaseUser;
+      // registerInfirestore(context);
+
+      // sendVerificationCode();
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) =>
+      //         OtpVerificationScreen(verificationId: verificationId),
+      //   ),
+      //
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              Riderdetails(),
+        ),
+      );
+    } else {
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(builder: (context) {
-      //     return SignInScreen();
+      //     return login();
       //   }),
-      // );
+      // );      // Navigator.pop(context);
+      // error occured - display error
+      displayToast("user has not been created", context);
     }
   }
+
+  Future<void> registerInfirestore(BuildContext context) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (firebaseUser != null) {
+      FirebaseFirestore.instance.collection('Clients').doc(user?.uid).set({
+        'FirstName': firstnameController.text.toString().trim(),
+        'MobileNumber': phonecontroller.toString().trim(),
+        // 'fullName':_firstName! +  _lastname!,
+        'Email': emailController.text.toString().trim(),
+        'Password': passwordController.text.toString().trim(),
+        'Phone': phonecontroller.text.toString().trim(),
+        // 'Gender': Gender,
+        // 'Date Of Birth': birthDate,
+      });
+    } else
+      print("ahh shit");
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) {
+    //     return SignInScreen();
+    //   }),
+    // );
+  }
+}

@@ -39,7 +39,7 @@ class _AuthPageState extends State<AuthPage> {
 
   }
   GoogleMapController? newGoogleMapController;
-
+  bool _obscureText = true;
 
   TextEditingController _locationController = TextEditingController();
   void _getCurrentLocation() async {
@@ -525,7 +525,7 @@ class _SignUpFormState extends State<SignUpForm> {
       }
     }
   }
-
+  bool _obscureText = true;
 
 //SendVerififcation
   void sendVerificationCode() {
@@ -536,39 +536,7 @@ class _SignUpFormState extends State<SignUpForm> {
     registerNewUser(context);
   }
 
-  // Future<void> sendMS(String message) async {
-  //   List<String> recipients = [selectedCountryCode+phonecontroller.text];
-  //   print("rarrr"+'${recipients}');
-  //   print("message"+'${message}');
-  //   try {
-  //     await sendSMS(
-  //       message: message,
-  //       recipients: recipients,
-  //       sendDirect: true, // Set this to true for immediate sending
-  //     );
-  //
-  //     // Show a toast message to indicate success.
-  //     Fluttertoast.showToast(
-  //       msg: "Verification code sent!",
-  //       toastLength: Toast.LENGTH_SHORT,
-  //       gravity: ToastGravity.BOTTOM,
-  //     );
-  //
-  //     // Navigate to the verification screen with the verification code.
-  //     Navigator.pushNamed(
-  //       context,
-  //       '/verify',
-  //       arguments: _verificationCode.toString(),
-  //     );
-  //   } catch (error) {
-  //     // Show a toast message for the error.
-  //     Fluttertoast.showToast(
-  //       msg: "Failed to send verification code.",
-  //       toastLength: Toast.LENGTH_SHORT,
-  //       gravity: ToastGravity.BOTTOM,
-  //     );
-  //   }
-  // }
+
 @override
   Widget build(BuildContext context) {
     return Column(
@@ -624,12 +592,22 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         Padding(
           padding: const EdgeInsets.all(20.0),
-          child: TextFormField(
+          child: TextField(
             controller: passwordController,
-            decoration: InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-        ),
+  decoration: InputDecoration(
+  labelText: 'Password',
+  suffixIcon: IconButton(
+  icon: Icon(
+  _obscureText ? Icons.visibility_off : Icons.visibility,
+  color: _obscureText ? Colors.grey : Colors.blue,
+  ),
+  onPressed: () {
+  setState(() {
+  _obscureText = !_obscureText;
+  });
+
+  }),
+        ),)),
         ElevatedButton(
           onPressed: () {
             registerNewUser(context);

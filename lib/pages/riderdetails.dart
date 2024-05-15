@@ -166,7 +166,7 @@ class _RiderdetailsState extends State<Riderdetails> {
         backgroundColor: Colors.white,
         centerTitle: true,
 
-        title: Text('Rider Profile',style: TextStyle(color: Colors.black),),
+        title: Text('Rider Profile',style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -184,72 +184,78 @@ class _RiderdetailsState extends State<Riderdetails> {
             ),
 
             SizedBox(height: 19,),
-            Container(
-              height: size.width / 7,
-              width: size.width / 2.2,
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(
-                  right: size.width / 30),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: TextFormField(
+            Row(
+              children: [
+                Container(
+                  height: size.width / 7,
+                  width: size.width / 2.2,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(
+                      right: size.width / 30),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextFormField(
 
 
 
-                decoration: InputDecoration(
-                    labelText: 'Motor Type',
-                prefixIcon: Icon(
-                  Icons.motorcycle,
-                  color: Colors.black,
-                ),
-                border: InputBorder.none,
-                hintMaxLines: 1,
-                hintText: 'Kawasaki...',
-                hintStyle: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),),
-                onChanged: (value) {
-                  setState(() {
-                    _motorType = value;
-                  });
-                },
-              ),
-            ),
-            SizedBox(height: 19,),
-            Container(
-
-              height: size.width / 7,
-              width: size.width / 2.2,
-              alignment: Alignment.center,
-              padding: EdgeInsets.only(
-                  right: size.width / 30),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: TextFormField(
-                decoration: InputDecoration(  labelText: 'Color',
+                    decoration: InputDecoration(
+                        labelText: 'Motor Type',
                     prefixIcon: Icon(
-                      Icons.color_lens,
+                      Icons.motorcycle,
                       color: Colors.black,
                     ),
                     border: InputBorder.none,
                     hintMaxLines: 1,
-                    hintText: 'Black...',
+                    hintText: 'Kawasaki...',
                     hintStyle: TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
-                    )),
-                onChanged: (value) {
-                  setState(() {
-                    motorcolor = value;
-                  });
-                },
-              ),
+                    ),),
+                    onChanged: (value) {
+                      setState(() {
+                        _motorType = value;
+                      });
+                    },
+                  ),
+                ),
+
+                SizedBox(height: 19,),
+                Container(
+
+                  height: size.width / 7,
+                  width: size.width / 2.2,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(
+                      right: size.width / 30),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: TextFormField(
+                    decoration: InputDecoration(  labelText: 'Color',
+                        prefixIcon: Icon(
+                          Icons.color_lens,
+                          color: Colors.black,
+                        ),
+                        border: InputBorder.none,
+                        hintMaxLines: 1,
+                        hintText: 'Black...',
+                        hintStyle: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        )),
+                    onChanged: (value) {
+                      setState(() {
+                        motorcolor = value;
+                      });
+                    },
+                  ),
+                ),
+              ],
             ),
+
             SizedBox(height: 9,),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -310,14 +316,14 @@ class _RiderdetailsState extends State<Riderdetails> {
               ),
             ),
 
-            SizedBox(height: 5,),
+            SizedBox(height: 15,),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
 
                   Container(
-                    height: 70,
+                    height: 100,
                     width: 170
                     ,
                     child: Padding(
@@ -374,7 +380,7 @@ class _RiderdetailsState extends State<Riderdetails> {
             ),
 
             Divider(
-              color: Colors.black,
+              color: Colors.white24,
               thickness: 2,
               indent: 20,
               endIndent: 20,
@@ -594,34 +600,29 @@ class _RiderdetailsState extends State<Riderdetails> {
         Text("Upload License",style: TextStyle(fontWeight: FontWeight.bold),),
         SizedBox(height:10),
 
-        CircleAvatar(
-          radius: 20, // Adjust the radius as needed
-          backgroundColor: Colors.blue, // Background color of the avatar
-          child: _licenseImage != null
-              ? ClipOval(
-            child: Image.file(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20), // Adjust the border radius as needed
+          child: Container(
+            width: 100, // Adjust the width as needed
+            height: 30, // Adjust the height as needed
+            color: Colors.white70, // Background color of the avatar
+            child: _licenseImage != null
+                ? Image.file(
               _licenseImage!,
               width: 100, // Adjust the width as needed
               height: 100, // Adjust the height as needed
               fit: BoxFit.cover, // Adjust the BoxFit as needed
-            ),
-          )
-              : GestureDetector(
-            onTap: () {
-              _pickImage(ImageSource.gallery, setImage);
-            },
-
-            child: ClipOval(
-              child: Image.asset(
-                "assets/images/IMPORT.png",
-
-                width: 100, // Adjust the width as needed
-                height: 100, // Adjust the height as needed
-                fit: BoxFit.cover, // Adjust the BoxFit as needed
-              ),
+            )
+                : GestureDetector(
+              onTap: () {
+                _pickImage(ImageSource.gallery, setImage);
+              },
+              child: Icon(
+                Icons.cloud_upload              ),
             ),
           ),
         ),
+
 
 
 
@@ -649,31 +650,25 @@ class _RiderdetailsState extends State<Riderdetails> {
     return Column(
       children: <Widget>[
         Text("Upload Ghana Card",style: TextStyle(fontWeight: FontWeight.bold),),
-        SizedBox(height:10),
-
-        CircleAvatar(
-          radius: 20, // Adjust the radius as needed
-          backgroundColor: Colors.blue, // Background color of the avatar
-          child: _GhanaCardImage != null
-              ? ClipOval(
-            child: Image.file(
+        ClipRRect(
+          borderRadius: BorderRadius.circular(20), // Adjust the border radius as needed
+          child: Container(
+            width: 100, // Adjust the width as needed
+            height: 30, // Adjust the height as needed
+            color: Colors.white, // Background color of the avatar
+            child: _GhanaCardImage != null
+                ? Image.file(
               _GhanaCardImage!,
               width: 100, // Adjust the width as needed
-              height: 100, // Adjust the height as needed
+              height: 60, // Adjust the height as needed
               fit: BoxFit.cover, // Adjust the BoxFit as needed
-            ),
-          )
-              : GestureDetector(
-            onTap: () {
-              _pickImage(ImageSource.gallery, setImage);
-            },
-
-            child: ClipOval(
-              child: Image.asset(
-                "assets/images/IMPORT.png",
-                width: 100, // Adjust the width as needed
-                height: 100, // Adjust the height as needed
-                fit: BoxFit.cover, // Adjust the BoxFit as needed
+            )
+                : GestureDetector(
+              onTap: () {
+                _pickImage(ImageSource.gallery, setImage);
+              },
+              child: Icon(
+                Icons.cloud_upload, // Adjust the BoxFit as needed
               ),
             ),
           ),

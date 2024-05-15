@@ -532,8 +532,9 @@ class _RiderdetailsState extends State<Riderdetails> {
             SizedBox(height: 19,),
 
             ElevatedButton(
+              style:ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
               onPressed: _saveProfile,
-              child: Text('Save'),
+              child: Text('Save',style: TextStyle(color: Colors.white),),
             ),
           ],
         ),

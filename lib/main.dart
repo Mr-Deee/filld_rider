@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(),
     debugShowCheckedModeBanner: false,
         initialRoute: FirebaseAuth.instance.currentUser == null
-        ? '/Riderdetails'
+        ? '/onboarding'
         // :"/Riderdetails",
           : '/Main',
         routes: {

@@ -146,8 +146,8 @@ class AssistantMethod{
 
 
 
-  static void retrieveHistoryInfo(context)
-  {
+  static Future<void> retrieveHistoryInfo(context)
+  async {
 
 
     Ridersdb.child(currentfirebaseUser!.uid).child("earnings").once().then((
@@ -162,9 +162,32 @@ class AssistantMethod{
         print("earnings:$earnings");
       }
     });
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      print("No current user found");
+      return;
+    }
+
+    String userId = currentUser.uid;
+    String? firstName;
+    await Ridersdb.child(userId).once().then((event) {
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> userMap = event.snapshot.value as Map<dynamic, dynamic>;
+        firstName = userMap['FirstName'];
+      }
+    });
+
+    if (firstName == null) {
+      print("First name not found for user");
+      return;
+    }
+
+
     //retrieve and display Trip History
-    clientRequestRef.orderByChild("driver_name").once().then((event)
+    clientRequestRef.orderByChild("driver_name").equalTo(firstName).once().then((event)
     {
+
       final dataSnapshot = event.snapshot;
       if(dataSnapshot.value != null)
       {
@@ -172,6 +195,7 @@ class AssistantMethod{
           Map<dynamic, dynamic> keys = dataSnapshot.value as Map<dynamic, dynamic>;
 
         print('assistant methods step 84::{}');
+        print("haya${firstName}");
         //update total number of trip counts to provider
         // Map<dynamic, dynamic> keys = dataSnapshot as Map;
         int tripCounter = keys.length;

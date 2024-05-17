@@ -294,8 +294,9 @@ class _homepageState extends State<homepage> {
                   Riderskey
                       .orderByChild("status")
                       .once()
-                      .then((event) { print('ssdsss$event');
+                      .then((event) { print('ecee$event');
                         var data =event.snapshot.value ;
+                        print('aaaa$data');
                     if (data == "deactivated") {
                       print('ssdsss$event');
                       displayToast("Sorry You are not Activated", context);

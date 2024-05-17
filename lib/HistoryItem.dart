@@ -25,7 +25,7 @@ class HistoryItem extends StatelessWidget {
               Expanded(
                 child: Container(
                   child: Text(
-                    clientHistory.pickup!,
+                    clientHistory.pickup??"",
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 18),
                   ),
@@ -47,7 +47,7 @@ class HistoryItem extends StatelessWidget {
                 ),
                 SizedBox(width: 18),
                 Text(
-                  clientHistory.dropOff!,
+                  clientHistory.dropOff??"",
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 18),
                 ),
@@ -56,7 +56,7 @@ class HistoryItem extends StatelessWidget {
           ),
           SizedBox(height: 15),
           Text(
-            AssistantMethod.formatTripDate(clientHistory.createdAt!),
+            AssistantMethod.formatTripDate(clientHistory.createdAt??""),
             style: TextStyle(color: Colors.grey),
           ),
         ],

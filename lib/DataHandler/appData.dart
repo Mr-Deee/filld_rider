@@ -18,7 +18,7 @@ class AppData extends ChangeNotifier {
 
   String get pickUpLocationText => _pickUpLocationText;
   String get dropOffLocationText => _dropOffLocationText;
-
+  bool _isLoading = false;
   String earnings = "0"; // EARNINGS ???
   int countTrips = 0; // TRIP COUNT ??? NUMBER OF TRIPS TAKEN FOR USER
   List<String> tripHistoryKeys = []; // TRIP HISTORY KEYS
@@ -60,7 +60,10 @@ class AppData extends ChangeNotifier {
     tripHistoryDataList.add(eachHistory);
     notifyListeners();
   }
-
+  void setLoading(bool loading) {
+    _isLoading = loading;
+    notifyListeners();
+  }
   changeDropLocationAddress(String destination) {
     _dropOffLocationText = destination;
     notifyListeners();

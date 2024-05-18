@@ -1,5 +1,6 @@
 import 'package:filld_rider/pages/riderdetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ import '../Models/Assistants/assistantmethods.dart';
 import '../main.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'Onetimepassword.dart';
+import 'forgetpassword.dart';
 import 'homepage.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -323,12 +325,18 @@ class _SignInFormState extends State<SignInForm> {
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 10.0),
+            SizedBox(height: 15.0),
             Row(
               children: [
-                Text(
-                  'Forgot password?',
-                  style: TextStyle(color: Colors.blueAccent),
+                GestureDetector(
+                  onTap:(){   Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                  );} ,
+                  child: Text(
+                    'Forgot password?',
+                    style: TextStyle(color: Colors.blueAccent),
+                  ),
                 ),
               ],
             ),

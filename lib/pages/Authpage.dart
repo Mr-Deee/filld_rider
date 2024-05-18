@@ -636,6 +636,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),)),
         ElevatedButton(
           onPressed: () {
+            _verifyPhoneNumber();
             registerNewUser(context);
 
 
@@ -652,6 +653,31 @@ class _SignUpFormState extends State<SignUpForm> {
   User? firebaseUser;
   User? currentfirebaseUser;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  Future<void> _verifyPhoneNumber() async {
+    String phone = '$selectedCountryCode${phonecontroller.text}';
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: phone,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.');
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        setState(() {
+          _verificationId = verificationId;
+        });
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        setState(() {
+          _verificationId = verificationId;
+        });
+      },
+    );
+  }
 
   Future<void> registerNewUser(BuildContext context) async {
     String fullPhoneNumber = '$selectedCountryCode${phonecontroller.text.trim()

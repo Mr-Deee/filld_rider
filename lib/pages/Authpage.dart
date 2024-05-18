@@ -305,6 +305,7 @@ class _SignInFormState extends State<SignInForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -320,11 +321,29 @@ class _SignInFormState extends State<SignInForm> {
               decoration: InputDecoration(labelText: 'E-mail'),
             ),
             SizedBox(height: 40.0),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
+
+            Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: _obscureText,
+
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText ? Icons.visibility_off : Icons.visibility,
+                          color: _obscureText ? Colors.grey : Colors.blue,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+
+                        }),
+                  ),)),
+
+
             SizedBox(height: 15.0),
             Row(
               children: [
@@ -340,6 +359,8 @@ class _SignInFormState extends State<SignInForm> {
                 ),
               ],
             ),
+
+
             SizedBox(height: 40.0),
             ElevatedButton(
               onPressed: () {

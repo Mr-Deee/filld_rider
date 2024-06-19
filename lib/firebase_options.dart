@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -45,18 +42,18 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCapCYvAfS6bWtsUFA1FMsYO_YfsvAAGWg',
-    appId: '1:538330805104:web:f6bf1fdae983ae8fe2d5b5',
+    appId: '1:538330805104:web:9f1a019d9f4ef3bee2d5b5',
     messagingSenderId: '538330805104',
     projectId: 'fill-d-db8f7',
     authDomain: 'fill-d-db8f7.firebaseapp.com',
     databaseURL: 'https://fill-d-db8f7-default-rtdb.firebaseio.com',
     storageBucket: 'fill-d-db8f7.appspot.com',
-    measurementId: 'G-X07X44JMGS',
+    measurementId: 'G-Y5VHYLJ37L',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB5cFO7zVS8Vx4xxpMZg7YlZ0vzh5uawcE',
-    appId: '1:538330805104:android:3811ebe4f03aadb5e2d5b5',
+    appId: '1:538330805104:android:e365409acfcb4a3de2d5b5',
     messagingSenderId: '538330805104',
     projectId: 'fill-d-db8f7',
     databaseURL: 'https://fill-d-db8f7-default-rtdb.firebaseio.com',
@@ -77,13 +74,25 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyDeMKtQ8nlMnouNCvAt6JfHHGSC7bvRjKg',
-    appId: '1:538330805104:ios:6b4b85f092a0127de2d5b5',
+    appId: '1:538330805104:ios:d250570a7b90054fe2d5b5',
     messagingSenderId: '538330805104',
     projectId: 'fill-d-db8f7',
     databaseURL: 'https://fill-d-db8f7-default-rtdb.firebaseio.com',
     storageBucket: 'fill-d-db8f7.appspot.com',
     androidClientId: '538330805104-1sq6iqj5dgfg90cca0dhqt3bmdr4cs8v.apps.googleusercontent.com',
-    iosClientId: '538330805104-khjovi9rdvfqrls81ctni5lbv18o93e9.apps.googleusercontent.com',
-    iosBundleId: 'com.example.filldRider.RunnerTests',
+    iosClientId: '538330805104-7hnu7dcag64ikh3lvj5ekcdehiihiaq1.apps.googleusercontent.com',
+    iosBundleId: 'com.example.filldRider',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCapCYvAfS6bWtsUFA1FMsYO_YfsvAAGWg',
+    appId: '1:538330805104:web:a12b32730a8a4887e2d5b5',
+    messagingSenderId: '538330805104',
+    projectId: 'fill-d-db8f7',
+    authDomain: 'fill-d-db8f7.firebaseapp.com',
+    databaseURL: 'https://fill-d-db8f7-default-rtdb.firebaseio.com',
+    storageBucket: 'fill-d-db8f7.appspot.com',
+    measurementId: 'G-S9P7MY4KB0',
+  );
+
 }

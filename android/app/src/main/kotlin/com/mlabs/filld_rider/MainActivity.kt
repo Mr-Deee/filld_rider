@@ -1,4 +1,4 @@
-package com.example.filld_rider
+package com.mlabs.filld_rider
 
 import io.flutter.embedding.android.FlutterActivity
 

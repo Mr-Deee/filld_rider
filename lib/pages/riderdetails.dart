@@ -41,8 +41,14 @@ class _RiderdetailsState extends State<Riderdetails> {
     }
   }
 
+
   Future<void> _saveProfile() async {
     final currentUser = _auth.currentUser;
+    if (currentUser == null) {
+      // Handle user not logged in
+      return;
+    }
+
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -54,69 +60,156 @@ class _RiderdetailsState extends State<Riderdetails> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.0)
-                  ),
+                      borderRadius: BorderRadius.circular(20.0)),
                   child: Padding(
                       padding: EdgeInsets.all(15.0),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            SizedBox(width: 6.0,),
-                            CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.black),),
-                            SizedBox(width: 26.0,),
-                            Text("Updating Your Details ,please wait...")
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(width: 6.0),
+                          CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                          ),
+                          SizedBox(width: 26.0),
+                          Text("Updating Your Details, please wait...")
+                        ],
+                      ))));
+        });
 
-                          ],)))));});
+    try {
+      // Upload images to Firebase Storage in parallel
+      final futures = [
+        _uploadImageToStorage(_riderImage),
+        licenseImageUrltostorage(_licenseImage),
+        _uploadImageToStorage(_insuranceImage),
+        _uploadImageToGhanaCardUrl(_GhanaCardImage)
+      ];
 
+      final results = await Future.wait(futures);
 
-    if (currentUser == null) {
-      // Handle user not logged in
-      return;
-    }
+      final riderImageUrl = results[0];
+      final licenseImageUrl = results[1];
+      final insuranceImageUrl = results[2];
+      final GhanaCardUrl = results[3];
 
-    // Upload images to Firebase Storage
-    final riderImageUrl = await _uploadImageToStorage(_riderImage);
-    final licenseImageUrl = await licenseImageUrltostorage(_licenseImage);
-    final insuranceImageUrl = await _uploadImageToStorage(_insuranceImage);
-    final GhanaCardUrl = await _uploadImageToGhanaCardUrl(_GhanaCardImage);
+      // Create a map of user profile data
+      final Map<String, dynamic> userprofile = {
+        'NextofKinName': _nextofkin,
+        'NextofKinNumber': _nextofkinnum,
+        'NextofKinRelationship': _nextofkinrelationship,
+        'location': _location,
+        'riderImageUrl': riderImageUrl,
+      };
 
-    final Map<String, dynamic> userprofile = {
-      'NextofKinName': _nextofkin,
-      'NextofKinNumber': _nextofkinnum,
-      'NextofKinRelationship': _nextofkinrelationship,
-      'location': _location,
-      'riderImageUrl': riderImageUrl,
-    };
-    await databaseReference.child(currentUser.uid).update(userprofile);
+      // Create a map of car details data
+      final Map<String, dynamic> profileData = {
+        'riderImageUrl': riderImageUrl,
+        'riderLicense': licenseImageUrl,
+        'GhanaCardUrl': GhanaCardUrl,
+        'autombileColor': motorcolor,
+        'type': "bike",
+        'motorBrand': _motorType,
+        'licensePlateNumber': _licensePlateNumber,
+        'GhanaCardNumber': _GHCardNumber,
+        'status': 'deactivated'
+      };
 
-    // Create a map of user data to update in the Realtime Database
+      // Update the database in parallel
+      await Future.wait([
+        databaseReference.child(currentUser.uid).update(userprofile),
+        databaseReference.child(currentUser.uid).child("car_details").update(profileData),
+      ]);
 
-
-    final Map<String, dynamic> profileData = {
-      'riderImageUrl': riderImageUrl,
-      'riderLicense': licenseImageUrl,
-      'GhanaCardUrl': GhanaCardUrl,
-      'autombileColor': motorcolor,
-      'type': "bike",
-      'motorBrand': _motorType,
-      'licensePlateNumber': _licensePlateNumber,
-      'GhanaCardNumber': _GHCardNumber,
-    };
-
-    await databaseReference.child(currentUser.uid).child("car_details").update(profileData);
-    await databaseReference.child(currentUser.uid).update({'status':'deactivated'});
-
-    // Profile updated successfully
-    // You can navigate to a different screen or show a success message
-    Navigator.push(
+      // Profile updated successfully
+      // You can navigate to a different screen or show a success message
+      Navigator.push(
         context,
-        MaterialPageRoute(
-        builder: (context) =>AuthPage()
-    ),
-    );}
+        MaterialPageRoute(builder: (context) => AuthPage()),
+      );
+    } catch (e) {
+      // Handle any errors here
+    }
+  }
+
+
+
+  // Future<void> _saveProfile() async {
+  //   final currentUser = _auth.currentUser;
+  //   showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (BuildContext context) {
+  //         return Dialog(
+  //             backgroundColor: Colors.transparent,
+  //             child: Container(
+  //                 margin: EdgeInsets.all(15.0),
+  //                 width: double.infinity,
+  //                 decoration: BoxDecoration(
+  //                     color: Colors.white,
+  //                     borderRadius: BorderRadius.circular(20.0)
+  //                 ),
+  //                 child: Padding(
+  //                     padding: EdgeInsets.all(15.0),
+  //                     child: SingleChildScrollView(
+  //                       scrollDirection: Axis.horizontal,
+  //                       child: Row(
+  //                         children: [
+  //                           SizedBox(width: 6.0,),
+  //                           CircularProgressIndicator(
+  //                             valueColor: AlwaysStoppedAnimation<Color>(
+  //                                 Colors.black),),
+  //                           SizedBox(width: 26.0,),
+  //                           Text("Updating Your Details ,please wait...")
+  //
+  //                         ],)))));});
+  //
+  //
+  //   if (currentUser == null) {
+  //     // Handle user not logged in
+  //     return;
+  //   }
+  //
+  //   // Upload images to Firebase Storage
+  //   final riderImageUrl = await _uploadImageToStorage(_riderImage);
+  //   final licenseImageUrl = await licenseImageUrltostorage(_licenseImage);
+  //   final insuranceImageUrl = await _uploadImageToStorage(_insuranceImage);
+  //   final GhanaCardUrl = await _uploadImageToGhanaCardUrl(_GhanaCardImage);
+  //
+  //   final Map<String, dynamic> userprofile = {
+  //     'NextofKinName': _nextofkin,
+  //     'NextofKinNumber': _nextofkinnum,
+  //     'NextofKinRelationship': _nextofkinrelationship,
+  //     'location': _location,
+  //     'riderImageUrl': riderImageUrl,
+  //   };
+  //   await databaseReference.child(currentUser.uid).update(userprofile);
+  //
+  //   // Create a map of user data to update in the Realtime Database
+  //
+  //
+  //   final Map<String, dynamic> profileData = {
+  //     'riderImageUrl': riderImageUrl,
+  //     'riderLicense': licenseImageUrl,
+  //     'GhanaCardUrl': GhanaCardUrl,
+  //     'autombileColor': motorcolor,
+  //     'type': "bike",
+  //     'motorBrand': _motorType,
+  //     'licensePlateNumber': _licensePlateNumber,
+  //     'GhanaCardNumber': _GHCardNumber,
+  //     'status':'deactivated'
+  //   };
+  //
+  //   await databaseReference.child(currentUser.uid).child("car_details").update(profileData);
+  //
+  //
+  //   // Profile updated successfully
+  //   // You can navigate to a different screen or show a success message
+  //   Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //       builder: (context) =>AuthPage()
+  //   ),
+  //   );}
 
   Future<String> licenseImageUrltostorage(File? imageFile) async {
     if (imageFile == null) {

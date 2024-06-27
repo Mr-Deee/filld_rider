@@ -70,6 +70,9 @@ class EarningsTabPage extends StatelessWidget {
                       textAlign: TextAlign.end,
                       style: TextStyle(fontSize: 18),
                     ))),
+
+
+
                   ],
                 ),
               ),
@@ -77,6 +80,14 @@ class EarningsTabPage extends StatelessWidget {
             Divider(
               height: 2.0,
               thickness: 2.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Text(
+                "All riders get paid all their earnings 8 pm each day into a momo account",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),

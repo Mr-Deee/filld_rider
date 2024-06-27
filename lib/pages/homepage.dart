@@ -295,7 +295,7 @@ class _homepageState extends State<homepage> {
                       .orderByChild("status")
                       .once()
                       .then((event) { print('ecee$event');
-                        var data =event.snapshot.value ;
+                        var data = event.snapshot.value ;
                         print('aaaa$data');
                     if (data == "deactivated") {
                       print('ssdsss$event');

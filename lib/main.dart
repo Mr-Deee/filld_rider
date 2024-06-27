@@ -65,6 +65,8 @@ void main()async {
     ChangeNotifierProvider<helper>(
       create: (context) => helper(),
     )
+
+
   ], child:MyApp())));
 }
 

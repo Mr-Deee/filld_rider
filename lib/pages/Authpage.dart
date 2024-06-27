@@ -556,37 +556,29 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   //Request permission On signup
-  void requestSmsPermission() async {
-    if (await Permission.sms
-        .request()
-        .isGranted) {
-      // You have the SEND_SMS permission.
-    } else {
-      // You don't have the SEND_SMS permission. Show a rationale and request the permission.
-      if (await Permission.sms
-          .request()
-          .isPermanentlyDenied) {
-        // The user has permanently denied the permission.
-        // You may want to navigate them to the app settings.
-        openAppSettings();
-      } else {
-        // The user has denied the permission but not permanently.
-        // You can request the permission again.
-        requestSmsPermission();
-      }
-    }
-  }
+  // void requestSmsPermission() async {
+  //   if (await Permission.sms
+  //       .request()
+  //       .isGranted) {
+  //     // You have the SEND_SMS permission.
+  //   } else {
+  //     // You don't have the SEND_SMS permission. Show a rationale and request the permission.
+  //     if (await Permission.sms
+  //         .request()
+  //         .isPermanentlyDenied) {
+  //       // The user has permanently denied the permission.
+  //       // You may want to navigate them to the app settings.
+  //       openAppSettings();
+  //     } else {
+  //       // The user has denied the permission but not permanently.
+  //       // You can request the permission again.
+  //       requestSmsPermission();
+  //     }
+  //   }
+  // }
 
   bool _obscureText = true;
 
-//SendVerififcation
-  void sendVerificationCode() {
-    final int verificationCode = random.nextInt(900000) + 100000;
-    final String message = 'Your verification code is: $verificationCode';
-
-    // sendMS(message);
-    registerNewUser(context);
-  }
 
 
   @override
@@ -665,7 +657,6 @@ class _SignUpFormState extends State<SignUpForm> {
               ),)),
         ElevatedButton(
           onPressed: () {
-            _verifyPhoneNumber();
             registerNewUser(context);
 
 
@@ -682,31 +673,7 @@ class _SignUpFormState extends State<SignUpForm> {
   User? firebaseUser;
   User? currentfirebaseUser;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-  Future<void> _verifyPhoneNumber() async {
-    String phone = '$selectedCountryCode${phonecontroller.text}';
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phone,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        await FirebaseAuth.instance.signInWithCredential(credential);
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        if (e.code == 'invalid-phone-number') {
-          print('The provided phone number is not valid.');
-        }
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        setState(() {
-          _verificationId = verificationId;
-        });
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        setState(() {
-          _verificationId = verificationId;
-        });
-      },
-    );
-  }
+  //
 
   Future<void> registerNewUser(BuildContext context) async {
     String fullPhoneNumber = '$selectedCountryCode${phonecontroller.text.trim()

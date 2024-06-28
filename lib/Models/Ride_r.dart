@@ -11,11 +11,13 @@ class Ride_r extends ChangeNotifier
   String?email;
   String?id;
   String?automobile_color;
+  String?GhanaCard;
+
   String? automobile_model;
   String?plate_number;
   String?profilepicture;
 
-  Ride_r({this.firstname, this.lastname,this.phone, this.email, this.id, this.automobile_color, this.automobile_model, this.plate_number, this.profilepicture,});
+  Ride_r({this.firstname,  this.GhanaCard,this.lastname,this.phone, this.email, this.id, this.automobile_color, this.automobile_model, this.plate_number, this.profilepicture,});
 
   static Ride_r fromMap(Map<String, dynamic> data)
 
@@ -30,6 +32,7 @@ class Ride_r extends ChangeNotifier
       lastname: data["LastName"],
       profilepicture: data["riderImageUrl"],
     automobile_color: data["car_details"]["automobile_color"],
+    GhanaCard: data["car_details"]["GhanaCardNumber"],
     automobile_model: data["car_details"]["motorBrand"],
      plate_number:data["car_details"]["licensePlateNumber"],
     );

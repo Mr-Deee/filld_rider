@@ -23,6 +23,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   final TextEditingController motorColorController = TextEditingController();
   final TextEditingController riderImageUrlController = TextEditingController();
   final TextEditingController riderLicenseController = TextEditingController();
+  final TextEditingController riderGhanaCard = TextEditingController();
   final TextEditingController typeController = TextEditingController();
 
   @override
@@ -39,24 +40,37 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
         ),
         actions: [
           _isEditing
-              ? ElevatedButton(
-            onPressed: () {
+              ? GestureDetector(
+            onTap: () {
               _saveProfile(nameController.text, phoneController.text, motorBrandController.text,
                   riderImageUrlController.text,
-                  riderLicenseController.text, context);
+                  riderLicenseController.text, riderGhanaCard.text,context);
               setState(() {
                 _isEditing = false;
               });
             },
-            child: Text("Save Changes"),
+            child: Icon(Icons.save),
           )
-              : ElevatedButton(
-            onPressed: () {
+              : GestureDetector(
+
+            onTap: () {
               setState(() {
                 _isEditing = true;
               });
             },
             child: Icon(Icons.edit),
+          ),
+
+          GestureDetector(
+            onTap: () {
+              _showMyDialog(context);
+            },
+
+            child: Center(
+              child: Icon(
+                  Icons.logout
+              ),
+            ),
           ),
         ],
       ),
@@ -80,6 +94,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
     motorBrandController.text = rideprovider?.automobile_model ?? '';
     motorColorController.text = rideprovider?.automobile_model ?? '';
     riderLicenseController.text = rideprovider?.plate_number ?? '';
+    riderGhanaCard.text = rideprovider?.GhanaCard ?? '';
     return SafeArea(
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -154,17 +169,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                     SizedBox(height: 10.0),
 
 
-                    GestureDetector(
-                      onTap: () {
-                        _showMyDialog(context);
-                      },
 
-                        child: Center(
-                          child: Icon(
-                            Icons.logout
-                            ),
-                          ),
-                        ),
 
                   ],
                 ),
@@ -181,8 +186,8 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               SizedBox(height: 8.0),
               ProfileInfo(
                 leading: Icons.image,
-                controller: riderImageUrlController,
-                label: "Rider Image URL",
+                controller: riderGhanaCard,
+                label: "Rider GH Card",
                 isEditing: _isEditing,
               ),
               SizedBox(height: 8.0),
@@ -192,13 +197,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                 label: "Rider License URL",
                 isEditing: _isEditing,
               ),
-              SizedBox(height: 8.0),
-              ProfileInfo(
-                leading: Icons.category,
-                controller: typeController,
-                label: "Type",
-                isEditing: _isEditing,
-              ),
+
       ])
 
     )
@@ -267,6 +266,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   void _saveProfile(String name, String phone,  String motorBrand,
       String riderImageUrl,
       String riderLicense,
+      String riderGhanaCard,
       BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
     FirebaseDatabase.instance
@@ -276,6 +276,13 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
         .update({
       'firstname': name,
       'phoneNumber': phone,
+      'car_details': {
+        'motorBrand': motorBrand,
+        'riderImageUrl': riderImageUrl,
+        'licensePlateNumber': riderLicense,
+        'GhanaCardNumber': riderLicense,
+
+      },
     }).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Profile updated successfully')));
     }).catchError((error) {

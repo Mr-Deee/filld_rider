@@ -34,13 +34,15 @@ class _RiderdetailsState extends State<Riderdetails> {
   String _location = '';
   String motorcolor = '';
 
+
   Future<void> _pickImage(ImageSource source, Function(File) setImage) async {
-    final pickedFile = await _imagePicker.pickImage(source: source);
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
     if (pickedFile != null) {
-      setImage(File(pickedFile.path));
+      final imageFile = File(pickedFile.path);
+      setImage(imageFile);
     }
   }
-
 
   Future<void> _saveProfile() async {
     final currentUser = _auth.currentUser;
@@ -634,59 +636,56 @@ class _RiderdetailsState extends State<Riderdetails> {
       ),
     );
   }
-
   Widget _buildImagePicker({required String title, required Function(File) setImage}) {
     return Column(
       children: <Widget>[
-        Text("ProfileImage",style: TextStyle(fontWeight: FontWeight.bold),),
+        Text("ProfileImage", style: TextStyle(fontWeight: FontWeight.bold)),
         SizedBox(height: 14),
-
-        CircleAvatar(
-          radius: 50, // Adjust the radius as needed
-          backgroundColor: Colors.blue, // Background color of the avatar
-          child: _riderImage != null
-              ? ClipOval(
-            child: Image.file(
-              _riderImage!,
-              width: 100, // Adjust the width as needed
-              height: 100, // Adjust the height as needed
-              fit: BoxFit.cover, // Adjust the BoxFit as needed
-            ),
-          )
-              : GestureDetector(
-    onTap: () {
-        _pickImage(ImageSource.gallery, setImage);
-      },
-
-                child: ClipOval(
-            child: Image.asset(
-                "assets/images/profile-image.png",
-                width: 100, // Adjust the width as needed
-                height: 100, // Adjust the height as needed
-                fit: BoxFit.cover, // Adjust the BoxFit as needed
-            ),
-          ),
+        Stack(
+          children: [
+            CircleAvatar(
+              radius: 50, // Adjust the radius as needed
+              backgroundColor: Colors.blue, // Background color of the avatar
+              child: ClipOval(
+                child: _riderImage != null
+                    ? Image.file(
+                  _riderImage!,
+                  width: 100, // Adjust the width as needed
+                  height: 100, // Adjust the height as needed
+                  fit: BoxFit.cover, // Adjust the BoxFit as needed
+                )
+                    : Image.asset(
+                  "assets/images/profile-image.png",
+                  width: 100, // Adjust the width as needed
+                  height: 100, // Adjust the height as needed
+                  fit: BoxFit.cover, // Adjust the BoxFit as needed
+                ),
               ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: () {
+                  _pickImage(ImageSource.gallery, setImage);
+                },
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.camera_alt,
+                    size: 20,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 10),
-
-        // _buildImagePreview(setImage),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     _pickImage(ImageSource.gallery, setImage);
-        //   },
-        //   child: Text('Pick from Gallery'),
-        // ),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     _pickImage(ImageSource.camera, setImage);
-        //   },
-        //   child: Text('Take a Photo'),
-        // ),
       ],
     );
   }
-
 
   Widget _buildImagePickerLicene({required String title, required Function(File) setImage}) {
     return Column(
@@ -698,15 +697,20 @@ class _RiderdetailsState extends State<Riderdetails> {
           borderRadius: BorderRadius.circular(20), // Adjust the border radius as needed
           child: Container(
             width: 100, // Adjust the width as needed
-            height: 30, // Adjust the height as needed
+            height: 60, // Adjust the height as needed
             color: Colors.white70, // Background color of the avatar
             child: _licenseImage != null
-                ? Image.file(
-              _licenseImage!,
-              width: 100, // Adjust the width as needed
-              height: 100, // Adjust the height as needed
-              fit: BoxFit.cover, // Adjust the BoxFit as needed
-            )
+                ? GestureDetector(
+              onTap: (){
+                _pickImage(ImageSource.gallery, setImage);
+              },
+                  child: Image.file(
+                                _licenseImage!,
+                                width: 100, // Adjust the width as needed
+                                height: 100, // Adjust the height as needed
+                                fit: BoxFit.cover, // Adjust the BoxFit as needed
+                              ),
+                )
                 : GestureDetector(
               onTap: () {
                 _pickImage(ImageSource.gallery, setImage);
@@ -722,19 +726,24 @@ class _RiderdetailsState extends State<Riderdetails> {
 
         SizedBox(height: 10),
 
-        // _buildImagePreview(setImage),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     _pickImage(ImageSource.gallery, setImage);
-        //   },
-        //   child: Text('Pick from Gallery'),
-        // ),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     _pickImage(ImageSource.camera, setImage);
-        //   },
-        //   child: Text('Take a Photo'),
-        // ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: () {
+              _pickImage(ImageSource.gallery, setImage);
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.camera_alt,
+                size: 20,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -748,15 +757,22 @@ class _RiderdetailsState extends State<Riderdetails> {
           borderRadius: BorderRadius.circular(20), // Adjust the border radius as needed
           child: Container(
             width: 100, // Adjust the width as needed
-            height: 30, // Adjust the height as needed
+            height: 60, // Adjust the height as needed
             color: Colors.white, // Background color of the avatar
             child: _GhanaCardImage != null
-                ? Image.file(
-              _GhanaCardImage!,
-              width: 100, // Adjust the width as needed
-              height: 60, // Adjust the height as needed
-              fit: BoxFit.cover, // Adjust the BoxFit as needed
-            )
+                ? GestureDetector(
+              onTap: (){
+
+                _pickImage(ImageSource.gallery, setImage);
+
+              },
+                  child: Image.file(
+                                _GhanaCardImage!,
+                                width: 100, // Adjust the width as needed
+                                height: 60, // Adjust the height as needed
+                                fit: BoxFit.cover, // Adjust the BoxFit as needed
+                              ),
+                )
                 : GestureDetector(
               onTap: () {
                 _pickImage(ImageSource.gallery, setImage);

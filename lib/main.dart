@@ -18,7 +18,7 @@ import 'firebase_options.dart';
 import 'onboarding.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 void main()async {
@@ -85,34 +85,48 @@ DatabaseReference Clientsdb = FirebaseDatabase.instance.ref().child("Clients");
 DatabaseReference Riderskey = FirebaseDatabase.instance.ref().child("Riders").child(uid!).child("status");
 DatabaseReference availableRider = FirebaseDatabase.instance.ref().child("availableRider").child(uid!);
 
+
+Future<String> getInitialRoute() async {
+  final prefs = await SharedPreferences.getInstance();
+  final isProfileIncomplete = prefs.getBool('isProfileIncomplete') ?? false;
+  if (FirebaseAuth.instance.currentUser == null) {
+    return '/onboarding';
+  } else if (isProfileIncomplete) {
+    return '/Riderdetails';
+  } else {
+    return '/Main';
+  }
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fill'+''+'d'+'Rider',
-      theme: ThemeData(),
-    debugShowCheckedModeBanner: false,
-        initialRoute: FirebaseAuth.instance.currentUser == null
-        ? '/onboarding'
-        // :"/Riderdetails",
-          : '/Main',
-        routes: {
-          // "/splash":(context) => SplashScreen(),
-          "/onboarding": (context) => OnBoardingPage(),
-          "/Main": (context) => MainScreen(),
-          "/verify": (context) => OtpVerificationScreen(verificationId: '',),
-          "/Riderdetails": (context) => Riderdetails(),
-          "/hubtel": (context) => hubtelpay(),
-
-          // "/SignUP": (context) => SignupPage(),
-          "/authpage": (context) => AuthPage(),
-          "/Homepage": (context) => homepage(),
-
-
-        });
+    return FutureBuilder<String>(
+      future: getInitialRoute(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Or a splash screen
+        } else {
+          final initialRoute = snapshot.data!;
+          return MaterialApp(
+            title: 'Filld Rider',
+            theme: ThemeData(),
+            debugShowCheckedModeBanner: false,
+            initialRoute: initialRoute,
+            routes: {
+              '/onboarding': (context) => OnBoardingPage(),
+              '/Main': (context) => MainScreen(),
+              '/verify': (context) => OtpVerificationScreen(verificationId: ''),
+              '/Riderdetails': (context) => Riderdetails(),
+              '/hubtel': (context) => hubtelpay(),
+              '/authpage': (context) => AuthPage(),
+              '/Homepage': (context) => homepage(),
+            },
+          );
+        }
+      },
+    );
   }
 }
 

@@ -113,6 +113,9 @@ class _RiderdetailsState extends State<Riderdetails> {
         'motorBrand': _motorType,
         'licensePlateNumber': _licensePlateNumber,
         'GhanaCardNumber': _GHCardNumber,
+        'detaisComp':true,
+
+
       };
 
       // Update the database in parallel

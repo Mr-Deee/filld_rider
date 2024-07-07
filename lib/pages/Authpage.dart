@@ -752,11 +752,10 @@ class _SignUpFormState extends State<SignUpForm> {
       //         OtpVerificationScreen(verificationId: verificationId),
       //   ),
       //
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              Riderdetails(),
+          builder: (context) => Riderdetails(),
         ),
       );
     } else {

@@ -733,7 +733,9 @@ class _SignUpFormState extends State<SignUpForm> {
         "LastName": lastnameController.text.trim().toString(),
         "phoneNumber": fullPhoneNumber,
         "Password": passwordController.text.trim().toString(),
-        'status': 'deactivated'
+        'status': 'deactivated',
+        'detaisComp':false,
+
 
       };
       Ridersdb.child(firebaseUser!.uid).set(userDataMap);

@@ -89,12 +89,26 @@ DatabaseReference availableRider = FirebaseDatabase.instance.ref().child("availa
 Future<String> getInitialRoute() async {
   final prefs = await SharedPreferences.getInstance();
   final isProfileIncomplete = prefs.getBool('isProfileIncomplete') ?? false;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+
+  // Fetch detailComp value from Firebase
+  DatabaseEvent snapshot = await FirebaseDatabase.instance
+      .ref()
+      .child('Riders')
+      .child(uid)
+      .child('detailComp')
+      .once();
+
+  bool? detailComp = snapshot.snapshot.value as bool?;
+
   if (FirebaseAuth.instance.currentUser == null) {
     return '/onboarding';
   } else if (isProfileIncomplete) {
     return '/Riderdetails';
-  } else {
+  } else if (detailComp == true) {
     return '/Main';
+  } else {
+    return '/Riderdetails'; // Navigate to Riderdetails if detailComp is false or not set
   }
 }
 class MyApp extends StatelessWidget {

@@ -80,6 +80,7 @@ final uid = user?.uid;
 DatabaseReference  clientRequestRef = FirebaseDatabase.instance.ref().child("GasRequests");
 DatabaseReference RiderRequestRef= FirebaseDatabase.instance.ref().child("Riders").child(uid!).child("new Rider");
 DatabaseReference Ridersdb = FirebaseDatabase.instance.ref().child("Riders");
+DatabaseReference Admindb = FirebaseDatabase.instance.ref().child("Admin");
 DatabaseReference Clientsdb = FirebaseDatabase.instance.ref().child("Clients");
 DatabaseReference Riderskey = FirebaseDatabase.instance.ref().child("Riders").child(uid!).child("status");
 DatabaseReference availableRider = FirebaseDatabase.instance.ref().child("availableRider").child(uid!);

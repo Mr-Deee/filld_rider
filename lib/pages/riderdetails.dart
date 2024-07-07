@@ -65,16 +65,18 @@ class _RiderdetailsState extends State<Riderdetails> {
                       borderRadius: BorderRadius.circular(20.0)),
                   child: Padding(
                       padding: EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(width: 6.0),
-                          CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                          ),
-                          SizedBox(width: 26.0),
-                          Text("Updating Your Details, please wait...")
-                        ],
+                      child: SingleChildScrollView(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(width: 6.0),
+                            CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                            ),
+                            SizedBox(width: 26.0),
+                            Text("Updating Your Details, please wait...")
+                          ],
+                        ),
                       ))));
         });
 
@@ -101,6 +103,8 @@ class _RiderdetailsState extends State<Riderdetails> {
         'NextofKinRelationship': _nextofkinrelationship,
         'location': _location,
         'riderImageUrl': riderImageUrl,
+        'detailsComp':true,
+
       };
 
       // Create a map of car details data
@@ -113,9 +117,7 @@ class _RiderdetailsState extends State<Riderdetails> {
         'motorBrand': _motorType,
         'licensePlateNumber': _licensePlateNumber,
         'GhanaCardNumber': _GHCardNumber,
-        'detaisComp':true,
-
-
+        'status': 'deactivated'
       };
 
       // Update the database in parallel

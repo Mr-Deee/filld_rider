@@ -87,8 +87,6 @@ DatabaseReference availableRider = FirebaseDatabase.instance.ref().child("availa
 
 
 Future<String> getInitialRoute() async {
-  final prefs = await SharedPreferences.getInstance();
-  final isProfileIncomplete = prefs.getBool('isProfileIncomplete') ?? false;
   final uid = FirebaseAuth.instance.currentUser!.uid;
 
   // Fetch detailComp value from Firebase
@@ -96,15 +94,14 @@ Future<String> getInitialRoute() async {
       .ref()
       .child('Riders')
       .child(uid)
-      .child('detailComp')
+      .child('detailsComp')
       .once();
 
   bool? detailComp = snapshot.snapshot.value as bool?;
 
   if (FirebaseAuth.instance.currentUser == null) {
     return '/onboarding';
-  } else if (isProfileIncomplete) {
-    return '/Riderdetails';
+
   } else if (detailComp == true) {
     return '/Main';
   } else {
@@ -120,9 +117,35 @@ class MyApp extends StatelessWidget {
       future: getInitialRoute(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // Or a splash screen
+              return Container(
+
+                decoration: BoxDecoration(
+                color: Colors.white
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Image.asset(
+                      'assets/images/delivery-with-white-background-1.png',
+                      // Replace with your app's icon image path
+                      width: 200,
+                      height: 180,
+                      // Optionally, you can add a color filter or other styling here
+                    ),
+                  ),
+                    CircularProgressIndicator()
+                ],),
+              );  // Or a splash screen
         } else {
-          final initialRoute = snapshot.data!;
+          String? initialRoute = snapshot.data;
+
+          // Handle null case if necessary
+          if (initialRoute == null) {
+            initialRoute = '/onboarding'; // Or any default route you want to use
+          }
           return MaterialApp(
             title: 'Filld Rider',
             theme: ThemeData(),
@@ -142,6 +165,50 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+  Widget routeGenerator(RouteSettings settings) {
+    switch (settings.name) {
+      case '/onboarding':
+        return OnBoardingPage();
+      case '/Main':
+        return MainScreen();
+      case '/verify':
+        return OtpVerificationScreen(verificationId: '');
+      case '/Riderdetails':
+        return Riderdetails();
+      case '/hubtel':
+        return hubtelpay();
+      case '/authpage':
+        return AuthPage();
+      case '/Homepage':
+        return homepage();
+      default:
+        return Scaffold(
+          body: Center(
+            child: Text('Route not found: ${settings.name}'),
+          ),
+        );
+    }
+  }
 }
 
 
+
+class SplashScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white, // Or any background color you prefer
+      body: Center(
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+        // App Icon
+
+      // Circular Avatar (Example)
+      CircularProgressIndicator()
+      ],
+    ),)
+    ,
+    );
+  }
+}

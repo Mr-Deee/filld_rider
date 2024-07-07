@@ -734,7 +734,7 @@ class _SignUpFormState extends State<SignUpForm> {
         "phoneNumber": fullPhoneNumber,
         "Password": passwordController.text.trim().toString(),
         'status': 'deactivated',
-        'detaisComp':false,
+        'detailsComp':false,
 
 
       };

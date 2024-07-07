@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../CollectFareDialog.dart';
 import '../Models/Assistants/assistantmethods.dart';
@@ -310,29 +311,10 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                     btnTitle = "Arrived At Gas Station";
                                     btnColor = Colors.redAccent;
                                   });
-                                  // initiatePayment2();
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) {
-                                  //           return CheckoutScreen(
-                                  //             purchaseInfo: PurchaseInfo(
-                                  //                 amount:double.parse(amountcontroller.text),
-                                  //                 customerPhoneNumber: phoneNumber,
-                                  //                 purchaseDescription: "GAS",
-                                  //                 clientReference: "REF_${DateTime.now().millisecondsSinceEpoch}"),
-                                  //             configuration: HubtelCheckoutConfiguration(
-                                  //                 merchantID: "2019342",
-                                  //                 callbackUrl: "https://webhook.site/f277-4bbc-b9e2-837f3a930ada",
-                                  //                 merchantApiKey: "NzNsckFnTzo5ODlmNmEzYzUxNWE0MGJkOTc2ZTIyMDllZjAzZTU2Yw=="),
-                                  //             themeConfig: ThemeConfig(
-                                  //                 primaryColor: Colors
-                                  //                     .black),
-                                  //           );
-                                  //         }
-                                  //     )
-                                  // );
+
                                   initTimer();
+                                  sendNotificationToAdmin();
+
                                 }
                                 else if (status == "returning") {
                                   // ShowPrompt();
@@ -688,14 +670,19 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       ),
     );
 
-    // Send the entered number as a prompt to the client app
-    // sendTransactionIdToClientApp(transactionId);
 
-    // clientRequestRef.child(rideRequestId!).child("status").set("At Gas Station");
-
-    // saveEarnings();
   }
+  final FirebaseMessaging messaging  = FirebaseMessaging.instance;
 
+  Future getToken() async {
+    String? token = await messaging.getToken();
+    print("This is token :: ");
+    print(token);
+    Admindb.child(currentfirebaseUser!.uid).child("token").set(token);
+    print("JUST GOT IT");
+    messaging.subscribeToTopic("alldrivers");
+    messaging.subscribeToTopic("allusers");
+  }
 
   void notifyClient(String rideRequestId) {
     String? rideRequestId = widget.clientDetails.ride_request_id;
@@ -853,21 +840,11 @@ SendPrompt() async{
   int fareAmount = AssistantMethod.calculateFares(directionalDetails!);
 
   String? rideRequestId = widget.clientDetails.ride_request_id;
-  // clientRequestRef
-  //     .child(rideRequestId!)
-  //     .child("fares")
-  //     .set(fareAmount.toString());
+
   clientRequestRef.child(rideRequestId!).child("status").set("At Gas Station");
 
 
-  // showDialog(
-  //   context: context,
-  //   barrierDismissible: false,
-  //   builder: (BuildContext context) => CollectFareDialog(
-  //     paymentMethod: widget.clientDetails.payment_method,
-  //     fareAmount: fareAmount,
-  //   ),
-  // );
+
 
   saveEarnings(fareAmount);
 
@@ -922,6 +899,41 @@ SendPrompt() async{
       }
     } catch (e) {
       print('Error: $e');
+    }
+  }
+
+  void sendNotificationToAdmin() {
+    String deliveryPrice = "20"; // Replace with actual delivery price
+    String gasPrice = "5"; // Replace with actual gas price
+    String location = "Gas Station XYZ"; // Replace with actual location
+
+    notifyAdmin(deliveryPrice, gasPrice, location);
+  }
+
+  void notifyAdmin(String deliveryPrice, String gasPrice, String location) async {
+    String adminToken = Admindb.child(currentfirebaseUser!.uid).child("token") as String; // Replace with the actual FCM token of the admin
+
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': serverToken, // Replace with your server key
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'notification': <String, dynamic>{
+              'body': 'Delivery Price: $deliveryPrice, Gas Price: $gasPrice, Location: $location',
+              'title': 'Delivery Update'
+            },
+            'priority': 'high',
+            'to': adminToken,
+          },
+        ),
+      );
+      print('Notification sent to admin');
+    } catch (e) {
+      print('Error sending notification: $e');
     }
   }
 }

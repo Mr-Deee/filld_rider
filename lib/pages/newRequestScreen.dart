@@ -76,6 +76,18 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     acceptRideRequest();
   }
 
+  void listenForStatusChanges() {
+    String? rideRequestId = widget.clientDetails.ride_request_id;
+    DatabaseReference statusRef = clientRequestRef.child(rideRequestId!).child("status");
+
+    rideStreamSubscription = statusRef.onValue.listen((event) {
+      if (event.snapshot.value != null && event.snapshot.value.toString() == "cancelled") {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User has cancelled the ride.')));
+      }
+    });
+  }
+
   void createIconMarker() {
     if (animatingMarkerIcon == null) {
       ImageConfiguration imageConfiguration =

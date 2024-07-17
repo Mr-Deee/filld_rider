@@ -310,6 +310,9 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                       widget.clientDetails.dropoff!);
 
                                   Navigator.pop(context);
+                                  String? clientToken = widget.clientDetails.clientToken; // Assuming you have the client token
+                                  await AssistantMethod.sendNotificationToClient(clientToken!, "Your ride has arrived!",rideRequestId,);
+
                                 } else if (status == "arrived") {
                                   status = "returning";
                                   String? rideRequestId =
@@ -323,7 +326,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                     btnTitle = "Arrived At Gas Station";
                                     btnColor = Colors.redAccent;
                                   });
-
+                                  String? clientToken = widget.clientDetails.clientToken; // Assuming you have the client token
+                                  await AssistantMethod.sendNotificationToClient(clientToken!, "You have arrived at the gas station!", rideRequestId!);
                                   initTimer();
                                   sendNotificationToAdmin();
 

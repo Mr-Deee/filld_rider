@@ -260,4 +260,33 @@ class AssistantMethod{
     return formattedDate;
   }
 
+
+
+  // Future<void> sendNotificationToClient(String clientToken, String message) async {
+  //   final String serverToken = 'YOUR_SERVER_KEY';  // Replace with your server key
+  //
+  //   try {
+  //     await http.post(
+  //       Uri.parse('https://fcm.googleapis.com/fcm/send'),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'key=$serverToken',
+  //       },
+  //       body: jsonEncode(<String, dynamic>{
+  //         'notification': <String, dynamic>{
+  //           'body': message,
+  //           'title': 'Ride Update'
+  //         },
+  //         'priority': 'high',
+  //         'data': <String, dynamic>{
+  //           'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+  //           'status': 'done'
+  //         },
+  //         'to': clientToken,
+  //       }),
+  //     );
+  //   } catch (e) {
+  //     print("Error sending notification: $e");
+  //   }
+  // }
 }

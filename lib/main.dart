@@ -150,7 +150,7 @@ class MyApp extends StatelessWidget {
             title: 'Filld Rider',
             theme: ThemeData(),
             debugShowCheckedModeBanner: false,
-            initialRoute:'/Riderdetails',
+            initialRoute:initialRoute,
 
             //initialRoute,
             routes: {

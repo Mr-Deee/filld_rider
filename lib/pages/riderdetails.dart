@@ -61,15 +61,18 @@ class _RiderDetailsState extends State<Riderdetails> {
             ),
             child: Padding(
               padding: EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                  ),
-                  SizedBox(width: 20),
-                  Text("Updating Your Details, please wait...")
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    ),
+                    SizedBox(width: 20),
+                    Text("Updating Your Details, please wait...")
+                  ],
+                ),
               ),
             ),
           ),

@@ -150,7 +150,9 @@ class MyApp extends StatelessWidget {
             title: 'Filld Rider',
             theme: ThemeData(),
             debugShowCheckedModeBanner: false,
-            initialRoute: initialRoute,
+            initialRoute:'/Riderdetails',
+
+            //initialRoute,
             routes: {
               '/onboarding': (context) => OnBoardingPage(),
               '/Main': (context) => MainScreen(),

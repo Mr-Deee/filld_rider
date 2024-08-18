@@ -198,7 +198,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                       ),
                     ],
                   ),
-                  height: 120.0,
+                  height: 220.0,
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
@@ -244,7 +244,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                               child: Container(
                                 child: Text(
                                   widget.clientDetails.pickup_address ?? "",
-                                  style: TextStyle(fontSize: 10.0),
+                                  style: TextStyle(fontSize: 16.0),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),

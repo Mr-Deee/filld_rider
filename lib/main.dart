@@ -47,21 +47,10 @@ void main()async {
 
 
 
-    // ChangeNotifierProvider<ReqModel>(
-    //   create: (context) => ReqModel(),
-    // ),
-    // ChangeNotifierProvider<History>(
-    //   create: (context) => History(),
-    // ),
     ChangeNotifierProvider<AppState>(
       create: (context) => AppState(),
     ),
 
-
-
-    // ChangeNotifierProvider<AppState>(
-    // create: (context) => AppState(),
-    // ),
     ChangeNotifierProvider<helper>(
       create: (context) => helper(),
     )

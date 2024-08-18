@@ -198,7 +198,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                       ),
                     ],
                   ),
-                  height: 270.0,
+                  height: 120.0,
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
@@ -221,7 +221,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                             Text(
                               widget.clientDetails.client_name ?? "",
                               style: TextStyle(
-                                  fontFamily: "Brand Bold", fontSize: 24.0),
+                                  fontFamily: "Brand Bold", fontSize: 19.0),
                             ),
                             Padding(
                               padding: EdgeInsets.only(right: 10.0),
@@ -244,7 +244,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                               child: Container(
                                 child: Text(
                                   widget.clientDetails.pickup_address ?? "",
-                                  style: TextStyle(fontSize: 18.0),
+                                  style: TextStyle(fontSize: 10.0),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -266,7 +266,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                               child: Container(
                                 child: Text(
                                   widget.clientDetails.dropoff_address ?? "",
-                                  style: TextStyle(fontSize: 18.0),
+                                  style: TextStyle(fontSize: 10.0),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -274,99 +274,121 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: 26.0,
+                          height: 12.0,
                         ),
                         Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             // ignore: deprecated_member_use
-                            child: ElevatedButton(
-
+                            child:ElevatedButton(
                               onPressed: () async {
-                                if (status == "accepted") {
-                                  status = "arrived";
-                                  String? rideRequestId =
-                                      widget.clientDetails.ride_request_id;
-                                  clientRequestRef
-                                      .child(rideRequestId!)
-                                      .child("status")
-                                      .set(status);
+                                String? rideRequestId = widget.clientDetails.ride_request_id;
 
-                                  setState(() {
-                                    btnTitle = "Start Job";
-                                    btnColor = Colors.lightGreenAccent;
-                                  });
-
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) =>
-                                        ProgressDialog(
-                                      message: "Please wait...",
-                                    ),
-                                  );
-
-                                  await getPlaceDirection(
-                                      widget.clientDetails.pickup!,
-                                      widget.clientDetails.dropoff!);
-
-                                  Navigator.pop(context);
-                                  String? clientToken = widget.clientDetails.clientToken; // Assuming you have the client token
-                                  await AssistantMethod.sendNotificationToClient(clientToken!, "Your ride has arrived!",rideRequestId,);
-
-                                } else if (status == "arrived") {
-                                  status = "returning";
-                                  String? rideRequestId =
-                                      widget.clientDetails.ride_request_id;
-                                  clientRequestRef
-                                      .child(rideRequestId!)
-                                      .child("status")
-                                      .set(status);
-
-                                  setState(() {
-                                    btnTitle = "Arrived At Gas Station";
-                                    btnColor = Colors.redAccent;
-                                  });
-                                  String? clientToken = widget.clientDetails.clientToken; // Assuming you have the client token
-                                  await AssistantMethod.sendNotificationToClient(clientToken!, "You have arrived at the gas station!", rideRequestId!);
-                                  initTimer();
-                                  sendNotificationToAdmin();
-
+                                if (rideRequestId == null) {
+                                  print("Ride Request ID is null");
+                                  return;
                                 }
-                                else if (status == "returning") {
-                                  // ShowPrompt();
-                                  status = "completed";
-                                  String? rideRequestId =
-                                      widget.clientDetails.ride_request_id;
-                                  clientRequestRef
-                                      .child(rideRequestId!)
-                                      .child("status")
-                                      .set(status);
-                                  await getPlaceDirection2(
-                                      widget.clientDetails.dropoff!,
-                                      widget.clientDetails.pickup!);
-                                  fetchFacts();
-                                  setState(() {
-                                    btnTitle = "Complete Delivery";
-                                    btnColor = Colors.greenAccent;
-                                    //
-                                  });
 
-                                }
-                                else if (status == "completed") {
-                                  // setState(() {
-                                  //   btnTitle = "End Trip";
-                                  //   btnColor = Colors.greenAccent;
-                                  // });
-                                endTheTrip();
-                                }
+                                // Get client_id using rideRequestId
+                                DatabaseReference? rideIdRef = clientRequestRef.child(rideRequestId).child("client_id");
+
+                                rideIdRef.once().then((DatabaseEvent event) {
+                                  if (event.snapshot.value != null) {
+                                    String clientId = event.snapshot.value.toString();
+
+                                    // Get clientToken using clientId
+                                    Clientsdb.child(clientId).child("token").once().then((event) async {
+                                      final snap = event.snapshot;
+                                      String? clientToken = snap.value as String?;
+
+                                      if (clientToken != null) {
+                                        if (status == "accepted") {
+                                          // Status change: "arrived"
+                                          status = "arrived";
+                                          await clientRequestRef.child(rideRequestId).child("status").set(status);
+
+                                          setState(() {
+                                            btnTitle = "Start Job";
+                                            btnColor = Colors.lightGreenAccent;
+                                          });
+
+                                          showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (BuildContext context) => ProgressDialog(
+                                              message: "Please wait...",
+                                            ),
+                                          );
+
+                                          await getPlaceDirection(widget.clientDetails.pickup!, widget.clientDetails.dropoff!);
+                                          Navigator.pop(context);
+
+                                          await AssistantMethod.sendNotificationriderarrived(clientToken, "Your ride has arrived!", rideRequestId);
+
+                                        } else if (status == "arrived") {
+                                          // Status change: "arrived at gas station"
+                                          status = "arrived at gas station";
+                                          await clientRequestRef.child(rideRequestId).child("status").set(status);
+
+                                          setState(() {
+                                            btnTitle = "Arrived At Gas Station";
+                                            btnColor = Colors.redAccent;
+                                          });
+
+                                          // Debugging log
+                                          print("Sending notification: Rider has arrived at the gas station");
+
+                                          // Ensure the notification method is called
+                                          await AssistantMethod.sendNotificationriderarrivedatgasstation(clientToken, "You have arrived at the gas station!", rideRequestId);
+
+                                          initTimer();
+
+                                        } else if (status == "arrived at gas station") {
+                                          // Status change: "returning"
+                                          status = "returning";
+                                          await clientRequestRef.child(rideRequestId).child("status").set(status);
+
+                                          await getPlaceDirection2(widget.clientDetails.dropoff!, widget.clientDetails.pickup!);
+                                          fetchFacts();
+
+                                          setState(() {
+                                            btnTitle = "Complete Delivery";
+                                            btnColor = Colors.greenAccent;
+                                          });
+
+                                          print("THIS IS CLIENT TOKEN: $clientToken");
+
+                                        } else if (status == "completed") {
+                                          // Status: "end the trip"
+                                          await clientRequestRef.child(rideRequestId).child("status").set(status);
+                                          await AssistantMethod.sendNotificationforredecompleted(clientToken, "Delivery has been completed!", rideRequestId);
+
+                                          setState(() {
+                                            btnTitle = "End Trip";
+                                            btnColor = Colors.blueAccent;
+                                          });
+
+                                          endTheTrip();
+                                        }
+                                      } else {
+                                        print("Client token is null");
+                                      }
+                                    }).catchError((error) {
+                                      print("Failed to retrieve client token: $error");
+                                    });
+
+                                  } else {
+                                    print("Client ID is null");
+                                  }
+                                }).catchError((error) {
+                                  print("Failed to retrieve client ID: $error");
+                                });
                               },
                               child: Padding(
                                 padding: EdgeInsets.all(17.0),
                                 child: SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         btnTitle,
@@ -388,10 +410,14 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                 backgroundColor: btnColor,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(24.0),
-                                    side:
-                                        const BorderSide(color: Colors.white)),
+                                    side: const BorderSide(color: Colors.white)),
                               ),
-                            )),
+                            )
+
+
+
+
+                        ),
                       ]),
                     ),
                   ))))
@@ -675,8 +701,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
             onPressed: () {
                clientRequestRef.child(rideRequestId!).child("GasStationNum").set(phonecontroller.text.toString());
                print(phonecontroller);
-               notifyClient(rideRequestId);
-               // clientRequestRef.child(rideRequestId!).child("status").set("phonecontroller");
+               // notifyClient(rideRequestId);
+               // // clientRequestRef.child(rideRequestId!).child("status").set("phonecontroller");
 
               // Navigator.pop(context, transactionIdController.text);
             },
@@ -724,7 +750,7 @@ print(rideRequestId);
             String token = snap.value.toString();
             print("wants to send2");
             // Send notification to the client
-            AssistantMethod.sendNotificationToClient(token, context, rideRequestId);
+            // AssistantMethod.sendNotificationToClient(token, context, rideRequestId);
             print("wants to send3");
             print('waaa:$rideRequestId');
           } else {

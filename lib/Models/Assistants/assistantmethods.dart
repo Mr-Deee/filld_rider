@@ -23,7 +23,7 @@ import '../Users.dart';
 class AssistantMethod{
 
 
-  static sendNotificationToClient(String token, context, String ride_request_id) async {
+  static sendNotificationriderarrived(String token, context, String ride_request_id) async {
     // var destination =
     //     Provider.of<AppData>(context, listen: false).dropOfflocation;
     Map<String, String> headerMap = {
@@ -32,8 +32,141 @@ class AssistantMethod{
     };
 
     Map notificationMap = {
-      'body': 'Gas Station Number Sent by Rider.',
-        'title': 'Rider Has Arrived At Gas Station'
+      'body': 'Rider is outside Kindly  make your cylinder available',
+        'title': 'Rider Has Arrived At Your Location'
+    };
+
+    Map dataMap = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': '1',
+      'status': 'done',
+      // 'ride_request_id': "ride_request_id",
+    };
+
+    Map sendNotificationMap = {
+      "notification": notificationMap,
+      "data": dataMap,
+      "priority": "high",
+      "to": token,
+    };
+
+    var res = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: headerMap,
+      body: jsonEncode(sendNotificationMap),
+    );
+  }
+  static sendNotificationjobstarted(String token, context, String ride_request_id) async {
+    // var destination =
+    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
+    Map<String, String> headerMap = {
+      'Content-Type': 'application/json',
+      'Authorization': serverToken,
+    };
+
+    Map notificationMap = {
+      'body': 'Your Delivery Just Started',
+        'title': 'Your Gas will be "Filld" shortly'
+    };
+
+    Map dataMap = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': '1',
+      'status': 'done',
+      // 'ride_request_id': "ride_request_id",
+    };
+
+    Map sendNotificationMap = {
+      "notification": notificationMap,
+      "data": dataMap,
+      "priority": "high",
+      "to": token,
+    };
+
+    var res = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: headerMap,
+      body: jsonEncode(sendNotificationMap),
+    );
+  }
+  static sendNotificationrideronthewaytofillgas(String token, context, String ride_request_id) async {
+    // var destination =
+    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
+    Map<String, String> headerMap = {
+      'Content-Type': 'application/json',
+      'Authorization': serverToken,
+    };
+
+    Map notificationMap = {
+      'body': 'Rider is on the way to fill your cylinder',
+        'title': 'Rider is headed to the Gas Station'
+    };
+
+    Map dataMap = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': '1',
+      'status': 'done',
+      // 'ride_request_id': "ride_request_id",
+    };
+
+    Map sendNotificationMap = {
+      "notification": notificationMap,
+      "data": dataMap,
+      "priority": "high",
+      "to": token,
+    };
+
+    var res = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: headerMap,
+      body: jsonEncode(sendNotificationMap),
+    );
+  }
+  //arrived at gas station
+  static sendNotificationriderarrivedatgasstation(String token, context, String ride_request_id) async {
+    // var destination =
+    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
+    Map<String, String> headerMap = {
+      'Content-Type': 'application/json',
+      'Authorization': serverToken,
+    };
+
+    Map notificationMap = {
+      'body': 'Rider is at the Gas Station',
+        'title': 'Your Gas is being field'
+    };
+
+    Map dataMap = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': '1',
+      'status': 'done',
+      // 'ride_request_id': "ride_request_id",
+    };
+
+    Map sendNotificationMap = {
+      "notification": notificationMap,
+      "data": dataMap,
+      "priority": "high",
+      "to": token,
+    };
+
+    var res = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: headerMap,
+      body: jsonEncode(sendNotificationMap),
+    );
+  }
+  static sendNotificationforredecompleted(String token, context, String ride_request_id) async {
+    // var destination =
+    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
+    Map<String, String> headerMap = {
+      'Content-Type': 'application/json',
+      'Authorization': serverToken,
+    };
+
+    Map notificationMap = {
+      'body': 'Rider is has completed',
+        'title': 'Gas delivery Successful'
     };
 
     Map dataMap = {

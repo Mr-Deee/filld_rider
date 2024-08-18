@@ -334,11 +334,23 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                             btnColor = Colors.redAccent;
                                           });
 
-                                          // await AssistantMethod.sendNotificationriderarrivedatgasstation(clientToken, "You have arrived at the gas station!", rideRequestId);
-
                                           initTimer();
 
                                         } else if (status == "returning") {
+                                          // New Status change: "arrived_at_gas_station"
+                                          status = "arrived_at_gas_station";
+                                          await clientRequestRef.child(rideRequestId).child("status").set(status);
+
+                                          setState(() {
+                                            btnTitle = "Complete Delivery";
+                                            btnColor = Colors.greenAccent;
+                                          });
+
+                                          await AssistantMethod.sendNotificationriderarrived(clientToken, "Driver has arrived at the gas station!", rideRequestId);
+
+                                          print("THIS IS CLIENT TOKEN: $clientToken");
+
+                                        } else if (status == "arrived_at_gas_station") {
                                           // Status change: "completed"
                                           status = "completed";
                                           await clientRequestRef.child(rideRequestId).child("status").set(status);
@@ -347,8 +359,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                           fetchFacts();
 
                                           setState(() {
-                                            btnTitle = "Complete Delivery";
-                                            btnColor = Colors.greenAccent;
+                                            btnTitle = "End Trip";
+                                            btnColor = Colors.blueAccent;
                                           });
 
                                           print("THIS IS CLIENT TOKEN: $clientToken");
@@ -409,6 +421,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                     side: const BorderSide(color: Colors.white)),
                               ),
                             )
+
 
 
 

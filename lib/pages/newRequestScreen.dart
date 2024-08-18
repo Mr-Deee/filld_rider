@@ -325,8 +325,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                           await AssistantMethod.sendNotificationriderarrived(clientToken, "Your ride has arrived!", rideRequestId);
 
                                         } else if (status == "arrived") {
-                                          // Status change: "arrived at gas station"
-                                          status = "arrived at gas station";
+                                          // Status change: "returning"
+                                          status = "returning";
                                           await clientRequestRef.child(rideRequestId).child("status").set(status);
 
                                           setState(() {
@@ -334,17 +334,13 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                             btnColor = Colors.redAccent;
                                           });
 
-                                          // Debugging log
-                                          print("Sending notification: Rider has arrived at the gas station");
-
-                                          // Ensure the notification method is called
-                                          await AssistantMethod.sendNotificationriderarrivedatgasstation(clientToken, "You have arrived at the gas station!", rideRequestId);
+                                          // await AssistantMethod.sendNotificationriderarrivedatgasstation(clientToken, "You have arrived at the gas station!", rideRequestId);
 
                                           initTimer();
 
-                                        } else if (status == "arrived at gas station") {
-                                          // Status change: "returning"
-                                          status = "returning";
+                                        } else if (status == "returning") {
+                                          // Status change: "completed"
+                                          status = "completed";
                                           await clientRequestRef.child(rideRequestId).child("status").set(status);
 
                                           await getPlaceDirection2(widget.clientDetails.dropoff!, widget.clientDetails.pickup!);
@@ -413,7 +409,6 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                     side: const BorderSide(color: Colors.white)),
                               ),
                             )
-
 
 
 

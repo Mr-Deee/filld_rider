@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:filld_rider/pages/Authpage.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 
 class Riderdetails extends StatefulWidget {
   const Riderdetails({Key? key}) : super(key: key);
@@ -33,10 +34,43 @@ class _RiderDetailsState extends State<Riderdetails> {
   String _location = '';
   String _motorColor = '';
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedData(); // Load saved data when the app starts
+  }
+
+  Future<void> _loadSavedData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _motorType = prefs.getString('motorType') ?? '';
+      _motorColor = prefs.getString('motorColor') ?? '';
+      _nextOfKin = prefs.getString('nextOfKin') ?? '';
+      _nextOfKinNum = prefs.getString('nextOfKinNum') ?? '';
+      _nextOfKinRelationship = prefs.getString('nextOfKinRelationship') ?? '';
+      _licensePlateNumber = prefs.getString('licensePlateNumber') ?? '';
+      _ghanaCardNumber = prefs.getString('ghanaCardNumber') ?? '';
+      _location = prefs.getString('location') ?? '';
+    });
+  }
+
+  Future<void> _saveDataLocally() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('motorType', _motorType);
+    prefs.setString('motorColor', _motorColor);
+    prefs.setString('nextOfKin', _nextOfKin);
+    prefs.setString('nextOfKinNum', _nextOfKinNum);
+    prefs.setString('nextOfKinRelationship', _nextOfKinRelationship);
+    prefs.setString('licensePlateNumber', _licensePlateNumber);
+    prefs.setString('ghanaCardNumber', _ghanaCardNumber);
+    prefs.setString('location', _location);
+  }
+
   Future<void> _pickImage(ImageSource source, Function(File) setImage) async {
     final pickedFile = await _imagePicker.pickImage(source: source);
     if (pickedFile != null) {
       setImage(File(pickedFile.path));
+      _saveDataLocally(); // Save the state after picking an image
     }
   }
 
@@ -159,21 +193,30 @@ class _RiderDetailsState extends State<Riderdetails> {
             _buildImagePicker(
               title: 'Upload Profile Image',
               image: _riderImage,
-              onImagePicked: (File image) => setState(() => _riderImage = image),
+              onImagePicked: (File image) {
+                setState(() => _riderImage = image);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'Motor Type',
               icon: Icons.motorcycle,
               hintText: 'Kawasaki...',
-              onChanged: (value) => setState(() => _motorType = value),
+              onChanged: (value) {
+                setState(() => _motorType = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'Color',
               icon: Icons.color_lens,
               hintText: 'Black...',
-              onChanged: (value) => setState(() => _motorColor = value),
+              onChanged: (value) {
+                setState(() => _motorColor = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             Row(
@@ -182,62 +225,80 @@ class _RiderDetailsState extends State<Riderdetails> {
                 _buildImagePicker(
                   title: 'Upload License Image',
                   image: _licenseImage,
-                  onImagePicked: (File image) => setState(() => _licenseImage = image),
+                  onImagePicked: (File image) {
+                    setState(() => _licenseImage = image);
+                    _saveDataLocally();
+                  },
                 ),
                 _buildImagePicker(
                   title: 'Upload Ghana Card',
                   image: _ghanaCardImage,
-                  onImagePicked: (File image) => setState(() => _ghanaCardImage = image),
+                  onImagePicked: (File image) {
+                    setState(() => _ghanaCardImage = image);
+                    _saveDataLocally();
+                  },
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            // _buildImagePicker(
-            //   title: 'Upload Ghana Card',
-            //   image: _ghanaCardImage,
-            //   onImagePicked: (File image) => setState(() => _ghanaCardImage = image),
-            // ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'License Plate Number',
               icon: Icons.numbers_rounded,
               hintText: 'XXXXX..',
-              onChanged: (value) => setState(() => _licensePlateNumber = value),
+              onChanged: (value) {
+                setState(() => _licensePlateNumber = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'GHCard Number',
               icon: Icons.numbers_rounded,
               hintText: 'GHA-XXXXXX...',
-              onChanged: (value) => setState(() => _ghanaCardNumber = value),
+              onChanged: (value) {
+                setState(() => _ghanaCardNumber = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'Location',
               icon: Icons.my_location,
               hintText: 'Tema..',
-              onChanged: (value) => setState(() => _location = value),
+              onChanged: (value) {
+                setState(() => _location = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'Next Of Kin',
               icon: Icons.next_plan,
               hintText: 'Kwaku..',
-              onChanged: (value) => setState(() => _nextOfKin = value),
+              onChanged: (value) {
+                setState(() => _nextOfKin = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'Phone Number',
               icon: Icons.phone,
               hintText: '+233....',
-              onChanged: (value) => setState(() => _nextOfKinNum = value),
+              onChanged: (value) {
+                setState(() => _nextOfKinNum = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             _buildTextField(
               label: 'Relationship',
               icon: Icons.family_restroom,
               hintText: 'Mother...',
-              onChanged: (value) => setState(() => _nextOfKinRelationship = value),
+              onChanged: (value) {
+                setState(() => _nextOfKinRelationship = value);
+                _saveDataLocally();
+              },
             ),
             SizedBox(height: 20),
             ElevatedButton(

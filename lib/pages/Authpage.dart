@@ -176,11 +176,13 @@ class _AuthPageState extends State<AuthPage> {
                         .of(context)
                         .size
                         .width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(40)),
-                    ),
+                decoration: BoxDecoration(
+
+                  gradient: LinearGradient(
+                    colors: [Color(0xff72B2E6), Color(0xff98e6e6)], // Gradient colors
+                    begin: Alignment.topLeft, // Gradient start position
+                    end: Alignment.bottomRight, // Gradient end position
+                  ),),
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Column(

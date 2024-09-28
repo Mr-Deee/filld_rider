@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:hubtel_merchant_checkout_sdk/hubtel_merchant_checkout_sdk.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +66,11 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   String btnTitle = "Arrived";
   Color btnColor = Colors.white;
   StreamSubscription<DatabaseEvent>? rideStreamSubscription;
+  bool _isSending = false;
 
+  final String clientId = 'ttuouezo';
+  final String clientSecret = 'wxyewyap';
+  final String sender = "Fill'D";
   Timer? timer;
   int durationCounter = 0;
 
@@ -351,6 +356,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                           print("THIS IS CLIENT TOKEN: $clientToken");
 
                                         } else if (status == "arrived_at_gas_station") {
+                                          _handleRiderActivation();
                                           // Status change: "completed"
                                           status = "completed";
                                           await clientRequestRef.child(rideRequestId).child("status").set(status);
@@ -431,6 +437,91 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                   ))))
     ]));
   }
+
+  void _handleRiderActivation() {
+    final phoneNumber ='';
+    final rideprovider = Provider.of<Ride_r>(context).riderInfo;
+    final Clientname = widget.clientDetails.client_name.toString();
+    final Riderfname = rideprovider?.firstname.toString();
+    final Riderlname = rideprovider?.lastname.toString();
+    final FareAmount = widget.clientDetails.GasFare;
+    print('here$Clientname');
+    final String message    = "Hi there, your rider with name  ${Riderfname} ${Riderlname}, is at ."
+        ' Welcome to a world of convenience, accept requests and earn as much you like. '
+        "Thank you for delivering with Fill'D.";
+    if (phoneNumber.isNotEmpty && message.isNotEmpty) {
+      sendSms(phoneNumber, message);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+    }
+    // _sendActivationWebEmail(rider.email);
+    //_editRiderStatus(rider);
+    Navigator.of(context).pop();
+  }
+
+
+
+  Future<void> sendSms(String phoneNumber, String message) async {
+    setState(() {
+      _isSending = true;
+    });
+
+    final url = Uri.parse('https://sms.hubtel.com/v1/messages/send');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Basic ${base64Encode(utf8.encode('$clientId:$clientSecret'))}',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "From": sender,
+          "To": phoneNumber,
+          "Content": message,
+          "RegisteredDelivery": true,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "SMS sent successfully!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "SMS sent successfully!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+        );
+        // Fluttertoast.showToast(
+        //   msg: "Failed to send SMS: ${response.body}",
+        //   toastLength: Toast.LENGTH_SHORT,
+        //   gravity: ToastGravity.BOTTOM,
+        // );
+      }
+
+    }
+    // catch (e) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(content: Text('Error: $e')),
+    //   );
+    // }
+    finally {
+      setState(() {
+        _isSending = false;
+      });
+    }
+  }
+
+
+
+
+
+
 
   Future<void> getPlaceDirection(LatLng pickUpLatLng, LatLng dropOffLatLng) async {
     showDialog(
@@ -653,6 +744,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
         rideprovider?.firstname );
     clientRequestRef.child(rideRequestId).child("driver_phone").set(
         rideprovider?.phone);
+
     clientRequestRef.child(rideRequestId).child("driver_id").set(
         Riderskey.key);
     clientRequestRef.child(rideRequestId).child("car_details").set(
@@ -986,4 +1078,11 @@ SendPrompt() async{
       print('Error sending notification: $e');
     }
   }
+
+
+
+
+
+
+
 }

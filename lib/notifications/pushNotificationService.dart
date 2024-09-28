@@ -108,6 +108,7 @@ class PushNotificationService {
         String paymentMethod = map['payment_method'].toString();
 
         String client_name = map["client_name"];
+        String gasfare = map["Gas Amount"];
         String client_phone = map["client_phone"];
         String token = map["client_phone"];
 
@@ -121,6 +122,7 @@ class PushNotificationService {
         clientDetails.client_name = client_name;
         clientDetails.client_phone = client_phone;
         clientDetails.client_phone = client_phone;
+        clientDetails.GasFare =gasfare ;
 
         print("Information :: ");
         print(clientDetails.pickup_address);

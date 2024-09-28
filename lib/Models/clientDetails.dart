@@ -10,7 +10,18 @@ class ClientDetails
   String ?payment_method;
   String ?client_name;
   String ?client_phone;
-  String ?  clientToken;
+  String ? clientToken;
+  String ? GasFare;
 
-  ClientDetails({this.pickup_address, this.dropoff_address, this.pickup, this.dropoff, this.ride_request_id, this.payment_method, this.client_name, this.clientToken, this.client_phone});
+  ClientDetails({
+    this.pickup_address,
+    this.dropoff_address,
+    this.pickup, this.dropoff,
+    this.ride_request_id,
+    this.payment_method,
+    this.client_name,
+    this.clientToken,
+    this.client_phone,
+    this.GasFare,
+  });
 }

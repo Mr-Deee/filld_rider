@@ -337,6 +337,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                           setState(() {
                                             btnTitle = "Arrived At Gas Station";
                                             btnColor = Colors.redAccent;
+                                            _handleRiderActivation();
                                           });
 
                                           initTimer();
@@ -351,12 +352,14 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                             btnColor = Colors.greenAccent;
                                           });
 
+
                                           await AssistantMethod.sendNotificationriderarrived(clientToken, "Driver has arrived at the gas station!", rideRequestId);
 
-                                          print("THIS IS CLIENT TOKEN: $clientToken");
+                                          print("THIS IS CLIENT TOKEN22: $clientToken");
 
-                                        } else if (status == "arrived_at_gas_station") {
                                           _handleRiderActivation();
+                                        } else if (status == "arrived_at_gas_station") {
+
                                           // Status change: "completed"
                                           status = "completed";
                                           await clientRequestRef.child(rideRequestId).child("status").set(status);
@@ -439,16 +442,22 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   }
 
   void _handleRiderActivation() {
-    final phoneNumber ='';
-    final rideprovider = Provider.of<Ride_r>(context).riderInfo;
+    print("Rider activation started");
+    final phoneNumber ='+233548498844';
+    final rideprovider = Provider.of<Ride_r>(context,listen: false).riderInfo;
+    print("Rider activation started1.1");
     final Clientname = widget.clientDetails.client_name.toString();
+    print("Rider activation started2");
     final Riderfname = rideprovider?.firstname.toString();
     final Riderlname = rideprovider?.lastname.toString();
     final FareAmount = widget.clientDetails.GasFare;
+    print("Rider activation started3");
+    final gaslocation = widget.clientDetails.dropoff_address;
     print('here$Clientname');
-    final String message    = "Hi there, your rider with name  ${Riderfname} ${Riderlname}, is at ."
-        ' Welcome to a world of convenience, accept requests and earn as much you like. '
-        "Thank you for delivering with Fill'D.";
+    final String message    = "Hi there, your rider with name  "
+        "${Riderfname} ${Riderlname}, is at the ${gaslocation} Gas Station ."
+        'Kindly pay this amount: ${FareAmount} for the refill  ';
+        // "Thank you for delivering with Fill'D.";
     if (phoneNumber.isNotEmpty && message.isNotEmpty) {
       sendSms(phoneNumber, message);
     } else {
@@ -458,7 +467,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
     }
     // _sendActivationWebEmail(rider.email);
     //_editRiderStatus(rider);
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
 
@@ -494,8 +503,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       } else {
         Fluttertoast.showToast(
           msg: "SMS sent successfully!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
+          // toastLength: Toast.LENGTH_SHORT,
+          // gravity: ToastGravity.BOTTOM,
         );
         // Fluttertoast.showToast(
         //   msg: "Failed to send SMS: ${response.body}",

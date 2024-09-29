@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:flutter/services.dart';
 
+import 'dart:math';
+import 'dart:io';
 import 'package:filld_rider/Models/address.dart';
 import 'package:filld_rider/Models/directDetails.dart';
 import 'package:filld_rider/assistants/requestAssistant.dart';
@@ -22,105 +26,170 @@ import '../Users.dart';
 
 class AssistantMethod{
 
+  static Future<Map<String, dynamic>> loadServiceAccountKey() async {
+    try {
+      // Reading from the file system, adjust the path as needed
+      final file = File('assets/firebase_service_account.json');
 
+      final String jsonString = await rootBundle.loadString('assets/firebase_service_account.json');
+      final content = await jsonString; // Read the file as a string
+      return jsonDecode(content); // Parse the JSON content into a Map
+    } catch (e) {
+      print('Error loading service account key: $e');
+      throw e;
+    }
+  }
+
+  static Future<AccessCredentials> _getAccessToken() async {
+    try {
+      final serviceAccountKey = await loadServiceAccountKey();
+
+      // Use googleapis_auth to obtain credentials
+      final accountCredentials = ServiceAccountCredentials.fromJson(
+          serviceAccountKey);
+      final scopes = [
+        'https://www.googleapis.com/auth/firebase.messaging' // Add FCM scope
+      ];
+
+      final authClient = await clientViaServiceAccount(
+          accountCredentials, scopes);
+      return authClient.credentials; // Return the access credentials
+    } catch (e) {
+      print('Error obtaining access token: $e');
+      throw e;
+    }
+  }
+  static const String projectId = 'fill-d-db8f7';  // Your Firebase project ID
+  static const String fcmEndpoint = 'https://fcm.googleapis.com/v1/projects/$projectId/messages:send';
   static sendNotificationriderarrived(String token, context, String ride_request_id) async {
-    // var destination =
-    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
-    Map<String, String> headerMap = {
-      'Content-Type': 'application/json',
-      'Authorization': serverToken,
+    try {
+      final credentials = await _getAccessToken();
+      final accessToken = credentials.accessToken.data;
+
+    Map<String, dynamic> notification = {
+      'message': {
+        'token': token,
+        'notification': {
+          'body': 'Rider is outside Kindly  make your cylinder available',
+          'title': 'Rider Has Arrived At Your Location'
+        },
+        'data': {
+          'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          'id': '1',
+          'status': 'done',
+          'ride_request_id': ride_request_id,
+        },
+      }
     };
 
-    Map notificationMap = {
-      'body': 'Rider is outside Kindly  make your cylinder available',
-        'title': 'Rider Has Arrived At Your Location'
-    };
 
-    Map dataMap = {
-      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-      'id': '1',
-      'status': 'done',
-      // 'ride_request_id': "ride_request_id",
-    };
-
-    Map sendNotificationMap = {
-      "notification": notificationMap,
-      "data": dataMap,
-      "priority": "high",
-      "to": token,
-    };
-
-    var res = await http.post(
-      Uri.parse('https://fcm.googleapis.com/fcm/send'),
-      headers: headerMap,
-      body: jsonEncode(sendNotificationMap),
+      final response = await http.post(
+      Uri.parse(fcmEndpoint),
+    headers: {
+    HttpHeaders.authorizationHeader: 'Bearer $accessToken',
+    HttpHeaders.contentTypeHeader: 'application/json',
+    },
+    body: jsonEncode(notification),
     );
+
+    if (response.statusCode == 200) {
+    print('Notification sent successfully.');
+    } else {
+    print('Failed to send notification. Error: ${response.body}');
+    }
+    } catch (e) {
+    print('Error sending notification: $e');
+    }
+
+
   }
   static sendNotificationjobstarted(String token, context, String ride_request_id) async {
-    // var destination =
-    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
-    Map<String, String> headerMap = {
-      'Content-Type': 'application/json',
-      'Authorization': serverToken,
-    };
+    try {
+      final credentials = await _getAccessToken();
+      final accessToken = credentials.accessToken.data;
 
     Map notificationMap = {
       'body': 'Your Delivery Just Started',
         'title': 'Your Gas will be "Filld" shortly'
     };
+      // FCM HTTP v1 API payload
+      Map<String, dynamic> notification = {
+        'message': {
+          'token': token,
+          'notification': {
+            'body': 'Your Delivery Just Started',
+            'title': 'Your Gas will be "Filld" shortly'
+          },
+          'data': {
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': '1',
+            'status': 'done',
+            'ride_request_id': ride_request_id,
+          },
+        }
+      };
 
-    Map dataMap = {
-      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-      'id': '1',
-      'status': 'done',
-      // 'ride_request_id': "ride_request_id",
-    };
 
-    Map sendNotificationMap = {
-      "notification": notificationMap,
-      "data": dataMap,
-      "priority": "high",
-      "to": token,
-    };
 
-    var res = await http.post(
-      Uri.parse('https://fcm.googleapis.com/fcm/send'),
-      headers: headerMap,
-      body: jsonEncode(sendNotificationMap),
+    final response = await http.post(
+      Uri.parse(fcmEndpoint),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $accessToken',
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+      body: jsonEncode(notification),
     );
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully.');
+    } else {
+      print('Failed to send notification. Error: ${response.body}');
+    }
+  } catch (e) {
+  print('Error sending notification: $e');
+  }
   }
   static sendNotificationrideronthewaytofillgas(String token, context, String ride_request_id) async {
-    // var destination =
-    //     Provider.of<AppData>(context, listen: false).dropOfflocation;
-    Map<String, String> headerMap = {
-      'Content-Type': 'application/json',
-      'Authorization': serverToken,
-    };
+       try {
+      final credentials = await _getAccessToken();
+      final accessToken = credentials.accessToken.data;
 
-    Map notificationMap = {
-      'body': 'Rider is on the way to fill your cylinder',
-        'title': 'Rider is headed to the Gas Station'
-    };
+      Map<String, dynamic> notification = {
+        'message': {
+          'token': token,
+          'notification': {
+            'body': 'Rider is on the way to fill your cylinder',
+            'title': 'New Delivery Request'
+          },
+          'data': {
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': '1',
+            'status': 'done',
+            'ride_request_id': ride_request_id,
+          },
+        }
+      };
 
-    Map dataMap = {
-      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-      'id': '1',
-      'status': 'done',
-      // 'ride_request_id': "ride_request_id",
-    };
 
-    Map sendNotificationMap = {
-      "notification": notificationMap,
-      "data": dataMap,
-      "priority": "high",
-      "to": token,
-    };
 
-    var res = await http.post(
-      Uri.parse('https://fcm.googleapis.com/fcm/send'),
-      headers: headerMap,
-      body: jsonEncode(sendNotificationMap),
-    );
+
+      final response = await http.post(
+        Uri.parse(fcmEndpoint),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $accessToken',
+          HttpHeaders.contentTypeHeader: 'application/json',
+        },
+        body: jsonEncode(notification),
+      );
+
+      if (response.statusCode == 200) {
+        print('Notification sent successfully.');
+      } else {
+        print('Failed to send notification. Error: ${response.body}');
+      }
+    } catch (e) {
+      print('Error sending notification: $e');
+    }
   }
   //arrived at gas station
   static sendNotificationriderarrivedatgasstation(String token, context, String ride_request_id) async {
@@ -156,6 +225,14 @@ class AssistantMethod{
       body: jsonEncode(sendNotificationMap),
     );
   }
+
+
+
+
+
+
+
+
   static sendNotificationforredecompleted(String token, context, String ride_request_id) async {
     // var destination =
     //     Provider.of<AppData>(context, listen: false).dropOfflocation;

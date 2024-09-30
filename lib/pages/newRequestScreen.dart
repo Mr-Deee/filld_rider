@@ -337,7 +337,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                           setState(() {
                                             btnTitle = "Arrived At Gas Station";
                                             btnColor = Colors.redAccent;
-                                            _handleRiderActivation();
+                                            // _handleRiderActivation();
                                           });
 
                                           initTimer();
@@ -356,7 +356,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                           await AssistantMethod.sendNotificationriderarrived(clientToken, "Driver has arrived at the gas station!", rideRequestId);
 
                                           print("THIS IS CLIENT TOKEN22: $clientToken");
-
+                                          //
                                           _handleRiderActivation();
                                         } else if (status == "arrived_at_gas_station") {
 

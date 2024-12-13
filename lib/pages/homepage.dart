@@ -13,6 +13,7 @@ import '../configMaps.dart';
 import '../notifications/pushNotificationService.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as location_package;
 
 import 'Authpage.dart';
 import 'package:geocoding/geocoding.dart';
@@ -23,7 +24,7 @@ import 'package:flutter_geofire/flutter_geofire.dart';
 class homepage extends StatefulWidget {
   const homepage({Key? key}) : super(key: key);
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng (5.614818, -0.205874),
+    target: LatLng(5.614818, -0.205874),
     zoom: 24.4746,
   );
 
@@ -32,9 +33,7 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
-
   String? currentSelectedValue;
-
 
   final location = TextEditingController();
 
@@ -44,13 +43,14 @@ class _homepageState extends State<homepage> {
   GoogleMapController? newGoogleMapController;
 
   var geoLocator = Geolocator();
-
+  GoogleMapController? _mapController;
   String driverStatusText = "Go Online ";
 
   Color driverStatusColor = Colors.white70;
 
   bool isDriverAvailable = false;
   bool isDriverActivated = false;
+  location_package.Location _location = location_package.Location();
 
   Set<Marker> markersSet = {};
   Position? _currentPosition;
@@ -68,7 +68,6 @@ class _homepageState extends State<homepage> {
       Provider.of<helper>(context, listen: false).getAddressFromLatLng();
     });
 
-
     super.initState();
     locatePosition();
 
@@ -78,9 +77,6 @@ class _homepageState extends State<homepage> {
     getCurrentArtisanInfo();
     requestLocationPermission();
     AssistantMethod.obtainTripRequestsHistoryData(context);
-
-
-
   }
 
   void _requestLocationPermission() async {
@@ -97,29 +93,34 @@ class _homepageState extends State<homepage> {
       // with a link to the app settings.
     }
   }
+
   void getLocationLiveUpdates() {
     double previousLatitude = 0.0;
     double previousLongitude = 0.0;
     homeTabPageStreamSubscription =
         Geolocator.getPositionStream().listen((Position position) {
-          currentPosition = position;
+      currentPosition = position;
 
-          if (isDriverAvailable == true) {
-            Geofire.setLocation(
-                currentfirebaseUser!.uid, position.latitude, position.longitude);
-          }
-          if (position.latitude != previousLatitude || position.longitude != previousLongitude) {
-            LatLng latLng = LatLng(position.latitude, position.longitude);
-            newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+      if (isDriverAvailable == true) {
+        Geofire.setLocation(
+            currentfirebaseUser!.uid, position.latitude, position.longitude);
+      }
+      if (position.latitude != previousLatitude ||
+          position.longitude != previousLongitude) {
+        LatLng latLng = LatLng(position.latitude, position.longitude);
+        newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
 
-            // Update the previous latitude and longitude for future comparisons
-            previousLatitude = position.latitude;
-            previousLongitude = position.longitude;
-          }
-          // LatLng latLng = LatLng(position.latitude, position.longitude);
-          // newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
-        });
+        // Update the previous latitude and longitude for future comparisons
+        previousLatitude = position.latitude;
+        previousLongitude = position.longitude;
+      }
+      // LatLng latLng = LatLng(position.latitude, position.longitude);
+      // newGoogleMapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+    });
   }
+
+
+
 
   void locatePosition() async {
     Position position = await Geolocator.getCurrentPosition(
@@ -129,8 +130,9 @@ class _homepageState extends State<homepage> {
     LatLng latLatPosition = LatLng(position.latitude, position.longitude);
 
     CameraPosition cameraPosition =
-    new CameraPosition(target: latLatPosition, zoom: 14);
-    newGoogleMapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        new CameraPosition(target: latLatPosition, zoom: 14);
+    newGoogleMapController
+        ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
   Future<void> requestLocationPermission() async {
@@ -147,13 +149,12 @@ class _homepageState extends State<homepage> {
       print('Permission denied');
     } else if (status == PermissionStatus.permanentlyDenied) {
       print('Permission Permanently Denied');
-      await openAppSettings();
+      // await openAppSettings();
     }
   }
 
   getRideType() {
-    Ridersdb
-        .child(currentfirebaseUser!.uid)
+    Ridersdb.child(currentfirebaseUser!.uid)
         .child("car_details")
         .child("type")
         .once()
@@ -169,13 +170,12 @@ class _homepageState extends State<homepage> {
 
   getRatings() {
     //update ratings
-    Ridersdb
-        .child(currentfirebaseUser!.uid)
+    Ridersdb.child(currentfirebaseUser!.uid)
         .child("ratings")
         .once()
         .then((value) {
       var dataSnapshot = value.snapshot;
-      final map = dataSnapshot.value ;
+      final map = dataSnapshot.value;
 
       if (dataSnapshot != null) {
         double ratings = double.parse(map.toString());
@@ -225,8 +225,9 @@ class _homepageState extends State<homepage> {
     Ridersdb.child(currentfirebaseUser!.uid).once().then((event) {
       print("value");
       if (event.snapshot.value is Map<Object?, Object?>) {
-        riderinformation = Ride_r.fromMap((event.snapshot.value as Map<Object?, Object?>).cast<String, dynamic>());
-
+        riderinformation = Ride_r.fromMap(
+            (event.snapshot.value as Map<Object?, Object?>)
+                .cast<String, dynamic>());
       }
 
       // PushNotificationService pushNotificationService = PushNotificationService();
@@ -242,148 +243,165 @@ class _homepageState extends State<homepage> {
     getRatings();
     getRideType();
   }
-
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(5.603111823223051, -0.18582144022941616),
+    zoom: 14.4746,
+  );
   bool isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        GoogleMap(
-          mapType: MapType.normal,
-          myLocationButtonEnabled: true,
-          initialCameraPosition: homepage._kGooglePlex,
-          myLocationEnabled: true,
-          // markers: markersSet,
-          onMapCreated: (GoogleMapController controller) {
-            _controllerGoogleMap.complete(controller);
-            newGoogleMapController = controller;
-            // setState(() {
-            //   bottomPaddingOfMap = 0.0;
-            // });
-            locatePosition();
-
+    return Stack(children: [
+      GoogleMap(
+        compassEnabled: true,
+        mapType: MapType.normal,
+        myLocationButtonEnabled: true,
+        zoomGesturesEnabled: true,
+        zoomControlsEnabled: false,
+        initialCameraPosition: _kGooglePlex,
+        myLocationEnabled: true,
+        onMapCreated: (GoogleMapController controller) {
+          _controllerGoogleMap.complete(controller);
+          _mapController = controller;
+          setState(() {
+            bottomPaddingOfMap = 0.0;
+          });
+          locatePosition();
+        },
+      ),
+      Positioned(
+        top: MediaQuery.of(context).padding.top + 16, // Adjust for iOS safe area
+        right: 16, // Distance from the right edge
+        child: FloatingActionButton(
+          backgroundColor: Colors.white,
+          onPressed: () async {
+            // Fetch current location
+            final userLocation = await _location.getLocation();
+            // Move camera to current location
+            _mapController?.animateCamera(
+              CameraUpdate.newLatLng(
+                LatLng(userLocation.latitude!, userLocation.longitude!),
+              ),
+            );
+            // Optionally, you could center the map to the user's location here
           },
+          child: Icon(Icons.my_location),
         ),
+      ),
+      //online offline driver Container
+      Container(
+        height: 140.0,
+        width: double.infinity,
+        //  color: Colors.black87,
+      ),
 
-        //online offline driver Container
-        Container(
-          height: 140.0,
-          width: double.infinity,
-          //  color: Colors.black87,
-        ),
-
-        Positioned(
-          top: 70.0,
-          left: 0.0,
-          right: 0.0,
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+      Positioned(
+        top: 70.0,
+        left: 0.0,
+        right: 0.0,
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
                   backgroundColor: context.read<AppState>().driverStatusColor,
-                shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(24.0),
-                )),
-                onPressed: () async {
-                  final appState = context.read<AppState>();
-                  currentfirebaseUser = await FirebaseAuth.instance.currentUser;
-                  Riderskey
-                      .orderByChild("status")
-                      .once()
-                      .then((event) { print('ecee$event');
-                        var data = event.snapshot.value ;
-                        print('aaaa$data');
-                    if (data == "deactivated") {
-                      print('ssdsss$event');
-                      displayToast("Sorry You are not Activated", context);
-                      // DriverActivated();
-                      //getLocationLiveUpdates();
-                       appState.updateDriverStatus(Colors.red, "Offline - Deactivated", false);
+                  shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(24.0),
+                  )),
+              onPressed: () async {
+                final appState = context.read<AppState>();
+                currentfirebaseUser = await FirebaseAuth.instance.currentUser;
+                Riderskey.orderByChild("status").once().then((event) {
+                  print('ecee$event');
+                  var data = event.snapshot.value;
+                  print('aaaa$data');
+                  if (data == "deactivated") {
+                    print('ssdsss$event');
+                    displayToast("Sorry You are not Activated", context);
+                    // DriverActivated();
+                    //getLocationLiveUpdates();
+                    appState.updateDriverStatus(
+                        Colors.red, "Offline - Deactivated", false);
 
-                      setState(() {
-                        // driverStatusColor = Colors.red;
-                        appState.updateDriverStatus(Colors.red, "Offline - Deactivated", true);
-                        // isDriverAvailable = false;
-                      }
-                       );
-                    }
+                    setState(() {
+                      // driverStatusColor = Colors.red;
+                      appState.updateDriverStatus(
+                          Colors.red, "Offline - Deactivated", true);
+                      // isDriverAvailable = false;
+                    });
+                  } else if (!appState.isDriverAvailable) {
+                    // appState.updateDriverStatus(Colors.green, "Online", true);
+                    makeRiderOnlineNow();
+                    getLocationLiveUpdates();
 
-                    else if (!appState.isDriverAvailable) {
-                      // appState.updateDriverStatus(Colors.green, "Online", true);
-                      makeRiderOnlineNow();
-                      getLocationLiveUpdates();
+                    //
+                    setState(() {
+                      // driverStatusColor = Colors.green;
+                      // isDriverAvailable = true;
+                      appState.updateDriverStatus(Colors.green, "Online", true);
+                    });
+                    displayToast("you are Online Now.", context);
+                  } else {
+                    makeRiderOfflineNow();
+                    setState(() {
+                      // appState.updateDriverStatus(Colors.white70, "Offline", false);
+                      appState.updateDriverStatus(
+                          Colors.white70, "Offline", false);
 
-                      //
-                      setState(() {
-                        // driverStatusColor = Colors.green;
-                        // isDriverAvailable = true;
-                        appState.updateDriverStatus(Colors.green, "Online", true);
+                      // driverStatusColor = Colors.white70;
+                      // driverStatusText = "Offline ";
+                      // isDriverAvailable = false;
+                    });
 
-                      });
-                      displayToast("you are Online Now.", context);
-                    } else {
-                      makeRiderOfflineNow();
-                      setState(() {
-                        // appState.updateDriverStatus(Colors.white70, "Offline", false);
-                        appState.updateDriverStatus(Colors.white70, "Offline", false);
-
-                        // driverStatusColor = Colors.white70;
-                        // driverStatusText = "Offline ";
-                        // isDriverAvailable = false;
-                      });
-
-                      displayToast("you are offline Now.", context);
-                    }
-                  });
-                },
-                // bacolor: driverStatusColor,
-                child: Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        driverStatusText,
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      ),
-                      Icon(
-                        Icons.online_prediction,
-                        color: Colors.black,
-                        size: 26.0,
-                      ),
-                    ],
-                  ),
+                    displayToast("you are offline Now.", context);
+                  }
+                });
+              },
+              // bacolor: driverStatusColor,
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      driverStatusText,
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    Icon(
+                      Icons.online_prediction,
+                      color: Colors.black,
+                      size: 26.0,
+                    ),
+                  ],
                 ),
               ),
-            )
-          ]),
-        ),
-         Column(children: [
+            ),
+          )
+        ]),
+      ),
+      Column(
+        children: [
           SizedBox(
             height: 30,
           ),
 
-        //
-        // ])
-      ],)]);
+          //
+          // ])
+        ],
+      )
+    ]);
 
-      // bottomNavigationBar: (),
-
+    // bottomNavigationBar: (),
   }
-
 
   void makeRiderOnlineNow() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
-
+    print('cehcked  locations : $position');
     RiderRequestRef.set("searching");
     Geofire.initialize("availableRider");
     Geofire.setLocation(
@@ -391,12 +409,12 @@ class _homepageState extends State<homepage> {
       currentPosition!.latitude,
       currentPosition!.longitude,
     );
+
+    print('got current user after   locations : ${currentfirebaseUser?.uid}');
     // await availableRider.update(riderMap);
     RiderRequestRef.set("Searching");
     RiderRequestRef.onValue.listen((event) {});
   }
-
-
 
   Future<void> ArtisanActivated() async {
     Geofire.removeLocation(currentfirebaseUser!.uid);
@@ -410,8 +428,5 @@ class _homepageState extends State<homepage> {
     Geofire.removeLocation(currentfirebaseUser!.uid);
     RiderRequestRef.onDisconnect();
     RiderRequestRef.remove();
-
   }
 }
-
-

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -48,7 +47,9 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
         if (snapshot.exists) {
           final data = Map<String, dynamic>.from(snapshot.value as Map);
           setState(() {
-            userRequests = data.values.map((value) => Map<String, dynamic>.from(value)).toList();
+            userRequests = data.values
+                .map((value) => Map<String, dynamic>.from(value))
+                .toList();
           });
         }
       }
@@ -78,7 +79,8 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
         };
 
         if (imageFile != null) {
-          final imageRef = _storage.ref().child('screenshots/${DateTime.now().millisecondsSinceEpoch}.jpg');
+          final imageRef = _storage.ref().child(
+              'screenshots/${DateTime.now().millisecondsSinceEpoch}.jpg');
           await imageRef.putFile(imageFile!);
           requestData['imageUrl'] = await imageRef.getDownloadURL();
         }
@@ -118,12 +120,13 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
         title: const Text("Customer Support Service"),
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildForm(),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             _buildPreviousRequests(),
           ],
         ),
@@ -135,27 +138,66 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
     return Form(
       key: _formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DropdownButtonFormField<String>(
-            decoration: const InputDecoration(labelText: 'Select Request Title'),
+            decoration: InputDecoration(
+              labelText: 'Request Type',
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+            ),
             value: selectedIssue,
             items: ['Bug Report', 'Account Issue', 'Feature Request', 'Other']
-                .map((issue) => DropdownMenuItem(value: issue, child: Text(issue)))
+                .map((issue) =>
+                    DropdownMenuItem(value: issue, child: Text(issue)))
                 .toList(),
             onChanged: (value) => setState(() => selectedIssue = value),
-            validator: (value) => value == null ? 'Please select a request title' : null,
+            validator: (value) =>
+                value == null ? 'Please select a request type' : null,
           ),
           const SizedBox(height: 16),
           if (selectedIssue == 'Other') _buildOtherIssueFields(),
           if (selectedIssue != 'Other') _buildDescriptionField(),
           const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: _pickImage,
-            icon: const Icon(Icons.image),
-            label: const Text("Upload Screenshot"),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: GestureDetector(
+                    onTap: () {
+                      _pickImage();
+                    },
+                    child: Card(child: Icon(Icons.image))),
+              ),
+              GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      _submitRequest();
+                    }
+                  },
+                  child: Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.green,
+                  ))
+            ],
           ),
+          // ElevatedButton.icon(
+          //   onPressed: _pickImage,
+          //   icon: const
+          //    label: const Text(""),
+          //   style: ElevatedButton.styleFrom(
+          //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          //   ),
+          //),
           const SizedBox(height: 8),
-          if (imageFile != null) Image.file(imageFile!, height: 150, fit: BoxFit.cover),
+          if (imageFile != null)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(imageFile!,
+                  height: 150, width: double.infinity, fit: BoxFit.cover),
+            ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
@@ -163,6 +205,11 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
                 _submitRequest();
               }
             },
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
             child: const Text("Submit Request"),
           ),
         ],
@@ -175,10 +222,15 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
       children: [
         TextFormField(
           controller: titleController,
-          decoration: const InputDecoration(labelText: 'Enter Title'),
-          validator: (value) => value == null || value.isEmpty ? 'Please enter a title' : null,
+          decoration: InputDecoration(
+            labelText: 'Custom Title',
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+          ),
+          validator: (value) =>
+              value == null || value.isEmpty ? 'Please enter a title' : null,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         _buildDescriptionField(),
       ],
     );
@@ -188,12 +240,13 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
     return TextFormField(
       controller: descriptionController,
       decoration: InputDecoration(
-        labelText: 'Enter Description',
+        labelText: 'Description',
         hintText: 'Provide detailed information',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
       maxLines: 4,
-      validator: (value) => value == null || value.isEmpty ? 'Please enter a description' : null,
+      validator: (value) =>
+          value == null || value.isEmpty ? 'Please enter a description' : null,
     );
   }
 
@@ -202,12 +255,13 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Your Previous Requests",
+          "Previous Requests",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         if (userRequests.isEmpty)
-          const Text("No requests found."),
+          const Text("No requests found.",
+              style: TextStyle(color: Colors.grey)),
         ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -216,10 +270,12 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
             final request = userRequests[index];
             return Card(
               margin: const EdgeInsets.symmetric(vertical: 8),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
               child: ListTile(
                 title: Text(request['issue'] ?? "No Title"),
                 subtitle: Text(request['description'] ?? "No Description"),
-                trailing: Text(request['timestamp']?.split(' ').first ?? ""),
+                trailing: Text(request['timestamp']?.split('T').first ?? ""),
               ),
             );
           },
@@ -235,5 +291,53 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
         imageFile = File(pickedFile.path);
       });
     }
+  }
+
+  void _showPrivacyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Colors.blue.shade100],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.lock, size: 50, color: Colors.blue),
+                const SizedBox(height: 20),
+                Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Your privacy is important to us. Benjis Rental ensures that your data is protected and used responsibly. For more information, contact us.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child:
+                      const Text('Close', style: TextStyle(color: Colors.blue)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

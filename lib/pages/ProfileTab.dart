@@ -18,7 +18,6 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final rideprovider = Provider.of<Ride_r>(context).riderInfo;
     var username = rideprovider?.firstname;
     var email = rideprovider?.email;
@@ -31,7 +30,6 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
     // riderLicenseController.text = rideprovider?.plate_number ?? '';
     // riderGhanaCard.text = rideprovider?.GhanaCard ?? '';
     return Scaffold(
-
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -45,7 +43,6 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   }
 
   Widget _buildProfileHeader() {
-
     final rideprovider = Provider.of<Ride_r>(context).riderInfo;
     var username = rideprovider?.firstname;
     var email = rideprovider?.email;
@@ -71,15 +68,22 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               CircleAvatar(
                 radius: 70,
                 backgroundImage: CachedNetworkImageProvider(
-                  rideprovider!.profilepicture!, // Replace with actual image URL
+                  rideprovider!
+                      .profilepicture!, // Replace with actual image URL
                 ),
               ),
               SizedBox(height: 10),
-              Text("$username",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              Text(
+                "$username",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               Text(
-                emailController.text.isNotEmpty ? emailController.text : "email@example.com",
+                emailController.text.isNotEmpty
+                    ? emailController.text
+                    : "email@example.com",
                 style: TextStyle(color: Colors.white),
               ),
             ],
@@ -105,7 +109,8 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              _buildInfoRow(Icons.phone, "Phone", phoneController.text.isNotEmpty ? phone.toString():""),
+              _buildInfoRow(Icons.phone, "Phone",
+                  phoneController.text.isNotEmpty ? phone.toString() : ""),
               Divider(),
               _buildInfoRow(Icons.motorcycle, "Motor Brand", Brand!),
               Divider(),
@@ -146,14 +151,17 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
             _buildActionItem(Icons.call, "Customer Support Service", () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CustomerSupportService()),
-              );            }),
+                MaterialPageRoute(
+                    builder: (context) => CustomerSupportService()),
+              );
+            }),
             Divider(),
             _buildActionItem(Icons.info, "About", () {
-              // Navigate to about page
+              _showAboutDialog(context);
             }),
             Divider(),
             _buildActionItem(Icons.privacy_tip, "Privacy Policy", () {
+              _showPrivacyDialog(context);
               // Navigate to privacy policy
             }),
           ],
@@ -195,4 +203,163 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
       },
     );
   }
+
+  void _showAboutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.blue.shade100],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.info, size: 50, color: Colors.white70),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Our Mission, Vision & Core Values',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 15),
+                  Text(
+                    'We aim to become the industry leader in the LPG Gas Delivery in Ghana by consistently innovating and providing top-notch customer experiences. Below are our core values:',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 25),
+                  GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                    children: [
+                      _buildHoverCardWithPopup(
+                        context: context,
+                        icon: Icons.lightbulb_outline,
+                        title: 'Innovation',
+                        description:
+                        'We constantly innovate to meet customer needs efficiently.',
+                      ),
+                      _buildHoverCardWithPopup(
+                        context: context,
+                        icon: Icons.handshake_outlined,
+                        title: 'Customer Focus',
+                        description:
+                        'Customer satisfaction is at the heart of everything we do.',
+                      ),
+
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Close',
+                        style: TextStyle(color: Colors.blue)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHoverCardWithPopup({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String description,
+  }) {
+    return MouseRegion(
+      onEnter: (event) {
+        // _showPopup(context, title, description);
+      },
+      onExit: (event) {
+        Navigator.pop(context);
+      },
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.blue),
+              const SizedBox(height: 10),
+              Text(
+                title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPrivacyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white, Colors.blue.shade100],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.lock, size: 50, color: Colors.blue),
+                const SizedBox(height: 20),
+                Text(
+                  'Privacy Policy',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Your privacy is important to us.FillD , ensures that your data is protected and used responsibly. For more information, contact us.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close', style: TextStyle(color: Colors.blue)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+}
 }

@@ -53,6 +53,10 @@
 		<string>This app need your location to provide best feature based on location</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 		<string>This app need your location to provide best feature based on location</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>We need your location for maps</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>We need your location for maps</string>
 
 	<key>NSPhotoLibraryUsageDescription</key>
     <string>App needs access to photo lib for profile images</string>

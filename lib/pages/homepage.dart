@@ -243,6 +243,89 @@ class _homepageState extends State<homepage> {
     getRatings();
     getRideType();
   }
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled
+      return Future.error('Location services are disabled');
+    }
+
+    // Check for location permissions
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      // Request permission if it's denied
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // If the permission is still denied after request
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    // If permission is permanently denied, handle it
+    if (permission == LocationPermission.deniedForever) {
+      // Location permission is permanently denied, handle it here
+      return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // Fetch and return the current location if permission is granted
+    return await Geolocator.getCurrentPosition();
+  }
+
+  // Function to get current location
+  Future<Position> _getCurrentLocation2() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled');
+    }
+
+    // Check for location permissions
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    // If permission is permanently denied, handle it
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+
+// Function to reset the camera to the current location
+  Future<void> _resetCamera() async {
+
+    try {
+      Position position = await _getCurrentLocation2();
+      print("Current position: $position");
+
+      if (newGoogleMapController != null) {
+        newGoogleMapController!.animateCamera(
+          CameraUpdate.newLatLng(LatLng(position.latitude, position.longitude)),
+        );
+      } else {
+        print("GoogleMapController is null");
+      }
+    } catch (e) {
+      print("Error getting location: $e");
+    }
+  }
+
+
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(5.603111823223051, -0.18582144022941616),
     zoom: 14.4746,
@@ -257,7 +340,7 @@ class _homepageState extends State<homepage> {
         mapType: MapType.normal,
         myLocationButtonEnabled: true,
         zoomGesturesEnabled: true,
-        zoomControlsEnabled: false,
+        // zoomControlsEnabled: true,
         initialCameraPosition: _kGooglePlex,
         myLocationEnabled: true,
         onMapCreated: (GoogleMapController controller) {
@@ -275,16 +358,8 @@ class _homepageState extends State<homepage> {
         child: FloatingActionButton(
           backgroundColor: Colors.white,
           onPressed: () async {
-            // Fetch current location
-            final userLocation = await _location.getLocation();
-            // Move camera to current location
-            _mapController?.animateCamera(
-              CameraUpdate.newLatLng(
-                LatLng(userLocation.latitude!, userLocation.longitude!),
-              ),
-            );
-            // Optionally, you could center the map to the user's location here
-          },
+            _resetCamera();
+            },
           child: Icon(Icons.my_location),
         ),
       ),

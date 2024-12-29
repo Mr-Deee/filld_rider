@@ -121,18 +121,70 @@ class _homepageState extends State<homepage> {
 
 
 
+  Future<void> locatePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-  void locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
-    currentPosition = position;
+    // Debug: Start checking location services
+    print("Checking if location services are enabled...");
 
-    LatLng latLatPosition = LatLng(position.latitude, position.longitude);
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      print("Location services are disabled.");
+      return Future.error('Location services are disabled.');
+    }
 
-    CameraPosition cameraPosition =
-        new CameraPosition(target: latLatPosition, zoom: 14);
-    newGoogleMapController
-        ?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    // Debug: Location services are enabled
+    print("Location services are enabled.");
+
+    // Check for location permissions
+    print("Checking location permissions...");
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      print("Location permission denied. Requesting permission...");
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        print("Location permission denied again.");
+        return Future.error('Location permissions are denied.');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      print("Location permissions are permanently denied.");
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // Debug: Location permissions granted
+    print("Location permissions granted.");
+
+    try {
+      // Get the current position
+      print("Getting the current location...");
+      _currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      print("Current location: "
+          "Latitude: ${_currentPosition?.latitude}, "
+          "Longitude: ${_currentPosition?.longitude}");
+
+      // Move the map camera to the current location
+      LatLng currentLatLng =
+      LatLng(_currentPosition!.latitude, _currentPosition!.longitude);
+      CameraPosition cameraPosition = CameraPosition(target: currentLatLng, zoom: 14);
+
+      print("Updating camera position...");
+      if (_mapController != null) {
+        _mapController?.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        print("Camera position updated.");
+      } else {
+        print("Map controller is null. Unable to update camera position.");
+      }
+    } catch (e) {
+      print("Error while fetching location or updating camera: $e");
+    }
   }
 
   Future<void> requestLocationPermission() async {
@@ -336,33 +388,28 @@ class _homepageState extends State<homepage> {
   Widget build(BuildContext context) {
     return Stack(children: [
       GoogleMap(
-        compassEnabled: true,
-        mapType: MapType.normal,
-        myLocationButtonEnabled: true,
-        zoomGesturesEnabled: true,
-        // zoomControlsEnabled: true,
-        initialCameraPosition: _kGooglePlex,
-        myLocationEnabled: true,
-        onMapCreated: (GoogleMapController controller) {
-          _controllerGoogleMap.complete(controller);
-          _mapController = controller;
-          setState(() {
-            bottomPaddingOfMap = 0.0;
-          });
-          locatePosition();
-        },
-      ),
-      Positioned(
-        top: MediaQuery.of(context).padding.top + 16, // Adjust for iOS safe area
-        right: 16, // Distance from the right edge
-        child: FloatingActionButton(
-          backgroundColor: Colors.white,
-          onPressed: () async {
-            _resetCamera();
-            },
-          child: Icon(Icons.my_location),
-        ),
-      ),
+      compassEnabled: true,
+      mapType: MapType.normal,
+      myLocationButtonEnabled: false, // Custom button used instead
+      zoomGesturesEnabled: true,
+      myLocationEnabled: true,
+      initialCameraPosition: _kGooglePlex,
+      onMapCreated: (GoogleMapController controller) {
+        _controllerGoogleMap.complete(controller);
+        _mapController = controller;
+        locatePosition();
+      },
+    ),
+    Positioned(
+    top: 73,
+    right: 20,
+    child: FloatingActionButton(
+      backgroundColor: Colors.cyan,
+    onPressed: () async {
+    locatePosition();
+    },
+    child: Icon(Icons.my_location),
+    ),),
       //online offline driver Container
       Container(
         height: 140.0,

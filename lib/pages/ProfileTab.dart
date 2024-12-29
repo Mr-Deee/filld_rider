@@ -69,7 +69,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                 radius: 70,
                 backgroundImage: CachedNetworkImageProvider(
                   rideprovider!
-                      .profilepicture!, // Replace with actual image URL
+                      .profilepicture!??"", // Replace with actual image URL
                 ),
               ),
               SizedBox(height: 10),

@@ -171,18 +171,22 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
                     },
                     child: Card(child: Icon(Icons.image))),
               ),
-              GestureDetector(
-                  onTap: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _submitRequest();
-                    }
-                  },
-                  child: Icon(
-                    Icons.check_circle_rounded,
-                    color: Colors.green,
-                  ))
+
             ],
           ),
+
+
+
+          GestureDetector(
+              onTap: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  _submitRequest();
+                }
+              },
+              child: Icon(
+                Icons.check_circle_rounded,
+                color: Colors.green,
+              )),
           // ElevatedButton.icon(
           //   onPressed: _pickImage,
           //   icon: const
@@ -199,19 +203,19 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
                   height: 150, width: double.infinity, fit: BoxFit.cover),
             ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState?.validate() ?? false) {
-                _submitRequest();
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-            ),
-            child: const Text("Submit Request"),
-          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     if (_formKey.currentState?.validate() ?? false) {
+          //       _submitRequest();
+          //     }
+          //   },
+          //   style: ElevatedButton.styleFrom(
+          //     padding: const EdgeInsets.symmetric(vertical: 16),
+          //     shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12)),
+          //   ),
+          //   child: const Text("Submit Request"),
+          // ),
         ],
       ),
     );

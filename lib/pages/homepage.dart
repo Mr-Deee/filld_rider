@@ -13,7 +13,7 @@ import '../configMaps.dart';
 import '../notifications/pushNotificationService.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart' as location_package;
+// import 'package:location/location.dart' as location_package;
 
 import 'Authpage.dart';
 import 'package:geocoding/geocoding.dart';
@@ -50,7 +50,7 @@ class _homepageState extends State<homepage> {
 
   bool isDriverAvailable = false;
   bool isDriverActivated = false;
-  location_package.Location _location = location_package.Location();
+  // location_package.Location _location = location_package.Location();
 
   Set<Marker> markersSet = {};
   Position? _currentPosition;
@@ -404,7 +404,7 @@ class _homepageState extends State<homepage> {
     top: 73,
     right: 20,
     child: FloatingActionButton(
-      backgroundColor: Colors.cyan,
+      backgroundColor: Colors.white,
     onPressed: () async {
     locatePosition();
     },

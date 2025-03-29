@@ -95,7 +95,7 @@ dev_dependencies:
 
 dependency_overrides:
   win32: ^5.5.4
-  url_launcher:
+#  url_launcher:
 
 
 # For information on the generic Dart part of this file, see the

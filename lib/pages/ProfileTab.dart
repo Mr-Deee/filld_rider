@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../Models/Ride_r.dart';
 import 'CSS.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class ProfileTabPage extends StatefulWidget {
   @override
@@ -41,6 +43,49 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
       ),
     );
   }
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sign Out'),
+          backgroundColor: Colors.black,
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text('Are you certain you want to Sign Out?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () {
+                print('yes');
+                FirebaseAuth.instance.signOut();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/login", (route) => false);
+                // Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildProfileHeader() {
     final rideprovider = Provider.of<Ride_r>(context).riderInfo;
@@ -58,6 +103,66 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
+          ),
+        ),
+        Positioned(
+          top: 50,
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {
+
+
+                  showDialog<void>(
+                    context: context,
+                    barrierDismissible: false, // user must tap button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Sign Out'),
+                        backgroundColor: Colors.white,
+                        content: SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              Text('Are you certain you want to Sign Out?'),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text(
+                              'Yes',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            onPressed: () {
+                              print('yes');
+                              FirebaseAuth.instance.signOut();
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, "/authpage", (route) => false);
+                              // Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.black,
+                ),
+              ),
+            ],
           ),
         ),
         Align(
@@ -112,7 +217,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               _buildInfoRow(Icons.phone, "Phone",
                   phoneController.text.isNotEmpty ? phone.toString() : ""),
               Divider(),
-              _buildInfoRow(Icons.motorcycle, "Motor Brand", Brand!),
+              _buildInfoRow(Icons.motorcycle, "Motor Brand", Brand??""),
               Divider(),
               _buildInfoRow(Icons.card_membership, "License", license!),
             ],

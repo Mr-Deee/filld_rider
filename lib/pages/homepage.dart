@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:filld_rider/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as geolocator;
 import '../Models/Assistants/assistantmethods.dart';
@@ -68,16 +69,20 @@ class _homepageState extends State<homepage> {
       Provider.of<helper>(context, listen: false).getAddressFromLatLng();
     });
 
+
     super.initState();
     locatePosition();
-
     // getPicture();
     AssistantMethod.getCurrentOnlineUserInfo(context);
     _requestLocationPermission();
     getCurrentArtisanInfo();
     requestLocationPermission();
     AssistantMethod.obtainTripRequestsHistoryData(context);
+
+
   }
+
+
 
   void _requestLocationPermission() async {
     var status = await Permission.location.request();
@@ -122,6 +127,7 @@ class _homepageState extends State<homepage> {
 
 
   Future<void> locatePosition() async {
+
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -149,7 +155,6 @@ class _homepageState extends State<homepage> {
         return Future.error('Location permissions are denied.');
       }
     }
-
     if (permission == LocationPermission.deniedForever) {
       print("Location permissions are permanently denied.");
       return Future.error(

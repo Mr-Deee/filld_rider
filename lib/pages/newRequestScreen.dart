@@ -183,7 +183,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       Positioned(
           left: 10.0,
           right: 10.0,
-          bottom: 10.0,
+          bottom: 19.0,
           child: SingleChildScrollView(
               child: Container(
                   decoration: BoxDecoration(
@@ -203,7 +203,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                       ),
                     ],
                   ),
-                  height: 220.0,
+                  height: 240.0,
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 12.0),
@@ -218,7 +218,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                               color: Colors.black),
                         ),
                         SizedBox(
-                          height: 26.0,
+                          height: 6.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -271,7 +271,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                               child: Container(
                                 child: Text(
                                   widget.clientDetails.dropoff_address ?? "",
-                                  style: TextStyle(fontSize: 10.0),
+                                  style: TextStyle(fontSize: 16.0),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
@@ -279,7 +279,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: 12.0,
+                          height: 8.0,
                         ),
                         Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.0),

@@ -19,6 +19,7 @@ import 'onboarding.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 
 void main()async {
@@ -27,6 +28,10 @@ void main()async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseMessaging.instance.requestPermission(); // Ensure permission is granted
+getToken();
+  saveFCMToken();// Save token when app starts
+  setupFCMTokenListener();
   await Future.delayed(Duration(seconds: 2)); // Adjust the duration as needed
   FlutterNativeSplash.remove();
   runApp( (MultiProvider( providers: [
@@ -55,10 +60,105 @@ void main()async {
       create: (context) => helper(),
     )
 
-
+ // Listen for t
   ], child:MyApp())));
 }
+// Future<void> saveFCMToken() async {
+//
+//   String? token = await FirebaseMessaging.instance.getToken();
+//   print("hwwwwre token");
+//
+//   String? userId = FirebaseAuth.instance.currentUser?.uid;
+//   if (token != null && userId != null) {
+//     await Ridersdb.update({
+//       'token': token,
+//     }).catchError((error) {
+//       print("Error saving FCM token: $error");
+//     });
+//   }
+final FirebaseMessaging messaging  = FirebaseMessaging.instance;
 
+Future<void> getToken() async {
+  try {
+    String? token = await messaging.getToken();
+
+    if (token == null) {
+      print("Error: Failed to retrieve FCM token.");
+      return;
+    }
+
+    print("This is token :: $token");
+
+    if (currentfirebaseUser?.uid == null) {
+      print("Error: User is not logged in.");
+      return;
+    }
+
+    // Save token to Firebase Realtime Database
+    await Ridersdb.child(currentfirebaseUser!.uid).child("token").set(token);
+
+    print("FCM Token saved successfully.");
+
+    // Subscribe to topics
+    await messaging.subscribeToTopic("alldrivers");
+    await messaging.subscribeToTopic("allusers");
+
+    print("Subscribed to topics: alldrivers, allusers");
+  } catch (e) {
+    print("Error in getToken(): $e");
+  }
+}
+
+// }
+Future<void> saveFCMToken() async {
+  String? token = await FirebaseMessaging.instance.getToken();
+  print("FCM Token: $token"); // Debugging: Print token
+
+  if (token == null) {
+    print("Error: Token is null. Ensure permissions are granted.");
+    return;
+  }
+
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+  if (userId == null) {
+    print("Error: User not logged in.");
+    return;
+  }
+
+  await Ridersdb.update({
+    'fcmToken': token,
+  }).catchError((error) {
+    print("Error saving FCM token: $error");
+  });
+}
+
+Future<void> requestNotificationPermissions() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.denied) {
+    print("Notification permission denied");
+  } else {
+    print("Notification permission granted");
+    saveFCMToken(); // Fetch token after permission is granted
+  }
+}
+
+void setupFCMTokenListener() {
+  FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+    saveFCMToken(); // Save new token when it changes
+  }).onError((err) {
+    print("FCM Token Refresh Error: $err");
+  });
+}
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final User? user = auth.currentUser;
@@ -202,4 +302,8 @@ class SplashScreen extends StatelessWidget {
     ,
     );
   }
+
+
+
+
 }

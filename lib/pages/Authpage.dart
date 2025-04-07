@@ -616,21 +616,61 @@ class _SignUpFormState extends State<SignUpForm> {
           padding: const EdgeInsets.all(10.0),
           child: TextFormField(
             controller: firstnameController,
-            decoration: InputDecoration(labelText: 'First name'),
+            decoration: InputDecoration(labelText: 'First name',
+    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Color(0xff98e6e6), // Border color when enabled
+    width: 1.0, // Border width
+    ),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Colors.blue, // Border color when focused
+    width: 2.0, // Border width
+    ),),
+    ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextFormField(
             controller: lastnameController,
-            decoration: InputDecoration(labelText: 'Last name'),
+            decoration: InputDecoration(labelText: 'Last name',
+    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Color(0xff98e6e6), // Border color when enabled
+    width: 1.0, // Border width
+    ),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Colors.blue, // Border color when focused
+    width: 2.0, // Border width
+    ),),
+
+            ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextFormField(
             controller: emailController,
-            decoration: InputDecoration(labelText: 'Email'),
+            decoration: InputDecoration(labelText: 'Email',
+    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Color(0xff98e6e6), // Border color when enabled
+    width: 1.0, // Border width
+    ),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Colors.blue, // Border color when focused
+    width: 2.0, // Border width
+    ),),
+    ),
           ),
         ),
 
@@ -655,8 +695,22 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 15.0),
                 child: TextFormField(
+
                   controller: phonecontroller,
-                  decoration: InputDecoration(labelText: 'Phone number'),
+                  decoration: InputDecoration(labelText: 'Phone number',
+    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Color(0xff98e6e6), // Border color when enabled
+    width: 1.0, // Border width
+    ),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Colors.blue, // Border color when focused
+    width: 2.0, // Border width
+    ),),
+    ),
                 ),
               ),
             ),
@@ -670,6 +724,19 @@ class _SignUpFormState extends State<SignUpForm> {
 
               decoration: InputDecoration(
                 labelText: 'Password',
+    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Color(0xff98e6e6), // Border color when enabled
+    width: 1.0, // Border width
+    ),
+    ),
+    focusedBorder: OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0), // Rounded corners
+    borderSide: BorderSide(
+    color: Colors.blue, // Border color when focused
+    width: 2.0, // Border width
+    ),),
+
                 suffixIcon: IconButton(
                     icon: Icon(
                       _obscureText ? Icons.visibility_off : Icons.visibility,

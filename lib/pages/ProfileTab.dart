@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../Models/Ride_r.dart';
 import 'CSS.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 
 class ProfileTabPage extends StatefulWidget {
@@ -467,4 +468,72 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
       ),
     );
 }
+
+  Future<void> _deleteUserData(String uid) async {
+    // 👇 Uncomment this for Realtime Database
+    final dbRef = FirebaseDatabase.instance.ref("Clients/$uid");
+    await dbRef.remove();
+
+    // 👇 Or, use this for Firestore
+    // await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+  }
+
+  Future<void> _deleteUserAccount(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        final uid = user.uid;
+
+        // First delete user data from DB
+        await _deleteUserData(uid);
+
+        // Then delete the user from Auth
+        await user.delete();
+
+        // Navigate to the signup screen and remove all previous routes
+        Navigator.of(context).pushNamedAndRemoveUntil('/authpage', (route) => false);
+
+        // Optional: Show a message on signup screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account successfully deleted.')),
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'requires-recent-login') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please log in again to delete your account.'),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error: ${e.message}')),
+          );
+        }
+      }
+    }
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Confirm Deletion'),
+        content: const Text('Are you sure you want to delete your account? This action cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(); // Close the dialog
+              _deleteUserAccount(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
 }

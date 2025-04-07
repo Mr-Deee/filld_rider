@@ -320,18 +320,43 @@ class _SignInFormState extends State<SignInForm> {
             SizedBox(height: 30.0),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'E-mail'),
-            ),
+              decoration: InputDecoration(labelText: 'E-mail',
+                enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), // Rounded corners
+                  borderSide: BorderSide(
+                    color: Color(0xff98e6e6), // Border color when enabled
+                    width: 1.0, // Border width
+                  ),
+                ),
+              focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0), // Rounded corners
+              borderSide: BorderSide(
+                color: Colors.blue, // Border color when focused
+                width: 2.0, // Border width
+              ),),
+            ),),
             SizedBox(height: 40.0),
 
             Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextField(
+                child: TextFormField(
                   controller: _passwordController,
                   obscureText: _obscureText,
 
                   decoration: InputDecoration(
                     labelText: 'Password',
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0), // Rounded corners
+                      borderSide: BorderSide(
+                        color: Color(0xff98e6e6), // Border color when enabled
+                        width: 1.0, // Border width
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0), // Rounded corners
+                      borderSide: BorderSide(
+                        color: Colors.blue, // Border color when focused
+                        width: 2.0, // Border width
+                      ),),
                     suffixIcon: IconButton(
                         icon: Icon(
                           _obscureText ? Icons.visibility_off : Icons.visibility,

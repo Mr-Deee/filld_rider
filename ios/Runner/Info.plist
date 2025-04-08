@@ -31,13 +31,13 @@
 	<key>NSCameraUsageDescription</key>
 	<string>To capture profile photo please grant camera access</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app need your location to provide best feature based on location</string>
+	<string>This app requires location access to provide accurate service tracking and delivery.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We need your location for maps</string>
+	<string>This app requires location access to provide accurate service tracking and delivery.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location for maps</string>
+	<string>This app requires location access to provide accurate service tracking and delivery.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>App needs access to photo lib for profile images</string>
+	<string>App needs access to photo library for to aid in  profile image upload</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -68,5 +68,7 @@
 	<false/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
     <false/>
+    	<key>ITSAppUsesNonExemptEncryption</key>
+        <false/>
 </dict>
 </plist>

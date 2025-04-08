@@ -12,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../Models/Assistants/assistantmethods.dart';
 import '../main.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
+import 'GuestMode.dart';
 import 'Onetimepassword.dart';
 import 'forgetpassword.dart';
 import 'homepage.dart';
@@ -395,6 +396,20 @@ class _SignInFormState extends State<SignInForm> {
               },
               child: Text('Sign In'),
             ),
+
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => GuestModeScreen())
+                );                  },
+              child: Center(
+                child: Text(
+                  'Explore Guest Mode',
+                  style: TextStyle(color: Colors.blueAccent),
+                ),
+              ),
+            ),
+
           ],
         ),
       ),
@@ -403,7 +418,48 @@ class _SignInFormState extends State<SignInForm> {
 
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  void _showForgotPasswordDialog(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
 
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Reset Password"),
+        content: TextField(
+          controller: emailController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(
+            labelText: 'Enter your email',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              try {
+                await FirebaseAuth.instance.sendPasswordResetEmail(
+                  email: emailController.text.trim(),
+                );
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Reset link sent! Check your email.")),
+                );
+              } catch (e) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error: ${e.toString()}")),
+                );
+              }
+            },
+            child: const Text("Reset"),
+          ),
+        ],
+      ),
+    );
+  }
   void loginAndAuthenticateUser(BuildContext context) async {
     showDialog(
         context: context,

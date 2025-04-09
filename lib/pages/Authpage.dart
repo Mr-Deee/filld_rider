@@ -203,7 +203,7 @@ class _AuthPageState extends State<AuthPage> {
                           ),
                           Container(
                             // autogroup5cgo8Cw (LrGFcrPtMqbkTfkxCG5cgo)
-                            padding: EdgeInsets.fromLTRB(15, 150, 23, 8),
+                            padding: EdgeInsets.fromLTRB(20, 150, 23, 8),
                             width: double.infinity,
                             decoration: BoxDecoration(
                               image: DecorationImage(

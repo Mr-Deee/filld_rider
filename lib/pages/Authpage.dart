@@ -396,18 +396,17 @@ class _SignInFormState extends State<SignInForm> {
               },
               child: Text('Sign In'),
             ),
-
+SizedBox(height: 42,),
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => GuestModeScreen())
                 );                  },
-              child: Center(
-                child: Text(
+             child:   Text(
                   'Explore Guest Mode',
                   style: TextStyle(color: Colors.blueAccent),
                 ),
-              ),
+
             ),
 
           ],

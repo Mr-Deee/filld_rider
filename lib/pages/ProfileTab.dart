@@ -33,7 +33,11 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
     // riderLicenseController.text = rideprovider?.plate_number ?? '';
     // riderGhanaCard.text = rideprovider?.GhanaCard ?? '';
     return Scaffold(
+      backgroundColor: Colors.white70,
       body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 20), // Add some padding if needed
+
+        scrollDirection: Axis.vertical,
         child: Column(
           children: [
             _buildProfileHeader(),
@@ -96,7 +100,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
     return Stack(
       children: [
         Container(
-          height: 290,
+          height: 230,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(23),
             gradient: LinearGradient(
@@ -160,7 +164,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                 },
                 icon: const Icon(
                   Icons.logout,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ],
@@ -170,12 +174,12 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
           alignment: Alignment.center,
           child: Column(
             children: [
-              SizedBox(height: 80),
+              SizedBox(height: 60),
               CircleAvatar(
-                radius: 70,
+                radius: 50,
                 backgroundImage: CachedNetworkImageProvider(
                   rideprovider!
-                      .profilepicture!??"", // Replace with actual image URL
+                      .profilepicture??"assets/images/delivery-with-white-background-1.png", // Replace with actual image URL
                 ),
               ),
               SizedBox(height: 10),
@@ -207,8 +211,10 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
     var email = rideprovider?.email;
     var phone = rideprovider?.phone;
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(left: 14.0,right: 14.0,top: 3),
       child: Card(
+        color: Colors.white,
+
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
@@ -220,7 +226,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               Divider(),
               _buildInfoRow(Icons.motorcycle, "Motor Brand", Brand??""),
               Divider(),
-              _buildInfoRow(Icons.card_membership, "License", license!),
+              _buildInfoRow(Icons.card_membership, "License", license??""),
             ],
           ),
         ),
@@ -248,8 +254,9 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
 
   Widget _buildActionsSection(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.only(top: 5.0,right: 16,left: 16),
       child: Card(
+        color: Colors.white,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Column(
@@ -270,6 +277,13 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
               _showPrivacyDialog(context);
               // Navigate to privacy policy
             }),
+
+            Divider(),
+            _buildActionItem(Icons.delete, "Delete Account", () {
+              _showDeleteDialog(context);
+              // Navigate to privacy policy
+            }),
+            SizedBox(height: 2,)
           ],
         ),
       ),
@@ -471,7 +485,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
 
   Future<void> _deleteUserData(String uid) async {
     // 👇 Uncomment this for Realtime Database
-    final dbRef = FirebaseDatabase.instance.ref("Clients/$uid");
+    final dbRef = FirebaseDatabase.instance.ref("Riders/$uid");
     await dbRef.remove();
 
     // 👇 Or, use this for Firestore

@@ -183,9 +183,14 @@ class _CustomerSupportServiceState extends State<CustomerSupportService> {
                   _submitRequest();
                 }
               },
-              child: Icon(
-                Icons.check_circle_rounded,
-                color: Colors.green,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.green,
+                  ),
+                  Text('Accept')
+                ],
               )),
           // ElevatedButton.icon(
           //   onPressed: _pickImage,
